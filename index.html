@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nexos</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="header"></div>
+        <main>
+            <h1>Nexos</h1>
+            <p>Bem-vindo ao site da Nexos! Aqui você encontrará informações sobre nossos serviços e produtos.</p>
+            <p>Explore nosso site para saber mais sobre como podemos ajudar você a alcançar seus objetivos.</p>
+        </main>
+        <div id="footer"></div>
+        
+        <script>
+            async function loadComponent(id, file) {
+                const res = await fetch(file);
+                const html = await res.text();
+                document.getElementById(id).innerHTML = html;
+            }
+
+            loadComponent("header", "componentes/header.html");
+            loadComponent("footer", "componentes/footer.html");
+        </script>
+
+    </body>
+</html>
