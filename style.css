@@ -86,7 +86,7 @@ body {
   display:flex; flex-direction:column; overflow:hidden; will-change: transform;
 }
 .swipe-card .photo{
-  flex:1; background:#111827 url('/img/placeholder-avatar.png') center/cover no-repeat;
+  flex:1; background:#111827 url('./img/placeholder-avatar.png') center/cover no-repeat;
   border-radius:16px;
 }
 .swipe-card .meta{ margin-top:12px; display:flex; align-items:center; gap:10px; }
@@ -115,6 +115,10 @@ body {
 .modal[aria-hidden="false"]{ display:flex; }
 .modal-content{ background:#0f172a; color:#e5e7eb; border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:22px; width:min(460px, 92vw); }
 .modal-actions{ display:flex; gap:10px; margin-top:14px; }
+
+/* Acessibilidade e navegação por âncora */
+:target { scroll-margin-top: 84px; }
+:focus-visible { outline: 2px solid var(--primary-2); outline-offset: 2px; }
 
 /* Responsivo */
 @media (max-width: 900px){

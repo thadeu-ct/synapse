@@ -10,11 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
 
-  <link rel="stylesheet" href="/style.css" />
+  <!-- CSS: caminho RELATIVO -->
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <!-- Header (carregado dinamicamente) -->
-  <div data-include="/componentes/header.html"></div>
+  <div data-include="./componentes/header.html"></div>
 
   <main class="nx-main">
     <!-- Hero -->
@@ -35,9 +36,7 @@
         </div>
         <div class="phone-frame">
           <!-- “Tinder de conhecimento” -->
-          <div class="card-stack" id="cardStack">
-            <!-- Os cards são inseridos via JS -->
-          </div>
+          <div class="card-stack" id="cardStack"></div>
 
           <div class="swipe-actions">
             <button class="round danger" id="btnNope" aria-label="Passar">
@@ -87,21 +86,31 @@
     </section>
   </main>
 
-  <!-- Footer (carregado dinamicamente) -->
-  <div data-include="/componentes/footer.html"></div>
+  <!-- Footer (carregado dinamicamente) — caminho RELATIVO -->
+  <div data-include="./componentes/footer.html"></div>
 
-  <!-- Modal de Match -->
-  <div class="modal" id="modalMatch" aria-hidden="true" role="dialog" aria-labelledby="ttlMatch">
-    <div class="modal-content">
-      <h3 id="ttlMatch">Deu match! 🎉</h3>
-      <p id="matchText">Vocês têm interesses complementares.</p>
-      <div class="modal-actions">
-        <button class="btn primary" id="btnContato">Trocar contato</button>
-        <button class="btn ghost" id="btnFecharMatch">Fechar</button>
-      </div>
-    </div>
-  </div>
+  <!-- Script de includes: injeta header/footer e inicia ícones -->
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const nodes = document.querySelectorAll("[data-include]");
+      for (const n of nodes) {
+        const url = n.getAttribute("data-include");
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("HTTP " + res.status);
+          n.outerHTML = await res.text();
+        } catch (e) {
+          console.error("Falha ao carregar parcial:", url, e);
+          n.outerHTML = `<!-- erro ao carregar ${url} -->`;
+        }
+      }
+      // Ícones e ano do footer (se existir)
+      if (window.lucide) lucide.createIcons();
+      document.getElementById("anoAtual")?.append(new Date().getFullYear());
+    });
+  </script>
 
-  <script src="/js/main.js" defer></script>
+  <!-- JS principal: caminho RELATIVO -->
+  <script src="./js/main.js" defer></script>
 </body>
 </html>
