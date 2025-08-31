@@ -1,30 +1,107 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Nexos</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div id="header"></div>
-        <main>
-            <h1>Nexos</h1>
-            <p>Bem-vindo ao site da Nexos! Aqui você encontrará informações sobre nossos serviços e produtos.</p>
-            <p>Explore nosso site para saber mais sobre como podemos ajudar você a alcançar seus objetivos.</p>
-        </main>
-        <div id="footer"></div>
-        
-        <script>
-            async function loadComponent(id, file) {
-                const res = await fetch(file);
-                const html = await res.text();
-                document.getElementById(id).innerHTML = html;
-            }
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexos — Troca de Conhecimento</title>
 
-            loadComponent("header", "componentes/header.html");
-            loadComponent("footer", "componentes/footer.html");
-        </script>
+  <!-- Fonte e ícones -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
 
-    </body>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- Header (carregado dinamicamente) -->
+  <div data-include="/componentes/header.html"></div>
+
+  <main class="nx-main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="nx-container hero-grid">
+        <div>
+          <h1>Troque conhecimento como quem dá <span class="highlight">match</span>.</h1>
+          <p>Encontre pessoas que <strong>podem te ensinar</strong> e que também <strong>querem aprender</strong> o que você sabe. Sem dinheiro — só troca.</p>
+          <div class="hero-cta">
+            <button class="btn primary" id="btnComecar">Começar agora</button>
+            <a href="#como-funciona" class="btn link">Ver como funciona</a>
+          </div>
+          <ul class="badges">
+            <li>100% gratuito</li>
+            <li>Open & colaborativo</li>
+            <li>Mobile-first</li>
+          </ul>
+        </div>
+        <div class="phone-frame">
+          <!-- “Tinder de conhecimento” -->
+          <div class="card-stack" id="cardStack">
+            <!-- Os cards são inseridos via JS -->
+          </div>
+
+          <div class="swipe-actions">
+            <button class="round danger" id="btnNope" aria-label="Passar">
+              <i data-lucide="x"></i>
+            </button>
+            <button class="round secondary" id="btnInfo" aria-label="Ver mais">
+              <i data-lucide="info"></i>
+            </button>
+            <button class="round success" id="btnLike" aria-label="Curtir">
+              <i data-lucide="heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Como funciona -->
+    <section id="como-funciona" class="howitworks">
+      <div class="nx-container">
+        <h2>Como funciona</h2>
+        <div class="steps">
+          <div class="step">
+            <span class="step-icon"><i data-lucide="user-plus"></i></span>
+            <h3>Crie seu perfil</h3>
+            <p>Liste o que você pode <strong>ensinar</strong> e o que quer <strong>aprender</strong>.</p>
+          </div>
+          <div class="step">
+            <span class="step-icon"><i data-lucide="swipe"></i></span>
+            <h3>Dê match</h3>
+            <p>Deslize para curtir ou passar. Quando for recíproco, é um <strong>match</strong>!</p>
+          </div>
+          <div class="step">
+            <span class="step-icon"><i data-lucide="message-square"></i></span>
+            <h3>Combine a troca</h3>
+            <p>Conversem e marquem a sessão de troca — online ou presencial.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sobre -->
+    <section id="sobre" class="about">
+      <div class="nx-container">
+        <h2>Sobre o Nexos</h2>
+        <p>Projeto da disciplina de Empreendedorismo — PUC-Rio. Nosso propósito é democratizar o aprendizado através de trocas de saberes.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer (carregado dinamicamente) -->
+  <div data-include="/componentes/footer.html"></div>
+
+  <!-- Modal de Match -->
+  <div class="modal" id="modalMatch" aria-hidden="true" role="dialog" aria-labelledby="ttlMatch">
+    <div class="modal-content">
+      <h3 id="ttlMatch">Deu match! 🎉</h3>
+      <p id="matchText">Vocês têm interesses complementares.</p>
+      <div class="modal-actions">
+        <button class="btn primary" id="btnContato">Trocar contato</button>
+        <button class="btn ghost" id="btnFecharMatch">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js" defer></script>
+</body>
 </html>
