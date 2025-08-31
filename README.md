@@ -1,9 +1,9 @@
 # Nexos - Site de troca de experiências
 
-Projeto de Empreendedorismo da PUC-Rio, desenvolvido por [Thadeu](https://github.com/thadeu-ct) e **Mauricio**. Este repositório contém o código-fonte do **Nexos**, um site de troca de experiências feito em HTML, CSS e JavaScript, que tem como objetivo conectar pessoas interessadas em ensinar e aprender, promovendo o compartilhamento de conhecimento de forma colaborativa e gratuita.
+Projeto de Empreendedorismo da PUC-Rio, desenvolvido por [Thadeu](https://github.com/thadeu-ct) e [Mauricio](https://github.com/Maumau-3005). Este repositório contém o código-fonte do **Nexos**, um site de troca de experiências feito em HTML, CSS e JavaScript, que tem como objetivo conectar pessoas interessadas em ensinar e aprender, promovendo o compartilhamento de conhecimento de forma colaborativa e gratuita.
 
 ## 🔗 Acesse o site
-[https://thadeu-ct.github.io/nexos](https://thadeu-ct.github.io/nexos)
+[https://thadeu-ct.github.io/nexos](https://thadeu-ct.github.io/nexos/)
 
 ## 📁 Estrutura do projeto
 - `index.html`, `style.css`, ... (em breve)
