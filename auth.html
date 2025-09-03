@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Nexos — Entrar / Criar conta</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+  <!-- header/footer via includes -->
+  <div data-include="./componentes/header.html"></div>
+
+  <main class="nx-main auth-main">
+    <section class="auth-wrapper">
+      <div class="auth-card">
+        <div class="auth-tabs" role="tablist" aria-label="Acesso">
+          <button class="auth-tab is-active" data-tab="login" role="tab" aria-selected="true">Entrar</button>
+          <button class="auth-tab" data-tab="signup" role="tab" aria-selected="false">Criar conta</button>
+        </div>
+
+        <!-- Entrar -->
+        <form id="formLogin" class="auth-form" novalidate data-panel="login" aria-hidden="false">
+          <div class="field">
+            <label for="loginEmail">E-mail</label>
+            <input id="loginEmail" type="email" inputmode="email" autocomplete="email" required placeholder="voce@exemplo.com"/>
+            <small class="error"></small>
+          </div>
+
+          <div class="field">
+            <label for="loginSenha">Senha</label>
+            <div class="input-with-action">
+              <input id="loginSenha" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"/>
+              <button type="button" class="showpass" data-target="loginSenha" aria-label="Mostrar/ocultar senha">👁</button>
+            </div>
+            <div class="row between">
+              <label class="chk">
+                <input type="checkbox" id="lembrar"/> <span>Lembrar de mim</span>
+              </label>
+              <a href="#" class="link-muted">Esqueci minha senha</a>
+            </div>
+            <small class="error"></small>
+          </div>
+
+          <button class="btn primary full" type="submit">Entrar</button>
+        </form>
+
+        <!-- Criar conta -->
+        <form id="formSignup" class="auth-form is-hidden" novalidate data-panel="signup" aria-hidden="true">
+          <div class="grid2">
+            <div class="field">
+              <label for="nome">Nome</label>
+              <input id="nome" type="text" required placeholder="Seu nome"/>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="sobrenome">Sobrenome</label>
+              <input id="sobrenome" type="text" required placeholder="Seu sobrenome"/>
+              <small class="error"></small>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="signupEmail">E-mail</label>
+            <input id="signupEmail" type="email" inputmode="email" autocomplete="email" required placeholder="voce@exemplo.com"/>
+            <small class="error"></small>
+          </div>
+
+          <div class="field">
+            <label for="signupSenha">Senha</label>
+            <div class="input-with-action">
+              <input id="signupSenha" type="password" autocomplete="new-password" required minlength="6" placeholder="Mínimo 6 caracteres"/>
+              <button type="button" class="showpass" data-target="signupSenha" aria-label="Mostrar/ocultar senha">👁</button>
+            </div>
+            <small class="hint">Use pelo menos 6 caracteres. Evite informações fáceis de adivinhar.</small>
+            <small class="error"></small>
+          </div>
+
+          <div class="field">
+            <label for="signupConfirma">Confirmar senha</label>
+            <div class="input-with-action">
+              <input id="signupConfirma" type="password" autocomplete="new-password" required minlength="6" placeholder="Repita a senha"/>
+              <button type="button" class="showpass" data-target="signupConfirma" aria-label="Mostrar/ocultar senha">👁</button>
+            </div>
+            <small class="error"></small>
+          </div>
+
+          <div class="row">
+            <label class="chk">
+              <input id="aceito" type="checkbox" required />
+              <span>Concordo com os <a href="#" class="link-muted">Termos</a> e a <a href="#" class="link-muted">Privacidade</a>.</span>
+            </label>
+          </div>
+
+          <button class="btn primary full" type="submit">Criar conta</button>
+        </form>
+      </div>
+
+      <p class="auth-note">Protótipo acadêmico — dados ficam apenas no seu navegador (localStorage).</p>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <script src="./js/main.js" defer></script>
+  <script src="./js/auth.js" defer></script>
+</body>
+</html>
