@@ -5,16 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Nexos — Troca de Conhecimento</title>
 
-  <!-- Fonte e ícones -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
-
-  <!-- CSS: caminho RELATIVO -->
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <!-- Header (carregado dinamicamente) -->
   <div data-include="./componentes/header.html"></div>
 
   <main class="nx-main">
@@ -35,19 +31,11 @@
           </ul>
         </div>
         <div class="phone-frame">
-          <!-- “Tinder de conhecimento” -->
           <div class="card-stack" id="cardStack"></div>
-
           <div class="swipe-actions">
-            <button class="round danger" id="btnNope" aria-label="Passar">
-              <i data-lucide="x"></i>
-            </button>
-            <button class="round secondary" id="btnInfo" aria-label="Ver mais">
-              <i data-lucide="info"></i>
-            </button>
-            <button class="round success" id="btnLike" aria-label="Curtir">
-              <i data-lucide="heart"></i>
-            </button>
+            <button class="round danger" id="btnNope" aria-label="Passar"><i data-lucide="x"></i></button>
+            <button class="round secondary" id="btnInfo" aria-label="Ver mais"><i data-lucide="info"></i></button>
+            <button class="round success" id="btnLike" aria-label="Curtir"><i data-lucide="heart"></i></button>
           </div>
         </div>
       </div>
@@ -86,31 +74,8 @@
     </section>
   </main>
 
-  <!-- Footer (carregado dinamicamente) — caminho RELATIVO -->
   <div data-include="./componentes/footer.html"></div>
 
-  <!-- Script de includes: injeta header/footer e inicia ícones -->
-  <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const nodes = document.querySelectorAll("[data-include]");
-      for (const n of nodes) {
-        const url = n.getAttribute("data-include");
-        try {
-          const res = await fetch(url);
-          if (!res.ok) throw new Error("HTTP " + res.status);
-          n.outerHTML = await res.text();
-        } catch (e) {
-          console.error("Falha ao carregar parcial:", url, e);
-          n.outerHTML = `<!-- erro ao carregar ${url} -->`;
-        }
-      }
-      // Ícones e ano do footer (se existir)
-      if (window.lucide) lucide.createIcons();
-      document.getElementById("anoAtual")?.append(new Date().getFullYear());
-    });
-  </script>
-
-  <!-- JS principal: caminho RELATIVO -->
   <script src="./js/main.js" defer></script>
 </body>
 </html>
