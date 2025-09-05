@@ -221,3 +221,31 @@ body {
 }
 
 .is-invalid{ border-color:#fca5a5 !important; }
+
+/* --- Auth (login/cadastro) --- */
+.auth-main { display:grid; place-items:center; min-height: calc(100dvh - 140px); padding: 32px 12px; }
+.auth-wrapper { width:min(860px, 100%); }
+.auth-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.35);
+}
+.auth-tabs { display:flex; gap:10px; margin-bottom: 14px; }
+.auth-tab {
+  background:#111827; color:#e5e7eb; border:1px solid rgba(255,255,255,.08);
+  padding:10px 14px; border-radius: 12px; cursor:pointer; font-weight:600;
+}
+.auth-tab.is-active { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color:#fff; border-color: transparent; }
+
+.auth-form { display:grid; gap:14px; }
+.auth-form.is-hidden { display:none; }
+.field label { display:block; font-weight:600; color:#fff; margin-bottom:6px; }
+.input-with-action{ position:relative; display:flex; align-items:center; }
+.input-with-action input{ flex:1; }
+.input-with-action .showpass{
+  position:absolute; right:8px; top:50%; transform: translateY(-50%);
+  background:transparent; border:0; cursor:pointer; font-size:16px; color:#cbd5e1;
+}
+.btn.full{ width:100%; }

@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.0",
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "name": "nexos",
+  "version": "1.0.0",
+  "description": "Projeto de Empreendedorismo da PUC-Rio, desenvolvido por [Thadeu](https://github.com/thadeu-ct) e [Mauricio](https://github.com/Maumau-3005). Este repositório contém o código-fonte do **Nexos**, um site de troca de experiências feito em HTML, CSS e JavaScript, que tem como objetivo conectar pessoas interessadas em ensinar e aprender, promovendo o compartilhamento de conhecimento de forma colaborativa e gratuita.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thadeu-ct/nexos.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thadeu-ct/nexos/issues"
+  },
+  "homepage": "https://github.com/thadeu-ct/nexos#readme"
+}
