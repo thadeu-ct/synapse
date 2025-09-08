@@ -7,20 +7,45 @@
 // ---------- Include de componentes (header/footer) ----------
 async function includePartials() {
   const includeNodes = document.querySelectorAll("[data-include]");
-  for (const node of includeNodes) {
+
+  // carrega todos os parciais em paralelo
+  await Promise.all([...includeNodes].map(async (node) => {
     const url = node.getAttribute("data-include");
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: "no-cache" });
       if (!res.ok) throw new Error(`HTTP ${res.status} ao buscar ${url}`);
       node.outerHTML = await res.text();
     } catch (err) {
       console.error("Falha ao carregar parcial:", url, err);
       node.outerHTML = `<!-- erro ao carregar ${url} -->`;
     }
-  }
-  // Ícones e ano do footer (se o elemento existir)
+  }));
+
+  // ícones e ano no footer
   if (window.lucide) lucide.createIcons();
-  document.getElementById("anoAtual")?.append(new Date().getFullYear());
+  const ano = document.getElementById("anoAtual");
+  if (ano) ano.textContent = new Date().getFullYear();
+
+  // 🔒 Guardas contra duplicação/markup fora do lugar
+  // 1) manter apenas o primeiro header
+  const headers = document.querySelectorAll(".nx-header");
+  if (headers.length > 1) {
+    [...headers].slice(1).forEach(h => h.remove());
+  }
+  // 2) remover qualquer CTA que esteja fora do header
+  document.querySelectorAll(".nx-cta").forEach(el => {
+    if (!el.closest(".nx-header")) el.remove();
+  });
+
+  // 3) garantir navegação dos botões mesmo se forem <button>
+  document.getElementById("btnAbrirLogin")?.addEventListener("click", () => {
+    if (location.pathname.endsWith("auth.html") && location.hash === "#login") return;
+    location.href = "./auth.html#login";
+  });
+  document.getElementById("btnAbrirCriarPerfil")?.addEventListener("click", () => {
+    if (location.pathname.endsWith("cadastro.html")) return;
+    location.href = "./cadastro.html";
+  });
 }
 
 // ---------- Dados fake (pode vir de API depois) ----------
