@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Nexos — Cadastro do Cliente</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+  <div data-include="./componentes/header.html"></div>
+
+  <main class="nx-main profile-main">
+    <section class="profile-wrapper">
+      <div class="profile-card">
+        <header class="profile-header">
+          <h1>Cadastro do Cliente</h1>
+          <p>Complete seu perfil para dar match em trocas de conhecimento.</p>
+        </header>
+
+        <form id="formPerfil" class="profile-form" novalidate>
+          <!-- Identificação -->
+          <div class="grid2">
+            <div class="field">
+              <label for="pfNome">Nome</label>
+              <input id="pfNome" type="text" required placeholder="Seu nome"/>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="pfSobrenome">Sobrenome</label>
+              <input id="pfSobrenome" type="text" required placeholder="Seu sobrenome"/>
+              <small class="error"></small>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label for="pfEmail">E-mail</label>
+              <input id="pfEmail" type="email" inputmode="email" autocomplete="email" required placeholder="voce@exemplo.com"/>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="pfTelefone">Telefone (opcional)</label>
+              <input id="pfTelefone" type="tel" inputmode="tel" placeholder="(21) 99999-9999"/>
+              <small class="error"></small>
+            </div>
+          </div>
+
+          <!-- Localização e formato -->
+          <div class="grid2">
+            <div class="field">
+              <label for="pfCidade">Cidade</label>
+              <input id="pfCidade" type="text" placeholder="Rio de Janeiro"/>
+              <small class="error"></small>
+            </div>
+            <div class="field">
+              <label for="pfUF">Estado (UF)</label>
+              <input id="pfUF" type="text" maxlength="2" placeholder="RJ"/>
+              <small class="error"></small>
+            </div>
+          </div>
+
+          <div class="row wrap">
+            <label class="chk"><input type="checkbox" id="pfOnline" checked> <span>Online</span></label>
+            <label class="chk"><input type="checkbox" id="pfPresencial"> <span>Presencial</span></label>
+          </div>
+
+          <!-- Oferta e Interesse -->
+          <div class="field">
+            <label for="pfEnsina">O que você ensina (tags)</label>
+            <div class="tags-input" data-target="pfEnsina"></div>
+            <input id="pfEnsina" type="hidden"/>
+            <small class="hint">Ex.: Inglês, JavaScript, Violão…</small>
+          </div>
+
+          <div class="field">
+            <label for="pfAprende">O que deseja aprender (tags)</label>
+            <div class="tags-input" data-target="pfAprende"></div>
+            <input id="pfAprende" type="hidden"/>
+            <small class="hint">Ex.: HTML/CSS, Conversação, Marketing…</small>
+          </div>
+
+          <!-- Disponibilidade -->
+          <div class="field">
+            <label>Disponibilidade</label>
+            <div class="row wrap">
+              <label class="chk"><input type="checkbox" name="disp" value="seg/ter"> <span>Seg e Ter</span></label>
+              <label class="chk"><input type="checkbox" name="disp" value="qua/qui"> <span>Qua e Qui</span></label>
+              <label class="chk"><input type="checkbox" name="disp" value="sex"> <span>Sex</span></label>
+              <label class="chk"><input type="checkbox" name="disp" value="sab"> <span>Sáb</span></label>
+              <label class="chk"><input type="checkbox" name="disp" value="dom"> <span>Dom</span></label>
+              <label class="chk"><input type="checkbox" name="disp" value="noite"> <span>Noite</span></label>
+            </div>
+          </div>
+
+          <!-- Bio e links -->
+          <div class="field">
+            <label for="pfBio">Sobre você</label>
+            <textarea id="pfBio" rows="4" placeholder="Conte rapidamente sua experiência e como quer trocar conhecimento."></textarea>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <label for="pfSite">Site/Portfólio (opcional)</label>
+              <input id="pfSite" type="url" placeholder="https://seusite.com"/>
+            </div>
+            <div class="field">
+              <label for="pfLinkedin">LinkedIn (opcional)</label>
+              <input id="pfLinkedin" type="url" placeholder="https://www.linkedin.com/in/usuario"/>
+            </div>
+          </div>
+
+          <div class="row between">
+            <button class="btn ghost" type="button" id="btnCancelar">Cancelar</button>
+            <button class="btn primary" type="submit">Salvar perfil</button>
+          </div>
+        </form>
+      </div>
+
+      <p class="auth-note">Protótipo: os dados ficam apenas no seu navegador.</p>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <script src="./js/main.js" defer></script>
+  <script src="./js/cadastro.js" defer></script>
+</body>
+</html>

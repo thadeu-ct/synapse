@@ -8,15 +8,17 @@ Front-end publicado em GitHub Pages:
 
 ## 📁 Estrutura do projeto
 - componentes/ #Componentes reutilizáveis
-    footer.html; header.html
+  - footer.html; header.html
 - img/ # Imagens do projeto
 - js/ # Scripts do front-end
-    main.js
+  - main.js
+
 - servidor/ # Código do back-end (Express + Node.js + Supabase)
-    database.js # Conexão com Supabase
-    rotas.js # Rotas da API (cadastro de usuários)
-    servidor.js # Configuração do servidor Express
-    test.js # Arquivo para testes manuais
+  - database.js # Conexão com Supabase
+  - rotas.js # Rotas da API (cadastro de usuários)
+  - servidor.js # Configuração do servidor Express
+  - test.js # Arquivo para testes manuais
+
 - auth.html # Página de autenticação (em desenvolvimento)
 - index.html; style.css
 
