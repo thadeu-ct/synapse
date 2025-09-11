@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   tabs.forEach(b => b.addEventListener("click", () => activate(b.dataset.tab)));
-  // abre a aba pelo hash (auth.html#signup)
   if (location.hash === "#signup") activate("signup"); else activate("login");
 
   // Mostrar/ocultar senha
@@ -31,10 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ---- Persistência simplificada (protótipo) ----
-  const DB_KEY = "nexos_users"; // [{email, senha, nome, sobrenome}]
-  const loadUsers = () => JSON.parse(localStorage.getItem(DB_KEY) || "[]");
-  const saveUsers = (arr) => localStorage.setItem(DB_KEY, JSON.stringify(arr));
+  // Helpers
   const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
   function setError(input, msg) {
@@ -49,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Signup ---
   const formSignup = document.getElementById("formSignup");
-  formSignup?.addEventListener("submit", (e) => {
+  formSignup?.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors(formSignup);
 
@@ -69,29 +65,35 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!aceito.checked) { setError(aceito, "Você precisa aceitar os termos."); ok=false; }
     if (!ok) return;
 
-    const users = loadUsers();
-    if (users.some(u => u.email.toLowerCase() === email.value.toLowerCase())) {
-      setError(email, "Este e-mail já está cadastrado.");
-      return;
+    try {
+      const resp = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome: nome.value.trim(),
+          sobrenome: sobrenome.value.trim(),
+          email: email.value.trim(),
+          senha: senha.value
+        })
+      });
+
+      const data = await resp.json();
+
+      if (resp.ok) {
+        alert("Conta criada! Vamos completar seu perfil.");
+        localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
+        location.href = "./cadastro.html";
+      } else {
+        setError(email, data.error || "Erro ao criar conta.");
+      }
+    } catch (err) {
+      alert("Erro de conexão com o servidor.");
     }
-
-    users.push({
-      email: email.value.trim(),
-      senha: senha.value, // protótipo
-      nome: nome.value.trim(),
-      sobrenome: sobrenome.value.trim()
-    });
-    saveUsers(users);
-
-    // cria sessão e vai para o cadastro de perfil
-    localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
-    alert("Conta criada! Vamos completar seu perfil.");
-    location.href = "./cadastro.html";
   });
 
   // --- Login ---
   const formLogin = document.getElementById("formLogin");
-  formLogin?.addEventListener("submit", (e) => {
+  formLogin?.addEventListener("submit", async (e) => {
     e.preventDefault();
     clearErrors(formLogin);
 
@@ -102,17 +104,27 @@ document.addEventListener("DOMContentLoaded", () => {
     if (senha.value.length < 6) { setError(senha, "Senha inválida."); ok=false; }
     if (!ok) return;
 
-    const users = loadUsers();
-    const user = users.find(u =>
-      u.email.toLowerCase() === email.value.toLowerCase() && u.senha === senha.value
-    );
-    if (!user) {
-      setError(senha, "E-mail e/ou senha incorretos.");
-      return;
-    }
+    try {
+      const resp = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.value.trim(),
+          senha: senha.value
+        })
+      });
 
-    localStorage.setItem("nexos_session", JSON.stringify({ email: user.email }));
-    alert(`Bem-vindo, ${user.nome || "usuário"}!`);
-    location.href = "./index.html";
+      const data = await resp.json();
+
+      if (resp.ok) {
+        alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
+        localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
+        location.href = "./index.html";
+      } else {
+        setError(senha, data.error || "E-mail e/ou senha incorretos.");
+      }
+    } catch (err) {
+      alert("Erro de conexão com o servidor.");
+    }
   });
 });
