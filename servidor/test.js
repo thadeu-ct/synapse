@@ -34,7 +34,7 @@ async function criarAdmin() {
 
     // Insere no banco via Supabase
     const { error } = await supabase
-      .from("accounts")
+      .from("usuarios")
       .insert([
         { nome, sobrenome, email, senha: hash }
       ]);
@@ -49,6 +49,6 @@ async function criarAdmin() {
   }
 }
 
-// main()
-// testSenha();
-criarAdmin();
+main()
+testSenha();
+// criarAdmin();
