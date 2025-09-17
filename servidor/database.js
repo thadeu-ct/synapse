@@ -1,5 +1,6 @@
 // servidor/database.js
 import { createClient } from '@supabase/supabase-js'
+import bcrypt from 'bcrypt'
 
 // Essas infos você pega no painel do Supabase (project settings → API)
 const SUPABASE_URL = "https://mfqktsawbldigufhgrsl.supabase.co"
@@ -10,14 +11,23 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 // Função para cadastrar usuário
 export async function cadastrarUsuario({ nome, sobrenome, email, senha }) {
-  const { data, error } = await supabase
-    .from('usuarios')
-    .insert([{ nome, sobrenome, email, senha }])
+  try {
+    // Garante armazenamento seguro da senha
+    const senhaHash = await bcrypt.hash(String(senha), 10)
 
-  if (error) {
-    console.error("Erro ao cadastrar:", error.message)
+    const { data, error } = await supabase
+      .from('usuarios')
+      .insert([{ nome, sobrenome, email, senha: senhaHash }])
+      .select()
+
+    if (error) {
+      console.error('Erro ao cadastrar:', error.message)
+      return null
+    }
+
+    return data
+  } catch (err) {
+    console.error('Falha ao processar cadastro:', err)
     return null
   }
-
-  return data
 }
