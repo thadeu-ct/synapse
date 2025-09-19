@@ -1,5 +1,33 @@
 // js/auth.js
 document.addEventListener("DOMContentLoaded", () => {
+  const API_BASE = window.__NEXOS_API__ || "http://localhost:3000";
+
+  async function request(path, options) {
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: { "Content-Type": "application/json", ...(options?.headers || {}) },
+      ...options
+    });
+
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const message = data.error || data.message || `Erro ${res.status}`;
+      throw new Error(message);
+    }
+    return data;
+  }
+
+  function setLoading(form, isLoading, loadingText = "Enviando…") {
+    const elements = form.querySelectorAll("input, button, textarea");
+    elements.forEach(el => el.disabled = isLoading);
+    const submit = form.querySelector("button[type=\"submit\"]");
+    if (submit) {
+      const original = submit.dataset.label || submit.textContent;
+      if (!submit.dataset.label) submit.dataset.label = original;
+      submit.textContent = isLoading ? loadingText : original;
+      submit.classList.toggle("is-loading", isLoading);
+    }
+  }
+
   const tabs = document.querySelectorAll(".auth-tab");
   const panels = document.querySelectorAll(".auth-form");
 
@@ -66,9 +94,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ok) return;
 
     try {
-      const resp = await fetch("http://localhost:3000/signup", {
+      setLoading(formSignup, true, "Criando conta…");
+      await request("/signup", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nome: nome.value.trim(),
           sobrenome: sobrenome.value.trim(),
@@ -77,17 +105,14 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       });
 
-      const data = await resp.json();
-
-      if (resp.ok) {
-        alert("Conta criada! Vamos completar seu perfil.");
-        localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
-        location.href = "./cadastro.html";
-      } else {
-        setError(email, data.error || "Erro ao criar conta.");
-      }
+      alert("Conta criada! Vamos completar seu perfil.");
+      localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
+      location.href = "./cadastro.html";
     } catch (err) {
-      alert("Erro de conexão com o servidor.");
+      setError(email, err.message || "Erro ao criar conta.");
+      alert(err.message || "Erro de conexão com o servidor.");
+    } finally {
+      setLoading(formSignup, false);
     }
   });
 
@@ -105,26 +130,23 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!ok) return;
 
     try {
-      const resp = await fetch("http://localhost:3000/login", {
+      setLoading(formLogin, true, "Entrando…");
+      const data = await request("/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: email.value.trim(),
           senha: senha.value
         })
       });
 
-      const data = await resp.json();
-
-      if (resp.ok) {
-        alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
-        localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
-        location.href = "./index.html";
-      } else {
-        setError(senha, data.error || "E-mail e/ou senha incorretos.");
-      }
+      alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
+      localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
+      location.href = "./index.html";
     } catch (err) {
-      alert("Erro de conexão com o servidor.");
+      setError(senha, err.message || "E-mail e/ou senha incorretos.");
+      alert(err.message || "Erro de conexão com o servidor.");
+    } finally {
+      setLoading(formLogin, false);
     }
   });
 });
