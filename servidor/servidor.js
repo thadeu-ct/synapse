@@ -1,111 +1,116 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
-import rotas from "./rotas.js";
-import { supabase } from "./database.js";
 import bcrypt from "bcrypt";
+import { supabase } from "./database.js";
 
 const app = express();
 const PORT = 3000;
 
-// middlewares
-app.use(cors());
-app.use(bodyParser.json());
+// Middlewares: preparam o servidor para receber requisições
+app.use(cors()); // Permite que o frontend (em outra porta) acesse o backend
+app.use(bodyParser.json()); // Permite que o servidor entenda JSON no corpo das requisições
 
-// rotas principais da API
-app.use("/api", rotas);
-
-// rota inicial
+// Rota inicial para testar se o servidor está online
 app.get("/", (req, res) => {
-  res.send("🚀 Servidor online!");
-});
-
-// rota para listar usuários (teste Supabase)
-app.get("/usuarios", async (req, res) => {
-  try {
-    const { data, error } = await supabase.from("usuarios").select("*");
-    if (error) throw error;
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  res.send("🚀 Servidor online e pronto para receber requisições!");
 });
 
 // ----------------- ROTAS DE AUTENTICAÇÃO ----------------- //
 
-// rota de signup
+// Rota de CADASTRO (signup)
 app.post("/signup", async (req, res) => {
+  // 1. Pega os dados enviados pelo frontend
   const { nome, sobrenome, email, senha } = req.body;
 
+  // 2. Validação básica
   if (!nome || !sobrenome || !email || !senha) {
-    return res.status(400).json({ error: "Campos obrigatórios faltando" });
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+  }
+  if (senha.length < 6) {
+    return res.status(400).json({ error: "A senha deve ter no mínimo 6 caracteres" });
   }
 
   try {
-    // verifica se email já existe
-    const { data: existente } = await supabase
+    // 3. Verifica se o e-mail já existe no banco de dados
+    const { data: usuarioExistente, error: selectError } = await supabase
       .from("usuarios")
       .select("id")
       .eq("email", email)
       .single();
 
-    if (existente) {
-      return res.status(400).json({ error: "E-mail já cadastrado" });
+    if (usuarioExistente) {
+      return res.status(400).json({ error: "Este e-mail já está cadastrado" });
     }
 
-    // gera hash da senha
+    // 4. Criptografa a senha antes de salvar (segurança!)
     const saltRounds = 10;
     const senhaHash = await bcrypt.hash(senha, saltRounds);
 
-    // insere no banco
-    const { data, error } = await supabase
+    // 5. Insere o novo usuário no banco de dados
+    const { data: novoUsuario, error: insertError } = await supabase
       .from("usuarios")
       .insert([{ nome, sobrenome, email, senha: senhaHash }])
-      .select()
+      .select("id, nome, sobrenome, email, created_at") // Retorna os dados seguros
       .single();
 
-    if (error) throw error;
+    if (insertError) {
+      throw insertError; // Joga o erro para o catch
+    }
 
-    res.json({ message: "Conta criada com sucesso!", usuario: data });
+    // 6. Envia uma resposta de sucesso para o frontend
+    res.status(201).json({ message: "Conta criada com sucesso!", usuario: novoUsuario });
+
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    // Em caso de qualquer erro no processo, envia uma resposta de erro
+    res.status(500).json({ error: `Erro no servidor: ${err.message}` });
   }
 });
 
-// rota de login
+
+// Rota de LOGIN
 app.post("/login", async (req, res) => {
-  const { email, senha } = req.body;
+    // 1. Pega email e senha do corpo da requisição
+    const { email, senha } = req.body;
 
-  if (!email || !senha) {
-    return res.status(400).json({ error: "Informe email e senha" });
-  }
-
-  try {
-    const { data: user, error } = await supabase
-      .from("usuarios")
-      .select("*")
-      .eq("email", email)
-      .single();
-
-    if (error || !user) {
-      return res.status(401).json({ error: "Email ou senha inválidos" });
+    // 2. Validação
+    if (!email || !senha) {
+        return res.status(400).json({ error: "Informe e-mail e senha" });
     }
 
-    // compara senha digitada com o hash
-    const senhaOk = await bcrypt.compare(senha, user.senha);
-    if (!senhaOk) {
-      return res.status(401).json({ error: "Email ou senha inválidos" });
-    }
+    try {
+        // 3. Busca o usuário pelo email no banco
+        const { data: usuario, error: selectError } = await supabase
+            .from("usuarios")
+            .select("*")
+            .eq("email", email)
+            .single();
 
-    res.json({ message: "Login OK", usuario: user });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        // Se não encontrou o usuário, o erro é o mesmo de senha errada (segurança)
+        if (selectError || !usuario) {
+            return res.status(401).json({ error: "E-mail ou senha inválidos" });
+        }
+
+        // 4. Compara a senha enviada com a senha criptografada no banco
+        const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+
+        if (!senhaCorreta) {
+            return res.status(401).json({ error: "E-mail ou senha inválidos" });
+        }
+        
+        // 5. Login bem-sucedido. Retorna uma mensagem e os dados do usuário (sem a senha)
+        delete usuario.senha; // Remove a senha do objeto antes de enviar
+        res.status(200).json({ message: "Login realizado com sucesso!", usuario: usuario });
+
+    } catch (err) {
+        res.status(500).json({ error: `Erro no servidor: ${err.message}` });
+    }
 });
+
 
 // --------------------------------------------------------- //
 
-// inicialização do servidor
+// Inicialização do servidor
 app.listen(PORT, () => {
   console.log(`✅ Servidor rodando em http://localhost:${PORT}`);
 });
