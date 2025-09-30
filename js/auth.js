@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       alert("Conta criada! Vamos completar seu perfil.");
       localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
-      location.href = "./cadastro.html";
+      location.href = "./perfil.html";
     } catch (err) {
       setError(email, err.message || "Erro ao criar conta.");
       alert(err.message || "Erro de conexão com o servidor.");

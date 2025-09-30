@@ -43,8 +43,8 @@ async function includePartials() {
     location.href = "./auth.html#login";
   });
   document.getElementById("btnAbrirCriarPerfil")?.addEventListener("click", () => {
-    if (location.pathname.endsWith("cadastro.html")) return;
-    location.href = "./cadastro.html";
+    if (location.pathname.endsWith("perfil.html")) return;
+    location.href = "./perfil.html";
   });
 }
 
