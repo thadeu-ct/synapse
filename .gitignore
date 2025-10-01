@@ -8,6 +8,9 @@
 .env.test.local
 .env.production.local
 
+# Arquivos de variáveis do ambiente
+servidor/.env
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
