@@ -1,5 +1,7 @@
 # Synapse - Site de troca de experiências
+O **Synapse** é uma plataforma web criada para conectar pessoas interessadas em ensinar e aprender de forma colaborativa. O projeto foi desenvolvido na disciplina de Empreendedorismo da PUC-Rio com foco em criar um ambiente de troca de experiências sem custos financeiros, baseado no compartilhamento de conhecimento.
 
+## ✨ Tecnologias Utilizadas
 ![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
@@ -14,32 +16,31 @@ Projeto de Empreendedorismo da PUC-Rio para conectar pessoas interessadas em ens
 **[🔗 Acesse o site](https://thadeu-ct.github.io/synapse/)**
 
 ## 🚀 Funcionalidades
-- [ ] Estrutura inicial do site
-- [ ] Servidor Node.js com Express
-- [ ] Integração com Supabase (tabela `usuarios`)
-- [ ] Cadastro de usuários via API
-- [ ] Autenticação de login
-- [ ] Página de perfil
-- [ ] Sistema de troca de experiências (match entre "ensinar" e "aprender")
-
-## 📌 Sobre o Projeto
-O **Synapse** é um projeto desenvolvido na disciplina de Empreendedorismo da PUC-Rio, com foco em criar um ambiente colaborativo de troca de experiências. A ideia central é permitir que pessoas que queiram ensinar e aprender se conectem, sem custos financeiros, mas sim por meio da troca de conhecimento.
-
-O site foi pensado para ser simples, acessível e responsivo, facilitando a interação entre usuários e valorizando o aprendizado coletivo.
+- [x] Estrutura inicial do site (HTML/CSS)
+- [x] Backend com Funções Serverless (Node.js) na Vercel
+- [x] Integração com Supabase (tabela usuarios)
+- [x] Cadastro de usuários via API (/api/signup)
+- [x] Autenticação de login via API (/api/login)
+- [ ] Página de perfil do usuário
+- [ ] Sistema de match entre "ensinar" e "aprender"
+- [ ] Edição de perfil
 
 ## 📁 Estrutura do projeto
 ```
+├── api/
+│   ├── login.js
+│   └── signup.js
 ├── componentes/
 │   ├── footer.html
 │   └── header.html
 ├── img/
 ├── js/
-│   └── main.js
-├── servidor/
-│   ├── database.js
-│   ├── rotas.js
-│   ├── servidor.js
-│   └── test.js
+│   ├── auth.js
+│   ├── main.js
+│   └── perfil.js
+├── lib/
+│   └── database.js
+├── .env
 ├── .gitignore
 ├── auth.html
 ├── index.html
