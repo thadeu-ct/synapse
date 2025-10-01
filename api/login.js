@@ -12,19 +12,17 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   // --- Tratamento do "Preflight" Request ---
-  // O navegador envia uma requisição OPTIONS antes do POST para verificar a permissão.
-  // Se for OPTIONS, apenas respondemos com "OK" (status 204) e os cabeçalhos acima.
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
 
-  // Se a requisição não for POST, rejeitamos (mantendo a lógica anterior)
+  // Se a requisição não for POST, rejeitamos
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST", "OPTIONS"]);
     return res.status(405).end(`Método ${req.method} não permitido`);
   }
 
-  // --- Lógica do Login (exatamente a mesma que já tínhamos) ---
+  // --- Lógica do Login ---
   const { email, senha } = req.body;
 
   if (!email || !senha) {
