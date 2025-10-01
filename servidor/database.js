@@ -1,10 +1,20 @@
 // servidor/database.js
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
-// Suas chaves de API do Supabase. Mantenha-as seguras.
-// A SUPABASE_KEY é a chave anônima (anon key), não a service_role.
-const SUPABASE_URL = "https://mfqktsawbldigufhgrsl.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1mcWt0c2F3YmxkaWd1ZmhncnNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY5Mjg3NDAsImV4cCI6MjA3MjUwNDc0MH0.3E9PRBWwg-VGubxpolmqttii_DNugyevLmDlKcU8js0";
+// Carrega as variáveis do arquivo .env para o ambiente do Node.js
+dotenv.config({ path: './servidor/.env' });
+
+// Agora, em vez de ler as chaves diretamente, lemos do ambiente
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
+
+// Validação para garantir que as chaves foram carregadas
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.error("Erro: As variáveis de ambiente SUPABASE_URL e SUPABASE_KEY não foram encontradas.");
+    // Em um cenário real, você poderia querer que o programa parasse aqui
+    // process.exit(1);
+}
 
 // Cria e exporta o cliente Supabase para ser usado em outros arquivos
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
