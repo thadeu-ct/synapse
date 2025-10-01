@@ -2,6 +2,7 @@
 O **Synapse** é uma plataforma web criada para conectar pessoas interessadas em ensinar e aprender de forma colaborativa. O projeto foi desenvolvido na disciplina de Empreendedorismo da PUC-Rio com foco em criar um ambiente de troca de experiências sem custos financeiros, baseado no compartilhamento de conhecimento.
 
 Projeto de Empreendedorismo da PUC-Rio para conectar pessoas interessadas em ensinar e aprender de forma colaborativa.
+
 **[🔗 Acesse o site](https://thadeu-ct.github.io/synapse/)**
 
 ## ✨ Tecnologias Utilizadas
