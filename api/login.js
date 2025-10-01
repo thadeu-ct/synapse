@@ -1,16 +1,30 @@
 // api/login.js
 import bcrypt from "bcrypt";
-import { supabase } from "../servidor/database.js"; // Ajustamos o caminho para a conexão
+import { supabase } from "../servidor/database.js";
 
-// A Vercel espera uma função exportada como default
 export default async function handler(req, res) {
-  // 1. Proteger o endpoint: só aceitar requisições POST
+  // --- Configuração do CORS ---
+  // Adicionamos o endereço do seu site na lista de permissões.
+  res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
+  // Dizemos quais métodos (verbos) são permitidos.
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  // Dizemos quais cabeçalhos o frontend pode enviar.
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // --- Tratamento do "Preflight" Request ---
+  // O navegador envia uma requisição OPTIONS antes do POST para verificar a permissão.
+  // Se for OPTIONS, apenas respondemos com "OK" (status 204) e os cabeçalhos acima.
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
+
+  // Se a requisição não for POST, rejeitamos (mantendo a lógica anterior)
   if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
+    res.setHeader("Allow", ["POST", "OPTIONS"]);
     return res.status(405).end(`Método ${req.method} não permitido`);
   }
 
-  // 2. A lógica do login (exatamente a mesma que tínhamos!)
+  // --- Lógica do Login (exatamente a mesma que já tínhamos) ---
   const { email, senha } = req.body;
 
   if (!email || !senha) {
