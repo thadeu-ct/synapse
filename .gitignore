@@ -9,7 +9,7 @@
 .env.production.local
 
 # Arquivos de variáveis do ambiente
-servidor/.env
+lib/.env
 
 # Logs
 npm-debug.log*

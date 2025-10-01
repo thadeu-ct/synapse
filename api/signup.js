@@ -1,6 +1,6 @@
 // api/signup.js
 import bcrypt from "bcrypt";
-import { supabase } from "../servidor/database.js";
+import { supabase } from "../lib/database.js";
 
 export default async function handler(req, res) {
   // --- Configuração do CORS ---
