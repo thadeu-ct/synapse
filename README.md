@@ -11,7 +11,7 @@
 
 Projeto de Empreendedorismo da PUC-Rio para conectar pessoas interessadas em ensinar e aprender de forma colaborativa.
 
-**[🔗 Acesse o site](https://thadeu-ct.github.io/Synapse/)**
+**[🔗 Acesse o site](https://thadeu-ct.github.io/synapse/)**
 
 ## 🚀 Funcionalidades
 - [ ] Estrutura inicial do site
