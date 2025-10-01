@@ -1,6 +1,6 @@
 // js/auth.js
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE = window.__NEXOS_API__ || "http://localhost:3000";
+const API_BASE = "https://synapse-seven-mu.vercel.app/api";
 
   async function request(path, options) {
     const res = await fetch(`${API_BASE}${path}`, {
