@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nexos — Troca de Conhecimento</title>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <div data-include="./componentes/header.html"></div>
+
+  <main class="nx-main">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="nx-container hero-grid">
+        <div>
+          <h1>Troque conhecimento como quem dá <span class="highlight">match</span>.</h1>
+          <p>Encontre pessoas que <strong>podem te ensinar</strong> e que também <strong>querem aprender</strong> o que você sabe. Sem dinheiro — só troca.</p>
+          <div class="hero-cta">
+            <button class="btn primary" id="btnComecar">Começar agora</button>
+            <a href="#como-funciona" class="btn link">Ver como funciona</a>
+          </div>
+          <ul class="badges">
+            <li>100% gratuito</li>
+            <li>Open & colaborativo</li>
+            <li>Mobile-first</li>
+          </ul>
+        </div>
+        <div class="phone-frame">
+          <div class="card-stack" id="cardStack"></div>
+          <div class="swipe-actions">
+            <button class="round danger" id="btnNope" aria-label="Passar"><i data-lucide="x"></i></button>
+            <button class="round secondary" id="btnInfo" aria-label="Ver mais"><i data-lucide="info"></i></button>
+            <button class="round success" id="btnLike" aria-label="Curtir"><i data-lucide="heart"></i></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Como funciona -->
+    <section id="como-funciona" class="howitworks">
+      <div class="nx-container">
+        <h2>Como funciona</h2>
+        <div class="steps">
+          <div class="step">
+            <span class="step-icon"><i data-lucide="user-plus"></i></span>
+            <h3>Crie seu perfil</h3>
+            <p>Liste o que você pode <strong>ensinar</strong> e o que quer <strong>aprender</strong>.</p>
+          </div>
+          <div class="step">
+            <span class="step-icon"><i data-lucide="swipe"></i></span>
+            <h3>Dê match</h3>
+            <p>Deslize para curtir ou passar. Quando for recíproco, é um <strong>match</strong>!</p>
+          </div>
+          <div class="step">
+            <span class="step-icon"><i data-lucide="message-square"></i></span>
+            <h3>Combine a troca</h3>
+            <p>Conversem e marquem a sessão de troca — online ou presencial.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="seguranca" class="safety">
+      <div class="nx-container">
+        <h2>Segurança em primeiro lugar</h2>
+        <p class="section-lead">Cuidamos dos seus dados para que você foque no que importa: aprender e ensinar.</p>
+        <div class="info-grid">
+          <article class="info-card">
+            <span class="info-icon"><i data-lucide="shield-check"></i></span>
+            <h3>Senhas protegidas</h3>
+            <p>Armazenamos senhas com hash <strong>bcrypt</strong> e realizamos verificações de duplicidade a cada novo cadastro.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon"><i data-lucide="cloud"></i></span>
+            <h3>Backup seguro</h3>
+            <p>Perfis são sincronizados com o backend e também ficam disponíveis offline no seu navegador.</p>
+          </article>
+          <article class="info-card">
+            <span class="info-icon"><i data-lucide="user-cog"></i></span>
+            <h3>Controle total</h3>
+            <p>Atualize ou remova seus dados a qualquer momento — transparência em cada etapa da jornada.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sobre -->
+    <section id="sobre" class="about">
+      <div class="nx-container">
+        <h2>Sobre o Nexos</h2>
+        <p>Projeto da disciplina de Empreendedorismo — PUC-Rio. Nosso propósito é democratizar o aprendizado através de trocas de saberes.</p>
+      </div>
+    </section>
+
+    <section id="faq" class="faq">
+      <div class="nx-container">
+        <h2>Perguntas frequentes</h2>
+        <div class="faq-list">
+          <details>
+            <summary>O Nexos é gratuito?</summary>
+            <p>Sim! O projeto nasceu para incentivar trocas de conhecimento. Não há mensalidades nem taxas escondidas.</p>
+          </details>
+          <details>
+            <summary>Preciso estar online para usar?</summary>
+            <p>Você consegue navegar e consultar perfis mesmo offline. Ao voltar para a internet, sincronizamos os dados com o servidor.</p>
+          </details>
+          <details>
+            <summary>Como são feitos os matches?</summary>
+            <p>Combinamos interesses de ensino e aprendizado, além da disponibilidade informada, para sugerir as melhores conexões.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <script src="./js/main.js" defer></script>
+</body>
+</html>
