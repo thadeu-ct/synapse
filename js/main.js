@@ -47,6 +47,11 @@ async function includePartials() {
     location.href = "./auth.html#signup";
   });
 
+  if (/auth\.html$/.test(location.pathname)) {
+    document.querySelector(".nx-cta")?.remove();
+    document.querySelector(".footer-cta")?.remove();
+  }
+
   setupNavigationHighlight();
 }
 
