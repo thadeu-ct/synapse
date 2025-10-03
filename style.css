@@ -196,10 +196,45 @@ body {
   align-items:stretch;
 }
 .hero-grid > div:first-child{ display:flex; flex-direction:column; justify-content:center; }
+.hero-copy{ display:flex; flex-direction:column; gap:16px; }
+.hero-eyebrow{
+  font-size:0.75rem;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+  color:rgba(172,186,244,.65);
+}
 .hero .phone-frame{ margin-top:auto; }
-.hero h1{ font-size: clamp(30px, 4.3vw, 52px); line-height:1.05; color:#fff; letter-spacing:-0.02em; }
+.hero h1{ font-size: clamp(34px, 4.8vw, 58px); line-height:1.02; color:#fff; letter-spacing:-0.025em; }
 .highlight{ color:#8ddcff; text-shadow: 0 0 22px rgba(60,216,255,.65); }
-.hero p{ margin-top:16px; color:rgba(223,229,255,.82); max-width:540px; }
+.match-highlight{
+  position:relative;
+  color:#9de6ff;
+  text-shadow:0 0 18px rgba(71,203,255,.55);
+}
+.match-highlight::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 -6px 0;
+  height:8px;
+  border-radius:999px;
+  background:linear-gradient(90deg, rgba(108,93,255,.65), rgba(46,216,255,.65));
+  opacity:.7;
+  z-index:-1;
+}
+.hero-subtitle{ color:rgba(223,229,255,.82); max-width:560px; }
+.hero-highlight{ color:rgba(195,206,255,.82); max-width:620px; font-size:1.05rem; line-height:1.65; }
+.match-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:4px 12px;
+  border-radius:999px;
+  background:linear-gradient(135deg, rgba(111,93,255,.24), rgba(43,216,255,.24));
+  color:#dff5ff;
+  font-weight:600;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
 .hero-cta{ margin-top:28px; display:flex; gap:14px; flex-wrap:wrap; }
 .hero-stats{
   list-style:none;
@@ -214,6 +249,19 @@ body {
   border-radius:20px;
   padding:18px 20px;
   box-shadow:0 26px 60px rgba(6,12,32,.42);
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+}
+.stat-icon{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg, rgba(111,93,255,.28), rgba(43,216,255,.22));
+  color:#dff5ff;
+  flex-shrink:0;
 }
 .hero-stats strong{
   font-weight:600;
@@ -301,6 +349,15 @@ body {
   box-shadow: 0 28px 58px rgba(7,12,32,.45);
   display:grid;
   gap:12px;
+}
+.step-detail{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  color:rgba(206,213,245,.82);
+}
+.step-detail i{
+  color:#9de6ff;
 }
 .step-icon{
   width:48px; height:48px; border-radius:14px; display:grid; place-items:center;
