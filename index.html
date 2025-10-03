@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Nexos — Troca de Conhecimento</title>
+  <title>Synapse — Troca de Conhecimento</title>
 
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -15,19 +15,29 @@
 
   <main class="nx-main">
     <!-- Hero -->
-    <section class="hero">
+    <section class="hero" id="hero">
       <div class="nx-container hero-grid">
         <div>
-          <h1>Troque conhecimento como quem dá <span class="highlight">match</span>.</h1>
-          <p>Encontre pessoas que <strong>podem te ensinar</strong> e que também <strong>querem aprender</strong> o que você sabe. Sem dinheiro — só troca.</p>
+          <h1><span class="highlight">Synapse</span> conecta talentos para acelerar o aprendizado.</h1>
+          <p>Construa pontes entre o que você sabe e o que quer dominar. Uma comunidade inteligente para aprender, ensinar e criar novas oportunidades.</p>
           <div class="hero-cta">
-            <button class="btn primary" id="btnComecar">Começar agora</button>
-            <a href="#como-funciona" class="btn link">Ver como funciona</a>
+            <a class="btn primary" id="btnComecar" href="./auth.html#signup">Criar conta gratuita</a>
+            <a class="btn ghost" href="./auth.html#login">Entrar</a>
+            <a href="#como-funciona" class="btn link">Como funciona</a>
           </div>
-          <ul class="badges">
-            <li>100% gratuito</li>
-            <li>Open & colaborativo</li>
-            <li>Mobile-first</li>
+          <ul class="hero-stats">
+            <li>
+              <strong>Comunidade guiada por dados</strong>
+              <span>Matches automáticos a partir de interesses complementares.</span>
+            </li>
+            <li>
+              <strong>Segurança de ponta</strong>
+              <span>Criptografia de senhas, auditoria e monitoramento contínuo.</span>
+            </li>
+            <li>
+              <strong>Experiência integrada</strong>
+              <span>Front-end intuitivo, backend Node e Supabase trabalhando juntos.</span>
+            </li>
           </ul>
         </div>
         <div class="phone-frame">
@@ -44,22 +54,23 @@
     <!-- Como funciona -->
     <section id="como-funciona" class="howitworks">
       <div class="nx-container">
-        <h2>Como funciona</h2>
+        <p class="section-overline">Experiência guiada</p>
+        <h2>Como a Synapse funciona</h2>
         <div class="steps">
           <div class="step">
             <span class="step-icon"><i data-lucide="user-plus"></i></span>
-            <h3>Crie seu perfil</h3>
-            <p>Liste o que você pode <strong>ensinar</strong> e o que quer <strong>aprender</strong>.</p>
+            <h3>Mapeie suas habilidades</h3>
+            <p>Cadastre o que você pode <strong>ensinar</strong> e os temas que deseja <strong>aprender</strong>.</p>
           </div>
           <div class="step">
             <span class="step-icon"><i data-lucide="swipe"></i></span>
-            <h3>Dê match</h3>
-            <p>Deslize para curtir ou passar. Quando for recíproco, é um <strong>match</strong>!</p>
+            <h3>Receba matches inteligentes</h3>
+            <p>A plataforma cruza interesses e disponibilidade para sugerir conexões relevantes.</p>
           </div>
           <div class="step">
             <span class="step-icon"><i data-lucide="message-square"></i></span>
             <h3>Combine a troca</h3>
-            <p>Conversem e marquem a sessão de troca — online ou presencial.</p>
+            <p>Converse, alinhe expectativas e agende encontros online ou presenciais.</p>
           </div>
         </div>
       </div>
@@ -67,23 +78,24 @@
 
     <section id="seguranca" class="safety">
       <div class="nx-container">
-        <h2>Segurança em primeiro lugar</h2>
+        <p class="section-overline">Trust by design</p>
+        <h2>Confiança e proteção de dados</h2>
         <p class="section-lead">Cuidamos dos seus dados para que você foque no que importa: aprender e ensinar.</p>
         <div class="info-grid">
           <article class="info-card">
             <span class="info-icon"><i data-lucide="shield-check"></i></span>
-            <h3>Senhas protegidas</h3>
-            <p>Armazenamos senhas com hash <strong>bcrypt</strong> e realizamos verificações de duplicidade a cada novo cadastro.</p>
+            <h3>Autenticação protegida</h3>
+            <p>Senhas com hash <strong>bcrypt</strong>, validação de unicidade e políticas ativas contra acesso indevido.</p>
           </article>
           <article class="info-card">
             <span class="info-icon"><i data-lucide="cloud"></i></span>
-            <h3>Backup seguro</h3>
-            <p>Perfis são sincronizados com o backend e também ficam disponíveis offline no seu navegador.</p>
+            <h3>Sincronização em nuvem</h3>
+            <p>Supabase como camada confiável de dados, com monitoramento e backups automáticos.</p>
           </article>
           <article class="info-card">
             <span class="info-icon"><i data-lucide="user-cog"></i></span>
-            <h3>Controle total</h3>
-            <p>Atualize ou remova seus dados a qualquer momento — transparência em cada etapa da jornada.</p>
+            <h3>Governança transparente</h3>
+            <p>Você controla o que compartilhar: edição, exclusão e privacidade configuráveis em poucos cliques.</p>
           </article>
         </div>
       </div>
@@ -92,26 +104,28 @@
     <!-- Sobre -->
     <section id="sobre" class="about">
       <div class="nx-container">
-        <h2>Sobre o Nexos</h2>
-        <p>Projeto da disciplina de Empreendedorismo — PUC-Rio. Nosso propósito é democratizar o aprendizado através de trocas de saberes.</p>
+        <p class="section-overline">Nosso propósito</p>
+        <h2>Sobre a Synapse</h2>
+        <p>A Synapse nasceu na disciplina de Empreendedorismo da PUC-Rio para democratizar o aprendizado por meio de trocas qualificadas. Conectamos pessoas que querem evoluir em conjunto, com tecnologia acessível e segura.</p>
       </div>
     </section>
 
     <section id="faq" class="faq">
       <div class="nx-container">
+        <p class="section-overline">Dúvidas rápidas</p>
         <h2>Perguntas frequentes</h2>
         <div class="faq-list">
           <details>
-            <summary>O Nexos é gratuito?</summary>
-            <p>Sim! O projeto nasceu para incentivar trocas de conhecimento. Não há mensalidades nem taxas escondidas.</p>
+            <summary>A Synapse é gratuita?</summary>
+            <p>Sim. A Synapse é um projeto acadêmico aberto e focado em colaboração — sem mensalidades ou taxas ocultas.</p>
           </details>
           <details>
             <summary>Preciso estar online para usar?</summary>
-            <p>Você consegue navegar e consultar perfis mesmo offline. Ao voltar para a internet, sincronizamos os dados com o servidor.</p>
+            <p>Algumas áreas funcionam offline para consulta rápida. Ao reconectar, sincronizamos tudo com o Supabase de forma automática.</p>
           </details>
           <details>
             <summary>Como são feitos os matches?</summary>
-            <p>Combinamos interesses de ensino e aprendizado, além da disponibilidade informada, para sugerir as melhores conexões.</p>
+            <p>Cruzamos suas habilidades de ensino/aprendizado e disponibilidade, priorizando conexões com maior afinidade e potencial impacto.</p>
           </details>
         </div>
       </div>

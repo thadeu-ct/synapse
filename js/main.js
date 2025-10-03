@@ -42,9 +42,100 @@ async function includePartials() {
     if (location.pathname.endsWith("auth.html") && location.hash === "#login") return;
     location.href = "./auth.html#login";
   });
-  document.getElementById("btnAbrirCriarPerfil")?.addEventListener("click", () => {
-    if (location.pathname.endsWith("perfil.html")) return;
-    location.href = "./perfil.html";
+  document.getElementById("btnAbrirCadastro")?.addEventListener("click", () => {
+    if (location.pathname.endsWith("auth.html") && location.hash === "#signup") return;
+    location.href = "./auth.html#signup";
+  });
+
+  setupNavigationHighlight();
+}
+
+function setupNavigationHighlight() {
+  const nav = document.querySelector(".nx-nav");
+  const indicator = nav?.querySelector(".nx-nav-indicator");
+  if (!nav || !indicator) return;
+
+  const links = [...nav.querySelectorAll("a[data-section]")];
+  if (!links.length) return;
+
+  const sectionMap = {
+    hero: "hero",
+    "como-funciona": "como-funciona",
+    seguranca: "como-funciona",
+    sobre: "sobre",
+    faq: "sobre"
+  };
+
+  const sections = Object.keys(sectionMap)
+    .map((id) => {
+      const el = document.getElementById(id);
+      return el ? { id, el } : null;
+    })
+    .filter(Boolean);
+
+  const linkById = new Map(links.map((link) => [link.dataset.section, link]));
+  let current = "";
+
+  function updateIndicator(link) {
+    if (!link) return;
+    requestAnimationFrame(() => {
+      const navRect = nav.getBoundingClientRect();
+      const linkRect = link.getBoundingClientRect();
+      const offset = linkRect.left - navRect.left - 6 + nav.scrollLeft;
+      nav.style.setProperty("--nav-indicator-width", `${linkRect.width}px`);
+      nav.style.setProperty("--nav-indicator-x", `${offset}px`);
+      nav.classList.add("ready");
+    });
+  }
+
+  function activate(sectionId) {
+    const targetId = sectionMap[sectionId] || "hero";
+    if (current === targetId) {
+      updateIndicator(linkById.get(targetId));
+      return;
+    }
+    current = targetId;
+    links.forEach((link) => {
+      link.classList.toggle("is-active", link.dataset.section === targetId);
+    });
+    updateIndicator(linkById.get(targetId));
+  }
+
+  if (!sections.length) {
+    const fallback = links[0];
+    links.forEach((link) => link.classList.toggle("is-active", link === fallback));
+    updateIndicator(fallback);
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (visible) activate(visible.target.id);
+  }, {
+    threshold: 0.45,
+    rootMargin: "-25% 0px -55% 0px"
+  });
+
+  sections.forEach(({ el }) => observer.observe(el));
+
+  const activeOnLoad = sections.find(({ el }) => el.getBoundingClientRect().top <= window.innerHeight * 0.45);
+  activate(activeOnLoad?.id || "hero");
+
+  window.addEventListener("resize", () => {
+    const activeLink = links.find((link) => link.classList.contains("is-active"));
+    if (activeLink) updateIndicator(activeLink);
+  });
+
+  links.forEach((link) => {
+    const sectionId = link.dataset.section;
+    const targetSection = document.getElementById(sectionId);
+    link.addEventListener("click", (event) => {
+      if (!targetSection) return;
+      event.preventDefault();
+      targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   });
 }
 
@@ -205,8 +296,9 @@ function initUI() {
   });
 
   // CTA
-  document.getElementById("btnComecar")?.addEventListener("click", () => {
-    document.querySelector(".phone-frame")?.scrollIntoView({ behavior: "smooth", block: "center" });
+  document.getElementById("btnComecar")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    location.href = "./auth.html#signup";
   });
 
   // Render inicial

@@ -1,5 +1,5 @@
-# Synapse (Nexos) — Site de troca de experiências
-O projeto começou como **Nexos** e evoluiu para **Synapse**, mas continua com o mesmo objetivo: conectar pessoas que querem ensinar e aprender de forma colaborativa. Desenvolvido na disciplina de Empreendedorismo da PUC-Rio, o site promove trocas de conhecimento sem custo financeiro, valorizando a colaboração entre os participantes.
+# Synapse — Site de troca de experiências
+O projeto, antes chamado **Nexos**, evoluiu para **Synapse**, mantendo o propósito de conectar pessoas que querem ensinar e aprender de forma colaborativa. Desenvolvido na disciplina de Empreendedorismo da PUC-Rio, o site promove trocas de conhecimento sem custo financeiro, valorizando a colaboração entre os participantes.
 
 **[🔗 Acesse o site](https://thadeu-ct.github.io/synapse/)**
 
