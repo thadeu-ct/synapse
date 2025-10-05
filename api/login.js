@@ -1,7 +1,7 @@
 // api/login.js
 import bcrypt from "bcrypt";
 // Verifique se este caminho está correto após a refatoração
-import { supabase } from "../../lib/database.js";
+import { supabase } from "../lib/database.js";
 
 export default async function handler(req, res) {
   // --- BLOCO DE CÓDIGO ESSENCIAL PARA O CORS ---
