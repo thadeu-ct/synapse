@@ -1,28 +1,25 @@
 // api/login.js
 import bcrypt from "bcrypt";
-import { supabase } from "../lib/database.js";
+// Verifique se este caminho está correto após a refatoração
+import { supabase } from "../../lib/database.js";
 
 export default async function handler(req, res) {
-  // --- Configuração do CORS ---
-  // Adicionamos o endereço do seu site na lista de permissões.
+  // --- BLOCO DE CÓDIGO ESSENCIAL PARA O CORS ---
   res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
-  // Dizemos quais métodos (verbos) são permitidos.
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  // Dizemos quais cabeçalhos o frontend pode enviar.
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // --- Tratamento do "Preflight" Request ---
+  // Responde ao "preflight request" do navegador
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
   }
+  // --- FIM DO BLOCO CORS ---
 
-  // Se a requisição não for POST, rejeitamos
   if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST", "OPTIONS"]);
     return res.status(405).end(`Método ${req.method} não permitido`);
   }
 
-  // --- Lógica do Login ---
+  // Lógica do Login
   const { email, senha } = req.body;
 
   if (!email || !senha) {
@@ -40,13 +37,14 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "E-mail ou senha inválidos" });
     }
 
-    const senhaCorreta = await bcrypt.compare(senha, usuario.senha);
+    const senhaCorreta = await bcrypt.compare(senha, usuario.senha_hash || usuario.senha);
 
     if (!senhaCorreta) {
       return res.status(401).json({ error: "E-mail ou senha inválidos" });
     }
 
     delete usuario.senha;
+    delete usuario.senha_hash;
     res.status(200).json({ message: "Login realizado com sucesso!", usuario: usuario });
 
   } catch (err) {
