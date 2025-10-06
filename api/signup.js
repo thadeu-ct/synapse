@@ -1,5 +1,5 @@
 // api/signup.js
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 // Verifique se este caminho está correto após a refatoração
 import { supabase } from "../lib/database.js";
 

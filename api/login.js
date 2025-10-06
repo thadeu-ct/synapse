@@ -1,6 +1,5 @@
 // api/login.js
-import bcrypt from "bcrypt";
-// Verifique se este caminho está correto após a refatoração
+import bcrypt from "bcryptjs";
 import { supabase } from "../lib/database.js";
 
 export default async function handler(req, res) {
