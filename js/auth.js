@@ -140,7 +140,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
-      localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
+      const sessionPayload = { email: email.value.trim().toLowerCase() };
+      const token = data.session?.access_token || data.token || data.access_token;
+      const refreshToken = data.session?.refresh_token || data.refresh_token;
+      if (token) sessionPayload.token = token;
+      if (refreshToken) sessionPayload.refreshToken = refreshToken;
+      localStorage.setItem("nexos_session", JSON.stringify(sessionPayload));
       location.href = "./index.html";
     } catch (err) {
       setError(senha, err.message || "E-mail e/ou senha incorretos.");
