@@ -1,46 +1,42 @@
-import { supabase } from "./_lib/database.js";
+import { supabase } from "../lib/database.js"; // Importa o cliente Supabase configurado
 
-export default async function handler(req, res) {
-  // --- Bloco CORS ---
+export default async function handler(req, res) { 
+  // Configura os cabeçalhos CORS para permitir requisições do frontend
   res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
-  }
-  // --- Fim do Bloco CORS ---
-
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST', 'OPTIONS']);
-    return res.status(405).json({ error: `Método ${req.method} não permitido` });
-  }
+  } // backend respode as regras
+  if (req.method !== "POST") {
+    return res.status(405).end(`Método ${req.method} não permitido`);
+  } // backend só aceita dados
 
   try {
-    // 1. Obter o token de autorização
+    // Obter o token de autorização
     const { authorization } = req.headers;
     if (!authorization) {
-      const err = new Error('Não autorizado: token não fornecido.');
-      err.status = 401;
-      throw err;
+      const erro = new Error('Não autorizado: token não fornecido.');
+      erro.status = 401;
+      throw erro;
     }
     const token = authorization.split(' ')[1];
 
-    // 2. Usar o token para verificar quem é o usuário no Supabase.
+    // Procurar o usuário pelo token
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) {
-      const err = new Error('Não autorizado: token inválido ou expirado.');
-      err.status = 401;
-      throw err;
+      const erro = new Error('Não autorizado: token inválido ou expirado.');
+      erro.status = 401;
+      throw erro;
     }
     
-    // 3. Pegar os dados do perfil (já feito no passo 4)
-    // 4. Executar o UPDATE no banco de dados
+    // Pega os dados de atualização passado pelo frontend
     const { 
       foto, bio, telefone, cidade, estado, formato_aula, 
       tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin 
     } = req.body;
 
+    // Executa UPDATE dos dados na tabela "usuarios"
     const { error: updateError } = await supabase
       .from('usuarios')
       .update({
@@ -49,16 +45,18 @@ export default async function handler(req, res) {
         perfil_completo: true 
       })
       .eq('id', user.id);
-
+    
+    // Erro na atualização
     if (updateError) {
-      const err = new Error(`Erro ao atualizar perfil: ${updateError.message}`);
-      err.status = 500;
-      throw err;
+      const erro = new Error(`Erro ao atualizar perfil: ${updateError.message}`);
+      erro.status = 500;
+      throw erro;
     }
 
-    // 5. Retornar uma mensagem de sucesso.
+    // Retornar uma mensagem de sucesso.
     res.status(200).json({ message: "Perfil atualizado com sucesso!" });
-
+    
+    // Retorna mensagem de erro 
   } catch (error) {
     res.status(error.status || 500).json({ error: error.message || "Erro no servidor ao atualizar perfil." });
   }
