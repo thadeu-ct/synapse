@@ -1,20 +1,17 @@
-import { supabase } from "./_lib/database.js";
+import { supabase } from "../lib/database.js"; // Importa o cliente Supabase configurado
 
-export default async function handler(req, res) {
-  // --- Bloco CORS ---
-  res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  
+export default async function handler(req, res) { 
+  // Configura os cabeçalhos CORS para permitir requisições do frontend
+  //CORS: (Cross-Origin Resource Sharing)
+  res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io'); // frontend tem acesso ao backend
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); // frontend pode perguntar as regras e enviar dados
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // frontend pode enviar JSON
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
-  }
-  // --- Fim do Bloco CORS ---
-
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', ['POST', 'OPTIONS']);
-    return res.status(405).json({ error: `Método ${req.method} não permitido` });
-  }
+  } // backend respode as regras
+  if (req.method !== "POST") {
+    return res.status(405).end(`Método ${req.method} não permitido`);
+  } // backend só aceita dados
 
   try {
     // 1. Obter o token de autorização
