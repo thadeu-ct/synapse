@@ -1,44 +1,62 @@
-# Nexos - Site de troca de experiências
+# Synapse — Site de troca de experiências
+O Synapse é uma plataforma web criada para conectar pessoas interessadas em ensinar e aprender de forma colaborativa. O projeto foi desenvolvido na disciplina de Empreendedorismo da PUC-Rio com foco em criar um ambiente de troca de experiências sem custos financeiros, baseado no compartilhamento de conhecimento.</br>
 
-Projeto de Empreendedorismo da PUC-Rio, desenvolvido por [Thadeu](https://github.com/thadeu-ct) e [Mauricio](https://github.com/Maumau-3005). Este repositório contém o código-fonte do **Nexos**, um site de troca de experiências feito em HTML, CSS e JavaScript, que tem como objetivo conectar pessoas interessadas em ensinar e aprender, promovendo o compartilhamento de conhecimento de forma colaborativa e gratuita.
+**[🔗 Acesse a plataforma](https://thadeu-ct.github.io/synapse/)**
 
-## 🔗 Acesse o site
-Front-end publicado em GitHub Pages:
-[https://thadeu-ct.github.io/nexos](https://thadeu-ct.github.io/nexos/)
-
-## 📁 Estrutura do projeto
-- componentes/ #Componentes reutilizáveis
-  - footer.html; header.html
-- img/ # Imagens do projeto
-- js/ # Scripts do front-end
-  - main.js
-
-- servidor/ # Código do back-end (Express + Node.js + Supabase)
-  - database.js # Conexão com Supabase
-  - rotas.js # Rotas da API (cadastro de usuários)
-  - servidor.js # Configuração do servidor Express
-  - test.js # Arquivo para testes manuais
-
-- auth.html # Página de autenticação (em desenvolvimento)
-- index.html; style.css
-
-
-## 📌 Sobre
-O **Nexos** é um projeto desenvolvido na disciplina de Empreendedorismo da PUC-Rio, com foco em criar um ambiente colaborativo de troca de experiências. A ideia central é permitir que pessoas que queiram ensinar e aprender se conectem, sem custos financeiros, mas sim por meio da troca de conhecimento.
-
-O site foi pensado para ser simples, acessível e responsivo, facilitando a interação entre usuários e valorizando o aprendizado coletivo. O desenvolvimento é feito de forma modular, utilizando HTML, CSS e JavaScript, permitindo que novas funcionalidades sejam adicionadas de maneira organizada conforme o projeto evolui.
-
-## ⚙️ Tecnologias usadas
-- **Frontend:** HTML, CSS, JavaScript (simples e responsivo)
-- **Backend:** Node.js, Express
-- **Banco de dados:** Supabase (PostgreSQL gerenciado)
-- **Controle de versão:** Git + GitHub
+## ✨ Tecnologias Utilizadas
+Esta plataforma utiliza uma stack moderna, com um frontend estático desacoplado e um backend baseado em arquitetura Serverless para máxima escalabilidade e eficiência.</br></br>
+<p align="left">
+  <a href="#"><img src="https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"></a>
+  <a href="#"><img src="https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"></a>
+  <a href="#"><img src="https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E" alt="JavaScript"></a>
+  <a href="#"><img src="https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" alt="Supabase"></a>
+  <a href="#"><img src="https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL"></a>
+  <a href="#"><img src="https://img.shields.io/badge/Vercel-%23000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Vercel"></a>
+  <a href="#"><img src="https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white" alt="Git"></a>
+</p>
 
 ## 🚀 Funcionalidades
-- [x] Estrutura inicial do site
-- [x] Servidor Node.js com Express
-- [x] Integração com Supabase (tabela `usuarios`)
-- [ ] Cadastro de usuários via API
-- [ ] Autenticação de login
-- [ ] Página de perfil
-- [ ] Sistema de troca de experiências (match entre "ensinar" e "aprender")
+- [x] Estrutura inicial do site (HTML/CSS)
+- [x] Backend com Funções Serverless (Node.js) na Vercel
+- [x] Integração com Supabase (tabela usuarios)
+- [x] Cadastro de usuários via API (/api/signup)
+- [x] Autenticação de login via API (/api/login)
+- [ ] Página de perfil do usuário
+- [ ] Edição de perfil e gerenciamento de dados
+- [ ] Sistema de match entre "ensinar" e "aprender"
+
+## 📁 Estrutura do projeto
+A estrutura foi pensada para suportar a arquitetura Serverless, separando a API (/api) da lógica de negócio e do frontend.
+```
+├── api/                    # Funções serverless (login/cadastro)
+│   ├── login.js
+│   └── signup.js
+├── componentes/            # Componentes HTML reutilizáveis
+│   ├── footer.html
+│   └── header.html
+├── img/                    # Recursos visuais
+├── js/
+│   ├── auth.js             # Fluxo de autenticação (login/cadastro)
+│   ├── main.js             # Script principal do front-end
+│   └── perfil.js           # Protótipo da área do usuário
+├── lib/
+│   └── database.js         # Utilitário de acesso ao banco (Supabase)
+├── auth.html
+├── index.html
+├── perfil.html
+├── package.json
+├── package-lock.json
+└── style.css
+```
+
+## ✨ Contribuidores
+Desenvolvido com a colaboração de:
+<p align="center">
+  <a href="https://github.com/thadeu-ct">
+    <img src="https://avatars.githubusercontent.com/u/171446748?v=4" width="100" style="border-radius:50%" alt="Thadeu">
+  </a>
+  <a href="https://github.com/Maumau-3005">
+    <img src="https://avatars.githubusercontent.com/u/184857658?v=4" width="100" style="border-radius:50%" alt="Mauricio">
+  </a>
+</p>
