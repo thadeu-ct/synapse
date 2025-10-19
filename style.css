@@ -330,12 +330,14 @@ body:not(.page-dashboard){
   width:58px;
   height:58px;
   border-radius:20px;
-  display:grid;
-  place-items:center;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   background:linear-gradient(160deg, rgba(111,93,255,.5), rgba(43,216,255,.32));
   color:#eafcff;
   box-shadow:0 18px 34px rgba(35,98,255,.32);
   margin-bottom:2px;
+  line-height:0;
 }
 .stat-icon > svg,
 .step-icon > svg,
@@ -344,6 +346,7 @@ body:not(.page-dashboard){
   height:26px;
   stroke-width:1.8;
   flex-shrink:0;
+  display:block;
 }
 .hero-stats strong{ margin-top:4px; }
 .hero-stats strong{
