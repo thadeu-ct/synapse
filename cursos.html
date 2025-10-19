@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Synapse — Trilhas e cursos</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css"/>
+</head>
+<body class="page-dashboard page-cursos" data-page="cursos">
+  <main class="nx-main dashboard-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="dashboard-main">
+        <section class="dashboard-section">
+          <header>
+            <h1>Trilhas recomendadas</h1>
+            <p>Combine estudos estruturados com trocas 1:1 para acelerar a evolução das suas habilidades.</p>
+          </header>
+
+          <div class="tile-grid">
+            <article class="tile-card">
+              <header>
+                <div class="avatar">FE</div>
+                <div>
+                  <strong>Front-end em 6 semanas</strong>
+                  <span>Sequência prática com HTML, CSS e JS</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Formato:</strong> Autoinstrucional + mentoria semanal</li>
+                <li><strong>Nivelamento:</strong> Iniciante</li>
+              </ul>
+              <footer>
+                <span class="tag">6 módulos</span>
+                <span class="tag">Projetos guiados</span>
+              </footer>
+              <button class="btn primary full" type="button">Ver cronograma</button>
+            </article>
+
+            <article class="tile-card">
+              <header>
+                <div class="avatar">UX</div>
+                <div>
+                  <strong>UX Research colaborativo</strong>
+                  <span>Experimentos rápidos para validar ideias</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Formato:</strong> Estudos de caso + encontros quinzenais</li>
+                <li><strong>Nivelamento:</strong> Intermediário</li>
+              </ul>
+              <footer>
+                <span class="tag">Mentoria</span>
+                <span class="tag">Comunidade</span>
+              </footer>
+              <button class="btn ghost full" type="button">Adicionar à fila</button>
+            </article>
+
+            <article class="tile-card">
+              <header>
+                <div class="avatar">DS</div>
+                <div>
+                  <strong>Introdução a dados com Python</strong>
+                  <span>Da análise exploratória à visualização</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Formato:</strong> Aulas gravadas + encontros síncronos</li>
+                <li><strong>Nivelamento:</strong> Básico ao intermediário</li>
+              </ul>
+              <footer>
+                <span class="tag">12h</span>
+                <span class="tag">Datas flexíveis</span>
+              </footer>
+              <button class="btn primary full" type="button">Quero participar</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <header>
+            <h2>Integre seus materiais</h2>
+            <p>Adicione links de aulas, playlists e podcasts para compartilhar com a comunidade.</p>
+          </header>
+          <form class="grid2">
+            <div class="field">
+              <label for="cursoTitulo">Título</label>
+              <input id="cursoTitulo" type="text" placeholder="Workshop de Figma para iniciantes" />
+            </div>
+            <div class="field">
+              <label for="cursoLink">Link</label>
+              <input id="cursoLink" type="url" placeholder="https://" />
+            </div>
+            <div class="field grid-span-2">
+              <label for="cursoNotas">Notas rápidas</label>
+              <textarea id="cursoNotas" rows="3" placeholder="Por que vale a pena, duração e desafios sugeridos."></textarea>
+            </div>
+            <div class="row end grid-span-2">
+              <button class="btn primary" type="submit">Salvar indicação</button>
+            </div>
+          </form>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/main.js" defer></script>
+</body>
+</html>

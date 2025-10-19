@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const API_BASE = window.__NEXOS_API__ || "http://localhost:3000";
+  const API_BASE = (() => {
+    const raw = window.__NEXOS_API__;
+    const fallback = location.hostname === "localhost" ? "http://localhost:3000" : "https://synapse-seven-mu.vercel.app";
+    if (!raw || typeof raw !== "string" || !raw.trim()) return fallback;
+    const normalized = raw.trim().replace(/\/$/, "");
+    return normalized.endsWith("/api") ? normalized.slice(0, -4) : normalized;
+  })();
+  const PROFILE_ENDPOINT = `${API_BASE.replace(/\/$/, "")}/api/profile`;
   const form = document.getElementById("formPerfil");
   if (!form) return;
 
@@ -10,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSalvar = document.getElementById("btnSalvarPerfil");
   if (btnSalvar && !btnSalvar.dataset.label) btnSalvar.dataset.label = btnSalvar.textContent;
 
-  const session = readJSON("nexos_session", null);
-  const users = readJSON("nexos_users", []);
+  const { data: session, storage: sessionStore } = readSessionData();
+  const users = readJSON("nexos_users", [], localStorage);
   let isDirty = false;
 
   prefillFromSession();
@@ -23,15 +30,36 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", handleSubmit);
   document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
 
-  function readJSON(key, fallback) {
+  function readJSON(key, fallback, storage = localStorage) {
     try {
-      const raw = localStorage.getItem(key);
+      const source = storage || localStorage;
+      const raw = source.getItem(key);
       if (!raw) return fallback;
       return JSON.parse(raw);
     } catch (err) {
-      console.warn(`Não foi possível ler ${key} do localStorage.`, err);
+      console.warn(`Não foi possível ler ${key} do armazenamento.`, err);
       return fallback;
     }
+  }
+
+  function readSessionData() {
+    try {
+      if (localStorage.getItem("nexos_session")) {
+        return { data: readJSON("nexos_session", null, localStorage), storage: localStorage };
+      }
+    } catch (err) {
+      console.warn("Falha ao acessar localStorage para sessão.", err);
+    }
+
+    try {
+      if (sessionStorage.getItem("nexos_session")) {
+        return { data: readJSON("nexos_session", null, sessionStorage), storage: sessionStorage };
+      }
+    } catch (err) {
+      console.warn("Falha ao acessar sessionStorage para sessão.", err);
+    }
+
+    return { data: null, storage: localStorage };
   }
 
   function prefillFromSession() {
@@ -122,14 +150,15 @@ document.addEventListener("DOMContentLoaded", () => {
       data.updatedAt = new Date().toISOString();
       setStatus("Sincronizando com o servidor…");
       setSyncState("Sincronizando…");
-      const saved = await saveProfileRemote(data);
-      saveProfileLocal(data.email, saved || data);
+      const response = await saveProfileRemote(data);
+      saveProfileLocal(data.email, data);
       updateLocalUsers(data);
       isDirty = false;
       setSyncState("Sincronizado", "synced");
-      setStatus("Perfil sincronizado com sucesso!");
-      localStorage.setItem("nexos_session", JSON.stringify({ email: data.email }));
-      alert("Perfil salvo com sucesso!");
+      const successMessage = response?.message || "Perfil sincronizado com sucesso!";
+      setStatus(successMessage);
+      persistSessionEmail(data.email);
+      alert(successMessage);
       location.href = "./index.html";
     } catch (err) {
       setSyncState("Erro ao sincronizar", "error");
@@ -171,7 +200,8 @@ document.addEventListener("DOMContentLoaded", () => {
       disponibilidade: getTags("pfDisponibilidade"),
       bio: byId("pfBio")?.value.trim() || "",
       site: byId("pfSite")?.value.trim() || "",
-      linkedin: byId("pfLinkedin")?.value.trim() || ""
+      linkedin: byId("pfLinkedin")?.value.trim() || "",
+      fotoUrl: byId("pfFotoUrl")?.value.trim() || ""
     };
   }
 
@@ -206,6 +236,8 @@ document.addEventListener("DOMContentLoaded", () => {
     byId("pfBio").value = p.bio || "";
     byId("pfSite").value = p.site || "";
     byId("pfLinkedin").value = p.linkedin || "";
+    const fotoField = byId("pfFotoUrl");
+    if (fotoField) fotoField.value = p.fotoUrl || "";
   }
 
   function saveProfileLocal(email, obj) {
@@ -241,15 +273,61 @@ document.addEventListener("DOMContentLoaded", () => {
     return data.perfil || null;
   }
 
+  function resolveAuthToken() {
+    const localCandidate = readJSON("nexos_session", null, localStorage) || {};
+    const sessionCandidate = readJSON("nexos_session", null, sessionStorage) || {};
+    const stored = session || localCandidate || sessionCandidate || {};
+    return stored.token || stored.accessToken || stored.supabaseToken || localStorage.getItem("nexos_access_token") || localStorage.getItem("supabase_token") || "";
+  }
+
+  function buildRemotePayload(profile) {
+    const formato = profile.online && profile.presencial ? 2 : profile.online ? 0 : 1;
+    const ensureArray = (value) => Array.isArray(value) ? value : [];
+    return {
+      foto_url: profile.fotoUrl || "",
+      telefone: profile.telefone || "",
+      cidade: profile.cidade || "",
+      estado: profile.uf || "",
+      formato_preferencial: formato,
+      tags_ensinar: ensureArray(profile.ensina),
+      tags_aprender: ensureArray(profile.aprende),
+      bio: profile.bio || "",
+      disponibilidade: ensureArray(profile.disponibilidade),
+      site_url: profile.site || "",
+      linkedin_url: profile.linkedin || ""
+    };
+  }
+
+  function persistSessionEmail(email) {
+    if (!email) return;
+    const store = sessionStore || localStorage;
+    const current = readJSON("nexos_session", session || {}, store) || {};
+    store.setItem("nexos_session", JSON.stringify({ ...current, email }));
+  }
+
   async function saveProfileRemote(payload) {
-    const res = await fetch(`${API_BASE}/api/perfil`, {
+    const token = resolveAuthToken();
+    if (!token) {
+      throw new Error("Faça login novamente para salvar o perfil.");
+    }
+
+    const body = buildRemotePayload(payload);
+    const res = await fetch(PROFILE_ENDPOINT, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(body)
     });
+
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
-    return data.perfil || payload;
+    if (!res.ok) {
+      if (res.status === 401) throw new Error(data.error || "Token inválido. Faça login novamente.");
+      throw new Error(data.error || data.message || `Erro ${res.status}`);
+    }
+
+    return data;
   }
 
   function setErr(id, msg) {

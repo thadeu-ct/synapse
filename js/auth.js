@@ -1,6 +1,7 @@
 // js/auth.js
 document.addEventListener("DOMContentLoaded", () => {
   const API_BASE = window.__NEXOS_API__ || "https://synapse-seven-mu.vercel.app/api";
+  const REMEMBER_KEY = "nexos_remember";
 
   async function request(path, options) {
     const res = await fetch(`${API_BASE}${path}`, {
@@ -28,8 +29,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function readRemembered() {
+    try {
+      const raw = localStorage.getItem(REMEMBER_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+      console.warn("Não foi possível ler dados do lembrar de mim.", err);
+      return {};
+    }
+  }
+
+  function persistRemembered(email) {
+    if (!email) {
+      localStorage.removeItem(REMEMBER_KEY);
+      return;
+    }
+    localStorage.setItem(REMEMBER_KEY, JSON.stringify({
+      email: email.trim(),
+      updatedAt: new Date().toISOString()
+    }));
+  }
+
   const tabs = document.querySelectorAll(".auth-tab");
   const panels = document.querySelectorAll(".auth-form");
+  const lembrar = document.getElementById("lembrar");
+  const loginEmail = document.getElementById("loginEmail");
 
   function activate(tabName) {
     tabs.forEach(b => {
@@ -47,6 +71,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tabs.forEach(b => b.addEventListener("click", () => activate(b.dataset.tab)));
   if (location.hash === "#signup") activate("signup"); else activate("login");
+
+  const remembered = readRemembered();
+  if (remembered?.email && loginEmail && lembrar) {
+    loginEmail.value = remembered.email;
+    lembrar.checked = true;
+  }
+  lembrar?.addEventListener("change", () => {
+    if (!loginEmail) return;
+    if (lembrar.checked) persistRemembered(loginEmail.value);
+    else persistRemembered("");
+  });
+  loginEmail?.addEventListener("blur", () => {
+    if (!lembrar?.checked) return;
+    persistRemembered(loginEmail.value);
+  });
 
   // Mostrar/ocultar senha
   document.querySelectorAll(".showpass").forEach(btn => {
@@ -67,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
     input.classList.toggle("is-invalid", !!msg);
   }
   function clearErrors(form) {
+    if (!form) return;
     form.querySelectorAll(".error").forEach(s => s.textContent = "");
     form.querySelectorAll(".is-invalid").forEach(el => el.classList.remove("is-invalid"));
   }
@@ -124,6 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const email = document.getElementById("loginEmail");
     const senha = document.getElementById("loginSenha");
+    const remember = lembrar?.checked;
     let ok = true;
     if (!emailOk(email.value)) { setError(email, "E-mail inválido."); ok=false; }
     if (senha.value.length < 6) { setError(senha, "Senha inválida."); ok=false; }
@@ -140,13 +181,125 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
-      localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
-      location.href = "./index.html";
+      const sessionPayload = { email: email.value.trim().toLowerCase() };
+      const token = data.session?.access_token || data.token || data.access_token;
+      const refreshToken = data.session?.refresh_token || data.refresh_token;
+      if (token) sessionPayload.token = token;
+      if (refreshToken) sessionPayload.refreshToken = refreshToken;
+      const serializedSession = JSON.stringify(sessionPayload);
+      if (remember) {
+        localStorage.setItem("nexos_session", serializedSession);
+        sessionStorage.removeItem("nexos_session");
+      } else {
+        sessionStorage.setItem("nexos_session", serializedSession);
+        localStorage.removeItem("nexos_session");
+      }
+      if (remember) persistRemembered(email.value);
+      else persistRemembered("");
+      location.href = "./perfil.html";
     } catch (err) {
       setError(senha, err.message || "E-mail e/ou senha incorretos.");
       alert(err.message || "Erro de conexão com o servidor.");
     } finally {
       setLoading(formLogin, false);
+    }
+  });
+
+  // --- Recuperação de senha ---
+  const modalForgot = document.getElementById("modalRecuperar");
+  const formRecuperar = document.getElementById("formRecuperar");
+  const forgotStatus = document.getElementById("forgotStatus");
+  const forgotEmail = document.getElementById("forgotEmail");
+  const linkEsqueci = document.getElementById("linkEsqueci");
+  const btnCancelarRecuperar = document.getElementById("btnCancelarRecuperar");
+  let modalListenerAttached = false;
+
+  function setForgotStatus(message = "", type = "info") {
+    if (!forgotStatus) return;
+    if (!message) {
+      forgotStatus.hidden = true;
+      forgotStatus.textContent = "";
+      forgotStatus.classList.remove("is-error");
+      return;
+    }
+    forgotStatus.hidden = false;
+    forgotStatus.textContent = message;
+    forgotStatus.classList.toggle("is-error", type === "error");
+  }
+
+  function openForgotModal() {
+    if (!modalForgot) return;
+    modalForgot.setAttribute("aria-hidden", "false");
+    setForgotStatus();
+    clearErrors(formRecuperar);
+    if (forgotEmail) {
+      if (!forgotEmail.value && loginEmail?.value) {
+        forgotEmail.value = loginEmail.value.trim();
+      }
+      forgotEmail.focus();
+    }
+    if (!modalListenerAttached) {
+      modalListenerAttached = true;
+      document.addEventListener("keydown", handleModalKeydown);
+    }
+  }
+
+  function closeForgotModal() {
+    if (!modalForgot) return;
+    modalForgot.setAttribute("aria-hidden", "true");
+    setForgotStatus();
+    formRecuperar?.reset();
+    clearErrors(formRecuperar);
+    if (modalListenerAttached) {
+      document.removeEventListener("keydown", handleModalKeydown);
+      modalListenerAttached = false;
+    }
+  }
+
+  function handleModalKeydown(evt) {
+    if (evt.key === "Escape") {
+      evt.preventDefault();
+      closeForgotModal();
+    }
+  }
+
+  modalForgot?.addEventListener("click", (evt) => {
+    if (evt.target === modalForgot) closeForgotModal();
+  });
+  linkEsqueci?.addEventListener("click", (evt) => {
+    evt.preventDefault();
+    openForgotModal();
+  });
+  btnCancelarRecuperar?.addEventListener("click", closeForgotModal);
+
+  formRecuperar?.addEventListener("submit", async (evt) => {
+    evt.preventDefault();
+    clearErrors(formRecuperar);
+    setForgotStatus();
+
+    if (!forgotEmail) return;
+    const email = forgotEmail.value.trim();
+    if (!emailOk(email)) {
+      setError(forgotEmail, "E-mail inválido.");
+      return;
+    }
+
+    try {
+      setLoading(formRecuperar, true, "Enviando link…");
+      await request("/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email })
+      });
+      setForgotStatus("Se o e-mail estiver cadastrado, você receberá os próximos passos em instantes.");
+      persistRemembered(email);
+      lembrar && (lembrar.checked = true);
+      loginEmail && (loginEmail.value = email);
+      setTimeout(closeForgotModal, 2200);
+    } catch (err) {
+      console.error(err);
+      setForgotStatus(err.message || "Não foi possível iniciar a recuperação de senha.", "error");
+    } finally {
+      setLoading(formRecuperar, false);
     }
   });
 });
