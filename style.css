@@ -309,20 +309,25 @@ body:not(.page-dashboard){
   background: linear-gradient(165deg, rgba(16,25,50,.65), rgba(9,16,36,.5));
   border:1px solid rgba(128,148,235,.12);
   border-radius:28px;
-  padding:32px 26px;
+  padding:36px 28px 30px;
   box-shadow:0 18px 42px rgba(6,12,32,.26);
   backdrop-filter: blur(20px);
-  display:grid;
-  grid-template-rows:auto 1fr;
-  justify-items:center;
-  align-content:start;
-  row-gap:16px;
-  min-height:196px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:18px;
+  text-align:center;
+  min-height:220px;
 }
 .hero-stats li > div{
-  display:grid;
+  display:flex;
+  flex-direction:column;
   gap:10px;
-  justify-items:center;
+  align-items:center;
+  justify-content:flex-start;
+  flex:1;
+  width:100%;
 }
 .stat-icon{
   width:60px;
@@ -333,7 +338,8 @@ body:not(.page-dashboard){
   background:linear-gradient(160deg, rgba(111,93,255,.5), rgba(43,216,255,.32));
   color:#eafcff;
   box-shadow:0 18px 34px rgba(35,98,255,.32);
-  margin-bottom:2px;
+  margin-bottom:0;
+  flex-shrink:0;
 }
 .stat-icon > svg{
   position:absolute;
