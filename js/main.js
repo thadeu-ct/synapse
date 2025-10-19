@@ -128,13 +128,42 @@ function setupNavigationHighlight() {
 
   sections.forEach(({ el }) => observer.observe(el));
 
+  const sortedSections = sections
+    .slice()
+    .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
+
+  let scrollTicking = false;
+  function detectSectionOnScroll() {
+    scrollTicking = false;
+    const reference = window.scrollY + window.innerHeight * 0.4;
+    let candidate = sortedSections[0];
+    for (const section of sortedSections) {
+      const top = section.el.offsetTop;
+      if (top <= reference) {
+        candidate = section;
+      } else {
+        break;
+      }
+    }
+    if (candidate) activate(candidate.id);
+  }
+
+  function onScroll() {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    requestAnimationFrame(detectSectionOnScroll);
+  }
+
   const activeOnLoad = sections.find(({ el }) => el.getBoundingClientRect().top <= window.innerHeight * 0.45);
   activate(activeOnLoad?.id || "hero");
+  detectSectionOnScroll();
 
   window.addEventListener("resize", () => {
     const activeLink = links.find((link) => link.classList.contains("is-active"));
     if (activeLink) updateIndicator(activeLink);
+    detectSectionOnScroll();
   });
+  window.addEventListener("scroll", onScroll, { passive: true });
 
   links.forEach((link) => {
     const sectionId = link.dataset.section;
