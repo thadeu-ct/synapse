@@ -54,8 +54,32 @@ async function includePartials() {
     document.querySelector(".footer-cta")?.remove();
   }
 
+  applyHeaderSessionState();
   setupNavigationHighlight();
   setupDashboardNav();
+}
+
+function applyHeaderSessionState() {
+  const session = getStoredSession();
+  const isAuthenticated = Boolean(session?.email);
+
+  document.querySelectorAll(".nx-header .nx-cta").forEach((cta) => {
+    cta.querySelectorAll('[data-role="auth"]').forEach((node) => {
+      if (isAuthenticated) node.setAttribute("hidden", "");
+      else node.removeAttribute("hidden");
+    });
+
+    const userLink = cta.querySelector('[data-role="user"]');
+    if (!userLink) return;
+    if (isAuthenticated) {
+      userLink.removeAttribute("hidden");
+      if (!userLink.getAttribute("href")) {
+        userLink.setAttribute("href", "./perfil.html");
+      }
+    } else {
+      userLink.setAttribute("hidden", "");
+    }
+  });
 }
 
 function setupNavigationHighlight() {

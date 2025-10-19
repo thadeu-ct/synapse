@@ -16,8 +16,11 @@
     </nav>
 
     <div class="nx-cta">
-      <a class="btn ghost" href="./auth.html#login" id="btnAbrirLogin">Entrar</a>
-      <a class="btn primary" href="./auth.html#signup" id="btnAbrirCadastro">Criar conta</a>
+      <a class="btn ghost" href="./auth.html#login" id="btnAbrirLogin" data-role="auth" data-auth="login">Entrar</a>
+      <a class="btn primary" href="./auth.html#signup" id="btnAbrirCadastro" data-role="auth" data-auth="signup">Criar conta</a>
+      <a class="profile-trigger" href="./perfil.html" aria-label="Ir para área do usuário" data-role="user" hidden>
+        <i data-lucide="user-round"></i>
+      </a>
     </div>
   </div>
 </header>
