@@ -69,13 +69,13 @@ body {
 .nx-brand.small .nx-brand-subtitle{ font-size:10px; letter-spacing:0.14em; }
 
 .nx-logo{
-  width:clamp(44px, 6vw, 58px);
+  width:clamp(58px, 7vw, 82px);
   height:auto;
   display:block;
   filter:drop-shadow(0 0 8px rgba(99,102,241,.35));
   transition:transform .25s ease;
 }
-.nx-brand.small .nx-logo{ width:clamp(34px, 9vw, 44px); }
+.nx-brand.small .nx-logo{ width:clamp(46px, 9vw, 64px); }
 
 .nx-nav{
   position:relative;
@@ -546,7 +546,7 @@ body {
   color:#fff;
 }
 .dashboard-logo{
-  width:48px;
+  width:64px;
   height:auto;
   filter:drop-shadow(0 0 8px rgba(99,102,241,.34));
   transition:transform .25s ease;
