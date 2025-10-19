@@ -66,20 +66,13 @@ function setupNavigationHighlight() {
   const links = [...nav.querySelectorAll("a[data-section]")];
   if (!links.length) return;
 
-  const sectionMap = {
-    hero: "hero",
-    "como-funciona": "como-funciona",
-    seguranca: "como-funciona",
-    sobre: "sobre",
-    faq: "sobre"
-  };
-
-  const sections = Object.keys(sectionMap)
-    .map((id) => {
-      const el = document.getElementById(id);
-      return el ? { id, el } : null;
-    })
-    .filter(Boolean);
+  const sections = [
+    { id: "hero", el: document.getElementById("hero"), section: "hero" },
+    { id: "como-funciona", el: document.getElementById("como-funciona"), section: "como-funciona" },
+    { id: "seguranca", el: document.getElementById("seguranca"), section: "como-funciona" },
+    { id: "sobre", el: document.getElementById("sobre"), section: "sobre" },
+    { id: "faq", el: document.getElementById("faq"), section: "sobre" }
+  ].filter((s) => s.el);
 
   const linkById = new Map(links.map((link) => [link.dataset.section, link]));
   let current = "";
@@ -97,16 +90,16 @@ function setupNavigationHighlight() {
   }
 
   function activate(sectionId) {
-    const targetId = sectionMap[sectionId] || "hero";
-    if (current === targetId) {
-      updateIndicator(linkById.get(targetId));
+    const targetSection = sections.find((s) => s.id === sectionId)?.section || "hero";
+    if (current === targetSection) {
+      updateIndicator(linkById.get(targetSection));
       return;
     }
-    current = targetId;
+    current = targetSection;
     links.forEach((link) => {
-      link.classList.toggle("is-active", link.dataset.section === targetId);
+      link.classList.toggle("is-active", link.dataset.section === current);
     });
-    updateIndicator(linkById.get(targetId));
+    updateIndicator(linkById.get(current));
   }
 
   if (!sections.length) {
@@ -116,29 +109,42 @@ function setupNavigationHighlight() {
     return;
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    const visible = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (visible) activate(visible.target.id);
-  }, {
-    threshold: 0.45,
-    rootMargin: "-30% 0px -55% 0px"
-  });
+  function detectActiveSection() {
+    const orderedSections = sections
+      .slice()
+      .sort((a, b) => a.el.offsetTop - b.el.offsetTop);
+    if (!orderedSections.length) return;
+    const referenceY = window.scrollY + window.innerHeight * 0.38;
+    let candidate = orderedSections[0];
+    for (const section of orderedSections) {
+      if (section.el.offsetTop <= referenceY) {
+        candidate = section;
+      } else {
+        break;
+      }
+    }
+    if (candidate) activate(candidate.id);
+  }
 
-  sections.forEach(({ el }) => observer.observe(el));
+  detectActiveSection();
 
-  const activeOnLoad = sections.find(({ el }) => el.getBoundingClientRect().top <= window.innerHeight * 0.45);
-  activate(activeOnLoad?.id || "hero");
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      detectActiveSection();
+      const activeLink = linkById.get(current);
+      if (activeLink) updateIndicator(activeLink);
+      ticking = false;
+    });
+  }, { passive: true });
 
   window.addEventListener("resize", () => {
-    const activeLink = links.find((link) => link.classList.contains("is-active"));
-    if (activeLink) updateIndicator(activeLink);
-  });
-  window.addEventListener("scroll", () => {
+    detectActiveSection();
     const activeLink = linkById.get(current);
     if (activeLink) updateIndicator(activeLink);
-  }, { passive: true });
+  });
 
   links.forEach((link) => {
     const sectionId = link.dataset.section;
@@ -146,6 +152,7 @@ function setupNavigationHighlight() {
     link.addEventListener("click", (event) => {
       if (!targetSection) return;
       event.preventDefault();
+      activate(sectionId);
       targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
