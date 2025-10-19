@@ -301,9 +301,11 @@ body:not(.page-dashboard){
   padding:24px;
   box-shadow:0 20px 48px rgba(5,12,36,.36);
   backdrop-filter: blur(14px);
-  display:grid;
+  display:flex;
+  flex-direction:column;
   gap:14px;
-  align-content:start;
+  align-items:center;
+  text-align:center;
 }
 .stat-icon{
   width:54px;
