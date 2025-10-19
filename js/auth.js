@@ -248,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function openForgotModal() {
     if (!modalForgot) return;
     modalForgot.setAttribute("aria-hidden", "false");
+    document.body?.classList.add("modal-open");
     setForgotStatus();
     clearErrors(formRecuperar);
     if (forgotEmail) {
@@ -265,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeForgotModal() {
     if (!modalForgot) return;
     modalForgot.setAttribute("aria-hidden", "true");
+    document.body?.classList.remove("modal-open");
     setForgotStatus();
     formRecuperar?.reset();
     clearErrors(formRecuperar);

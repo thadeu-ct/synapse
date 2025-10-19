@@ -11,6 +11,8 @@ body {
   line-height: 1.6;
 }
 
+body.modal-open{ overflow:hidden; }
+
 body:not(.page-dashboard){
   padding-top: var(--header-height);
   scroll-padding-top: calc(var(--header-height) + 24px);
@@ -290,35 +292,41 @@ body:not(.page-dashboard){
 .hero-stats{
   list-style:none;
   display:grid;
-  gap:16px;
+  gap:18px;
   margin-top:28px;
   max-width:620px;
 }
 .hero-stats li{
-  background: linear-gradient(155deg, rgba(17,26,54,.62), rgba(10,18,40,.48));
-  border:1px solid rgba(128,148,235,.14);
-  border-radius:26px;
-  padding:26px;
-  box-shadow:0 16px 40px rgba(6,12,32,.28);
-  backdrop-filter: blur(18px);
+  background: linear-gradient(165deg, rgba(16,25,50,.65), rgba(9,16,36,.5));
+  border:1px solid rgba(128,148,235,.12);
+  border-radius:28px;
+  padding:28px 24px;
+  box-shadow:0 18px 42px rgba(6,12,32,.26);
+  backdrop-filter: blur(20px);
   display:flex;
   flex-direction:column;
   gap:14px;
   align-items:center;
   justify-content:center;
   text-align:center;
-  min-height:180px;
+  min-height:196px;
+}
+.hero-stats li > div{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  align-items:center;
 }
 .stat-icon{
-  width:54px;
-  height:54px;
-  border-radius:18px;
+  width:58px;
+  height:58px;
+  border-radius:20px;
   display:grid;
   place-items:center;
-  background:linear-gradient(145deg, rgba(111,93,255,.42), rgba(43,216,255,.26));
-  color:#e3f7ff;
-  box-shadow:0 16px 32px rgba(35,98,255,.32);
-  margin-bottom:4px;
+  background:linear-gradient(160deg, rgba(111,93,255,.5), rgba(43,216,255,.32));
+  color:#eafcff;
+  box-shadow:0 18px 34px rgba(35,98,255,.32);
+  margin-bottom:2px;
 }
 .stat-icon > svg,
 .step-icon > svg,
@@ -414,14 +422,14 @@ body:not(.page-dashboard){
 .about .nx-container{ position:relative; z-index:1; }
 .about p{ max-width:640px; color:rgba(208,216,250,.84); font-size:1.05rem; }
 .howitworks h2, .about h2{ color:#fff; margin-bottom:22px; font-size: clamp(26px, 3vw, 34px); }
-.steps{ display:grid; grid-template-columns: repeat(3, 1fr); gap:24px; position:relative; z-index:1; }
+.steps{ display:grid; grid-template-columns: repeat(3, 1fr); gap:26px; position:relative; z-index:1; }
 .step{
-  background: linear-gradient(155deg, rgba(16,26,54,.58), rgba(12,18,40,.46));
-  border:1px solid rgba(124,148,238,.14);
-  border-radius:26px;
-  padding:26px;
-  box-shadow: 0 16px 36px rgba(5,10,28,.3);
-  backdrop-filter: blur(18px);
+  background: linear-gradient(165deg, rgba(17,26,52,.55), rgba(11,18,38,.44));
+  border:1px solid rgba(120,144,235,.13);
+  border-radius:28px;
+  padding:28px;
+  box-shadow: 0 18px 38px rgba(5,10,28,.28);
+  backdrop-filter: blur(22px);
   display:grid;
   gap:12px;
 }
@@ -452,15 +460,15 @@ body:not(.page-dashboard){
 .section-lead{ color:rgba(206,213,245,.82); margin-bottom:32px; max-width:640px; }
 .info-grid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:24px; position:relative; z-index:1; }
 .info-card{
-  background: linear-gradient(155deg, rgba(15,26,52,.56), rgba(11,18,38,.46));
-  border:1px solid rgba(124,148,238,.14);
-  border-radius:28px;
-  padding:28px;
-  box-shadow:0 18px 44px rgba(5,10,30,.32);
-  backdrop-filter: blur(20px);
+  background: linear-gradient(168deg, rgba(16,26,52,.52), rgba(10,18,36,.42));
+  border:1px solid rgba(118,142,235,.12);
+  border-radius:30px;
+  padding:30px;
+  box-shadow:0 18px 38px rgba(5,10,30,.28);
+  backdrop-filter: blur(22px);
   transition:.3s transform, .3s box-shadow, .3s border-color;
 }
-.info-card:hover{ transform:translateY(-4px); box-shadow:0 22px 48px rgba(8,14,34,.45); border-color:rgba(78,192,255,.28); }
+.info-card:hover{ transform:translateY(-4px); box-shadow:0 22px 46px rgba(8,14,34,.4); border-color:rgba(78,192,255,.26); }
 .info-icon{
   width:52px; height:52px;
   border-radius:18px;
@@ -486,12 +494,12 @@ body:not(.page-dashboard){
 .faq h2{ color:#fff; margin-bottom:24px; font-size: clamp(26px, 3vw, 34px); position:relative; z-index:1; }
 .faq-list{ display:grid; gap:16px; position:relative; z-index:1; }
 .faq-list details{
-  background:linear-gradient(155deg, rgba(14,24,48,.6), rgba(11,18,36,.48));
-  border:1px solid rgba(120,148,238,.14);
-  border-radius:24px;
-  padding:20px 24px;
-  box-shadow:0 16px 38px rgba(5,10,30,.28);
-  backdrop-filter: blur(18px);
+  background:linear-gradient(170deg, rgba(15,25,48,.5), rgba(11,18,36,.4));
+  border:1px solid rgba(118,142,235,.12);
+  border-radius:26px;
+  padding:22px 26px;
+  box-shadow:0 16px 34px rgba(5,10,30,.26);
+  backdrop-filter: blur(20px);
 }
 .faq-list summary{
   cursor:pointer;
