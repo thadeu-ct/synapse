@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setSyncState("Sincronizado", "synced");
       const successMessage = response?.message || "Perfil sincronizado com sucesso!";
       setStatus(successMessage);
-      persistSessionEmail(data.email);
+      persistSessionIdentity(data);
       alert(successMessage);
       location.href = "./index.html";
     } catch (err) {
@@ -298,11 +298,20 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  function persistSessionEmail(email) {
+  function persistSessionIdentity(payload) {
+    if (!payload || !payload.email) return;
+    const email = payload.email.trim().toLowerCase();
     if (!email) return;
     const store = sessionStore || localStorage;
     const current = readJSON("nexos_session", session || {}, store) || {};
-    store.setItem("nexos_session", JSON.stringify({ ...current, email }));
+    const next = { ...current, email };
+    const firstName = typeof payload.nome === "string" ? payload.nome.trim() : "";
+    const lastName = typeof payload.sobrenome === "string" ? payload.sobrenome.trim() : "";
+    const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
+    if (firstName) next.nome = firstName;
+    if (lastName) next.sobrenome = lastName;
+    if (fullName) next.nomeCompleto = fullName;
+    store.setItem("nexos_session", JSON.stringify(next));
   }
 
   async function saveProfileRemote(payload) {

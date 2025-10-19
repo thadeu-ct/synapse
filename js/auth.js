@@ -146,7 +146,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       alert("Conta criada! Vamos completar seu perfil.");
-      localStorage.setItem("nexos_session", JSON.stringify({ email: email.value.trim().toLowerCase() }));
+      const firstName = nome.value.trim();
+      const lastName = sobrenome.value.trim();
+      const normalizedEmail = email.value.trim().toLowerCase();
+      const sessionPayload = { email: normalizedEmail };
+      if (firstName) sessionPayload.nome = firstName;
+      if (lastName) sessionPayload.sobrenome = lastName;
+      const fullName = [firstName, lastName].filter(Boolean).join(" ").trim();
+      if (fullName) sessionPayload.nomeCompleto = fullName;
+      localStorage.setItem("nexos_session", JSON.stringify(sessionPayload));
       location.href = "./perfil.html";
     } catch (err) {
       setError(email, err.message || "Erro ao criar conta.");
@@ -181,7 +189,17 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
-      const sessionPayload = { email: email.value.trim().toLowerCase() };
+      const normalizedEmail = email.value.trim().toLowerCase();
+      const userData = data.usuario || {};
+      const sessionPayload = { email: normalizedEmail };
+      const firstName = [userData.nome, userData.first_name, userData.firstName].find((value) => typeof value === "string" && value.trim());
+      const lastName = [userData.sobrenome, userData.last_name, userData.lastName].find((value) => typeof value === "string" && value.trim());
+      const fullNameCandidate = [userData.nomeCompleto, userData.nome_completo, userData.full_name, userData.fullName]
+        .find((value) => typeof value === "string" && value.trim());
+      if (firstName) sessionPayload.nome = firstName.trim();
+      if (lastName) sessionPayload.sobrenome = lastName.trim();
+      const composedName = fullNameCandidate?.trim() || [firstName, lastName].filter(Boolean).map((value) => value.trim()).join(" ");
+      if (composedName) sessionPayload.nomeCompleto = composedName;
       const token = data.session?.access_token || data.token || data.access_token;
       const refreshToken = data.session?.refresh_token || data.refresh_token;
       if (token) sessionPayload.token = token;

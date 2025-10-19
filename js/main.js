@@ -62,6 +62,7 @@ async function includePartials() {
 function applyHeaderSessionState() {
   const session = getStoredSession();
   const isAuthenticated = Boolean(session?.email);
+  const displayName = resolveUserDisplayName(session);
 
   document.querySelectorAll(".nx-header .nx-cta").forEach((cta) => {
     cta.querySelectorAll('[data-role="auth"]').forEach((node) => {
@@ -76,8 +77,15 @@ function applyHeaderSessionState() {
       if (!userLink.getAttribute("href")) {
         userLink.setAttribute("href", "./perfil.html");
       }
+      if (displayName) {
+        const label = `Ir para área do usuário (${displayName})`;
+        userLink.setAttribute("aria-label", label);
+        userLink.setAttribute("title", label);
+      }
     } else {
       userLink.setAttribute("hidden", "");
+      userLink.setAttribute("aria-label", "Ir para área do usuário");
+      userLink.removeAttribute("title");
     }
   });
 }
@@ -195,9 +203,9 @@ function setupDashboardNav() {
     else link.removeAttribute("aria-current");
   });
 
-  const emailEl = sidebar.querySelector("#dashboardUserEmail");
+  const nameEl = sidebar.querySelector("#dashboardUserName");
   const session = getStoredSession();
-  if (session?.email && emailEl) emailEl.textContent = session.email;
+  if (nameEl) nameEl.textContent = resolveUserDisplayName(session);
 
   const logoutBtn = sidebar.querySelector("[data-action=\"logout\"]");
   if (logoutBtn && !logoutBtn.dataset.bound) {
@@ -229,6 +237,50 @@ function getStoredSession() {
     console.warn("Não foi possível ler sessão do sessionStorage.", err);
   }
   return null;
+}
+
+function resolveUserDisplayName(session) {
+  const fallback = "Visitante";
+  if (!session) return fallback;
+
+  const direct = [session.nomeCompleto, session.nome, session.name]
+    .map((value) => (typeof value === "string" ? value.trim() : ""))
+    .find(Boolean);
+  if (direct) return direct;
+
+  const composed = [session.nome, session.sobrenome]
+    .map((value) => (typeof value === "string" ? value.trim() : ""))
+    .filter(Boolean)
+    .join(" ");
+  if (composed) return composed;
+
+  if (session.email) {
+    const localUser = resolveLocalUserByEmail(session.email);
+    if (localUser) {
+      const localName = [localUser.nome, localUser.sobrenome]
+        .map((value) => (typeof value === "string" ? value.trim() : ""))
+        .filter(Boolean)
+        .join(" ");
+      if (localName) return localName;
+      if (localUser.nome && typeof localUser.nome === "string") return localUser.nome.trim();
+    }
+  }
+
+  return fallback;
+}
+
+function resolveLocalUserByEmail(email) {
+  if (!email) return null;
+  try {
+    const raw = localStorage.getItem("nexos_users");
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return null;
+    return parsed.find((user) => user?.email === email) || null;
+  } catch (err) {
+    console.warn("Não foi possível ler usuários locais.", err);
+    return null;
+  }
 }
 
 // ---------- Dados fake (pode vir de API depois) ----------
