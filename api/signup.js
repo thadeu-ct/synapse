@@ -38,14 +38,6 @@ export default async function handler(req, res) {
       throw insertError; // manda erro para o catch
     }
 
-    const { error: preferenceError } = await supabase // cria preferências padrão
-        .from('preferencias')
-        .insert({ id_usuario: novoUsuario.id });
-
-    if (preferenceError) {
-        throw preferenceError; // manda erro para o catch (futuramente remover usuário criado)
-    }
-
     // pop-up de sucesso
     res.status(201).json({ message: "Conta criada com sucesso!", usuario: novoUsuario }); 
 
