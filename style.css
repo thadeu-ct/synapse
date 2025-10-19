@@ -4,11 +4,22 @@ html, body { height: 100%; }
 body {
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: #e7ecff;
-  background:
-    radial-gradient(680px 520px at 10% -10%, rgba(104,91,255,.30), transparent 65%),
-    radial-gradient(720px 520px at 88% 0%, rgba(43,216,255,.22), transparent 62%),
-    linear-gradient(180deg, #050715 0%, #090e21 36%, #0d1534 100%);
+  background: linear-gradient(180deg, #040613 0%, #050b1d 48%, #02030b 100%);
+  position: relative;
   line-height: 1.6;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:-20% -10% -10%;
+  background:
+    radial-gradient(60% 60% at 15% 8%, rgba(91,109,255,.34), transparent 62%),
+    radial-gradient(70% 60% at 82% -6%, rgba(43,205,255,.22), transparent 65%),
+    radial-gradient(55% 52% at 60% 72%, rgba(24,84,164,.18), transparent 74%);
+  pointer-events:none;
+  z-index:-1;
+  opacity:.8;
 }
 
 body.modal-open{ overflow:hidden; }
@@ -227,18 +238,16 @@ body:not(.page-dashboard){
   position:relative;
   padding: 84px 0 64px;
   color: #e5ecff;
-  background:
-    radial-gradient(780px 520px at 88% -12%, rgba(45,215,255,.35), transparent 72%),
-    radial-gradient(860px 560px at 12% -18%, rgba(111,93,255,.26), transparent 70%);
+  background: radial-gradient(820px 520px at 50% -26%, rgba(118,136,255,.2), transparent 70%);
   overflow:hidden;
 }
 .hero::before{
   content:"";
   position:absolute;
-  inset:-160px -220px auto;
-  height:420px;
-  background: radial-gradient(circle, rgba(86,214,255,.35), transparent 65%);
-  opacity:.42;
+  inset:-140px -220px auto;
+  height:360px;
+  background: radial-gradient(480px 320px at 58% 42%, rgba(71,203,255,.28), transparent 70%);
+  opacity:.48;
   pointer-events:none;
 }
 .hero-grid{
@@ -405,18 +414,20 @@ body:not(.page-dashboard){
   content:"";
   position:absolute;
   inset:0;
-  background: radial-gradient(520px 360px at 10% 15%, rgba(105,92,255,.2), transparent 70%),
-              radial-gradient(620px 360px at 86% 20%, rgba(43,216,255,.14), transparent 70%);
-  opacity:.42;
+  background:
+    radial-gradient(840px 540px at 20% -12%, rgba(108,124,255,.16), transparent 70%),
+    radial-gradient(880px 540px at 80% 10%, rgba(43,204,255,.12), transparent 72%);
+  opacity:.36;
   pointer-events:none;
 }
 .about::before{
   content:"";
   position:absolute;
   inset:0;
-  background: radial-gradient(560px 340px at 20% 10%, rgba(109,96,255,.2), transparent 70%),
-              radial-gradient(600px 340px at 80% 30%, rgba(38,205,255,.14), transparent 70%);
-  opacity:.38;
+  background:
+    radial-gradient(860px 520px at 18% -8%, rgba(108,124,255,.16), transparent 70%),
+    radial-gradient(900px 520px at 82% 14%, rgba(43,204,255,.12), transparent 72%);
+  opacity:.34;
   pointer-events:none;
 }
 .about .nx-container{ position:relative; z-index:1; }
@@ -451,9 +462,10 @@ body:not(.page-dashboard){
   content:"";
   position:absolute;
   inset:0;
-  background: radial-gradient(640px 400px at 18% 20%, rgba(110,96,255,.18), transparent 70%),
-              radial-gradient(680px 400px at 82% 35%, rgba(35,204,255,.16), transparent 70%);
-  opacity:.4;
+  background:
+    radial-gradient(940px 560px at 22% -6%, rgba(108,124,255,.16), transparent 72%),
+    radial-gradient(980px 560px at 78% 18%, rgba(43,204,255,.14), transparent 75%);
+  opacity:.36;
   pointer-events:none;
 }
 .safety h2{ color:#fff; margin-bottom:12px; font-size: clamp(26px, 3vw, 34px); }
@@ -486,9 +498,10 @@ body:not(.page-dashboard){
   content:"";
   position:absolute;
   inset:0;
-  background: radial-gradient(600px 360px at 16% 15%, rgba(107,96,255,.2), transparent 70%),
-              radial-gradient(620px 360px at 88% 40%, rgba(38,209,255,.14), transparent 70%);
-  opacity:.36;
+  background:
+    radial-gradient(860px 520px at 18% -10%, rgba(108,124,255,.17), transparent 72%),
+    radial-gradient(900px 520px at 82% 12%, rgba(43,204,255,.12), transparent 74%);
+  opacity:.34;
   pointer-events:none;
 }
 .faq h2{ color:#fff; margin-bottom:24px; font-size: clamp(26px, 3vw, 34px); position:relative; z-index:1; }
