@@ -49,10 +49,13 @@ async function includePartials() {
 
   if (/auth\.html$/.test(location.pathname)) {
     document.querySelector(".nx-cta")?.remove();
+    document.querySelector(".nx-nav")?.remove();
+    document.querySelector(".nx-header")?.classList.add("nx-header--auth");
     document.querySelector(".footer-cta")?.remove();
   }
 
   setupNavigationHighlight();
+  setupDashboardNav();
 }
 
 function setupNavigationHighlight() {
@@ -142,6 +145,55 @@ function setupNavigationHighlight() {
       targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
     });
   });
+}
+
+function setupDashboardNav() {
+  const sidebar = document.querySelector(".dashboard-sidebar");
+  if (!sidebar) return;
+
+  const links = [...sidebar.querySelectorAll(".dashboard-menu .dashboard-link")];
+  const currentPage = document.body?.dataset.page || resolveCurrentPage();
+  links.forEach((link) => {
+    const isActive = link.dataset.page === currentPage;
+    link.classList.toggle("is-active", isActive);
+    if (isActive) link.setAttribute("aria-current", "page");
+    else link.removeAttribute("aria-current");
+  });
+
+  const emailEl = sidebar.querySelector("#dashboardUserEmail");
+  const session = getStoredSession();
+  if (session?.email && emailEl) emailEl.textContent = session.email;
+
+  const logoutBtn = sidebar.querySelector("[data-action=\"logout\"]");
+  if (logoutBtn && !logoutBtn.dataset.bound) {
+    logoutBtn.dataset.bound = "true";
+    logoutBtn.addEventListener("click", () => {
+      try { localStorage.removeItem("nexos_session"); } catch (err) { console.warn("Não foi possível limpar localStorage.", err); }
+      try { sessionStorage.removeItem("nexos_session"); } catch (err) { console.warn("Não foi possível limpar sessionStorage.", err); }
+      location.href = "./auth.html#login";
+    });
+  }
+}
+
+function resolveCurrentPage() {
+  const path = location.pathname.split("/").pop() || "";
+  return path.replace(/\.html$/, "") || "perfil";
+}
+
+function getStoredSession() {
+  try {
+    const raw = localStorage.getItem("nexos_session");
+    if (raw) return JSON.parse(raw);
+  } catch (err) {
+    console.warn("Não foi possível ler sessão do localStorage.", err);
+  }
+  try {
+    const raw = sessionStorage.getItem("nexos_session");
+    if (raw) return JSON.parse(raw);
+  } catch (err) {
+    console.warn("Não foi possível ler sessão do sessionStorage.", err);
+  }
+  return null;
 }
 
 // ---------- Dados fake (pode vir de API depois) ----------

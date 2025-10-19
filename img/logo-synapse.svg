@@ -1,34 +1,36 @@
-<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Logotipo Synapse</title>
+  <desc id="desc">Símbolo circular com órbitas conectadas representando a Synapse.</desc>
   <defs>
-    <linearGradient id="synapseStroke" x1="32" y1="32" x2="224" y2="224" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#6C4DF4"/>
-      <stop offset="0.5" stop-color="#5B63F9"/>
-      <stop offset="1" stop-color="#25D8FF"/>
-    </linearGradient>
-    <radialGradient id="synapseGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 128) rotate(90) scale(120)">
-      <stop offset="0" stop-color="#1A1E35"/>
-      <stop offset="1" stop-color="#050713"/>
+    <radialGradient id="synapse-bg" cx="50%" cy="50%" r="58%">
+      <stop offset="0%" stop-color="#111936"/>
+      <stop offset="65%" stop-color="#0A122B"/>
+      <stop offset="100%" stop-color="#040615"/>
     </radialGradient>
-    <linearGradient id="synapseNodes" x1="80" y1="76" x2="196" y2="188" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#76A4FF"/>
-      <stop offset="1" stop-color="#30E7FF"/>
+    <linearGradient id="synapse-ring" x1="12%" y1="10%" x2="88%" y2="90%">
+      <stop offset="0%" stop-color="#7C5CFF"/>
+      <stop offset="50%" stop-color="#5E8CFF"/>
+      <stop offset="100%" stop-color="#2BD6FF"/>
+    </linearGradient>
+    <linearGradient id="synapse-node" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7BD6FF"/>
+      <stop offset="100%" stop-color="#29E0FF"/>
     </linearGradient>
   </defs>
-  <circle cx="128" cy="128" r="116" fill="url(#synapseGlow)"/>
-  <circle cx="128" cy="128" r="116" stroke="url(#synapseStroke)" stroke-width="8"/>
-  <path d="M148 56c-50 0-88 38-88 87.5 0 24.4 10.3 46.4 27.1 62.4 2.4 2.3 3.6 5.6 3.2 8.9l-1.4 16.6c-.5 5.4-4 10.1-8.9 12.4l-18.8 8.6c-3 1.4-5 4.4-5 7.7v6.5c19.8 11.7 42.4 18.4 66.7 18.4 70.7 0 128-57.3 128-128S218.7 56 148 56z" fill="url(#synapseStroke)" fill-opacity="0.08"/>
-  <path d="M148 56c-50 0-88 38-88 87.5 0 24.4 10.3 46.4 27.1 62.4 2.4 2.3 3.6 5.6 3.2 8.9l-1.4 16.6c-.5 5.4-4 10.1-8.9 12.4l-18.8 8.6c-3 1.4-5 4.4-5 7.7v6.5c19.8 11.7 42.4 18.4 66.7 18.4 70.7 0 128-57.3 128-128S218.7 56 148 56z" stroke="url(#synapseStroke)" stroke-opacity="0.28" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M104 78c14.5 20.8 22.3 46.2 22.3 72.1 0 15.7-2.8 30.7-8.3 44.6" stroke="url(#synapseNodes)" stroke-width="9" stroke-linecap="round" stroke-opacity="0.65"/>
-  <path d="M94 116c12.2-11.2 31-20 52.2-20 33.9 0 61.3 19 61.3 57.6 0 20.8-8.4 38.9-22.4 50.9" stroke="url(#synapseNodes)" stroke-width="10" stroke-linecap="round" stroke-opacity="0.8"/>
-  <path d="M114 94c17.6-2.4 36.3 7.6 51.5 22.8 11.7 11.7 22.8 27.8 29.7 44.3" stroke="url(#synapseNodes)" stroke-width="7" stroke-linecap="round" stroke-opacity="0.9"/>
-  <g fill="url(#synapseNodes)">
-    <circle cx="100" cy="78" r="7"/>
-    <circle cx="92" cy="118" r="7"/>
-    <circle cx="140" cy="58" r="6"/>
-    <circle cx="170" cy="108" r="7"/>
-    <circle cx="205" cy="138" r="9"/>
-    <circle cx="182" cy="184" r="8"/>
-    <circle cx="140" cy="192" r="7"/>
-    <circle cx="122" cy="156" r="6"/>
+
+  <g fill="none">
+    <circle cx="80" cy="80" r="70" fill="url(#synapse-bg)"/>
+    <circle cx="80" cy="80" r="70" stroke="url(#synapse-ring)" stroke-width="6" opacity="0.85"/>
+    <circle cx="80" cy="80" r="54" stroke="url(#synapse-ring)" stroke-width="1.6" stroke-dasharray="6 10" opacity="0.65"/>
+
+    <path d="M49 110c10.4-6.8 18.4-17.1 22.5-28.8 6.7-19.1 0.9-39.7-11.8-53.5" stroke="url(#synapse-ring)" stroke-width="4.2" stroke-linecap="round" opacity="0.75"/>
+    <path d="M63 46c14-7.8 32-6 45.5 5.4 13 11 18.8 29 14.8 45.5" stroke="url(#synapse-ring)" stroke-width="3.6" stroke-linecap="round" opacity="0.8"/>
+    <path d="M54 74c12.5 23.4 36.8 36.5 62.2 34.2" stroke="url(#synapse-ring)" stroke-width="2.8" stroke-linecap="round" opacity="0.65"/>
+
+    <circle cx="52" cy="42" r="5.5" fill="url(#synapse-node)"/>
+    <circle cx="99" cy="42" r="4.5" fill="url(#synapse-node)" opacity="0.9"/>
+    <circle cx="126" cy="88" r="6.5" fill="url(#synapse-node)"/>
+    <circle cx="44" cy="112" r="6" fill="url(#synapse-node)"/>
+    <circle cx="92" cy="118" r="4.8" fill="url(#synapse-node)" opacity="0.8"/>
   </g>
 </svg>

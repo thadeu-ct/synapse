@@ -17,8 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnSalvar = document.getElementById("btnSalvarPerfil");
   if (btnSalvar && !btnSalvar.dataset.label) btnSalvar.dataset.label = btnSalvar.textContent;
 
-  const session = readJSON("nexos_session", null);
-  const users = readJSON("nexos_users", []);
+  const { data: session, storage: sessionStore } = readSessionData();
+  const users = readJSON("nexos_users", [], localStorage);
   let isDirty = false;
 
   prefillFromSession();
@@ -30,15 +30,36 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", handleSubmit);
   document.getElementById("btnCancelar")?.addEventListener("click", () => history.back());
 
-  function readJSON(key, fallback) {
+  function readJSON(key, fallback, storage = localStorage) {
     try {
-      const raw = localStorage.getItem(key);
+      const source = storage || localStorage;
+      const raw = source.getItem(key);
       if (!raw) return fallback;
       return JSON.parse(raw);
     } catch (err) {
-      console.warn(`Não foi possível ler ${key} do localStorage.`, err);
+      console.warn(`Não foi possível ler ${key} do armazenamento.`, err);
       return fallback;
     }
+  }
+
+  function readSessionData() {
+    try {
+      if (localStorage.getItem("nexos_session")) {
+        return { data: readJSON("nexos_session", null, localStorage), storage: localStorage };
+      }
+    } catch (err) {
+      console.warn("Falha ao acessar localStorage para sessão.", err);
+    }
+
+    try {
+      if (sessionStorage.getItem("nexos_session")) {
+        return { data: readJSON("nexos_session", null, sessionStorage), storage: sessionStorage };
+      }
+    } catch (err) {
+      console.warn("Falha ao acessar sessionStorage para sessão.", err);
+    }
+
+    return { data: null, storage: localStorage };
   }
 
   function prefillFromSession() {
@@ -253,7 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function resolveAuthToken() {
-    const stored = readJSON("nexos_session", session || {}) || {};
+    const localCandidate = readJSON("nexos_session", null, localStorage) || {};
+    const sessionCandidate = readJSON("nexos_session", null, sessionStorage) || {};
+    const stored = session || localCandidate || sessionCandidate || {};
     return stored.token || stored.accessToken || stored.supabaseToken || localStorage.getItem("nexos_access_token") || localStorage.getItem("supabase_token") || "";
   }
 
@@ -277,8 +300,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function persistSessionEmail(email) {
     if (!email) return;
-    const current = readJSON("nexos_session", session || {}) || {};
-    localStorage.setItem("nexos_session", JSON.stringify({ ...current, email }));
+    const store = sessionStore || localStorage;
+    const current = readJSON("nexos_session", session || {}, store) || {};
+    store.setItem("nexos_session", JSON.stringify({ ...current, email }));
   }
 
   async function saveProfileRemote(payload) {

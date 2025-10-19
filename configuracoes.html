@@ -1,231 +1,158 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Synapse — Configurações</title>
-        <link rel="stylesheet" href="./style.css">
-        <style>
-            /* CSS específico para a página de configurações */
-            .config-main {
-                max-width: 800px;
-                margin: 40px auto;
-                padding: 20px;
-            }
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Synapse — Configurações</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css"/>
+</head>
+<body class="page-dashboard page-config" data-page="config">
+  <main class="nx-main dashboard-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="dashboard-main">
+        <section class="dashboard-section">
+          <div class="profile-summary">
+            <img src="./img/placeholder-avatar.png" alt="Foto de perfil do usuário">
+            <div class="profile-info">
+              <h1 id="userName">Nome do Usuário</h1>
+              <p><a href="#section-email">usuario@email.com</a></p>
+              <div class="premium-chip">
+                <span>Premium</span> &middot; <a href="#section-premium">Cancelar</a>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            .profile-summary {
-                display: flex;
-                align-items: center;
-                gap: 20px;
-                background-color: #f3f4f6; /* Um cinza claro de fundo */
-                padding: 20px;
-                border-radius: 8px;
-                margin-bottom: 40px;
-            }
+        <section class="dashboard-section">
+          <div class="bio-section">
+            <div class="bio-header">
+              <h2>Sobre mim</h2>
+              <a href="#" id="editBioButton">Editar</a>
+            </div>
 
-            .profile-summary img {
-                width: 80px;
-                height: 80px;
-                border-radius: 50%;
-                object-fit: cover;
-                background-color: #ccc;
-            }
+            <div id="bioDisplayMode">
+              <p id="userBioDisplay" class="bio-text">
+                Aqui entrará a mini bio do usuário, que ele preencheu na página de perfil. Pode ser um texto um pouco longo, descrevendo suas paixões e o que ele busca na plataforma.
+              </p>
+            </div>
 
-            .profile-info h2 {
-                margin: 0 0 5px 0;
-                font-size: 1.5em;
-            }
-            
-            .profile-info p {
-                margin: 0;
-                color: #555;
-            }
-            
-            .profile-info a {
-                color: #007bff;
-                text-decoration: none;
-                cursor: pointer;
-            }
+            <div id="bioEditMode" class="hidden">
+              <textarea id="userBioEdit" class="bio-textarea" rows="4" placeholder="Conte um pouco sobre você..."></textarea>
+              <div class="bio-actions">
+                <button id="cancelBioEdit" class="btn ghost" type="button">Cancelar</button>
+                <button id="saveBioEdit" class="btn primary" type="submit">Salvar bio</button>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            .premium-chip {
-                display: inline-block;
-                background-color: #e5b300; /* Dourado */
-                color: white;
-                padding: 4px 12px;
-                border-radius: 16px;
-                font-size: 0.8em;
-                font-weight: bold;
-                margin-top: 10px;
-            }
-            .premium-chip a {
-                color: white;
-            }
+        <section class="dashboard-section">
+          <header>
+            <h2>Preferências da conta</h2>
+            <p>Ajuste notificações, privacidade e integrações da sua experiência na Synapse.</p>
+          </header>
 
-            .danger-zone {
-                border: 1px solid #f5c6cb; /* Vermelho claro */
-                background-color: #f8d7da1a;
-                border-radius: 8px;
-                padding: 20px;
-            }
-            
-            .danger-zone h3 {
-                color: #dc3545; /* Vermelho */
-                margin-top: 0;
-            }
+          <form class="settings-form">
+            <div class="settings-group">
+              <h3>Notificações</h3>
+              <label class="pill-toggle">
+                <input type="checkbox" checked>
+                <span>Receber alertas de novos matches por e-mail</span>
+              </label>
+              <label class="pill-toggle">
+                <input type="checkbox" checked>
+                <span>Lembretes de encontros confirmados</span>
+              </label>
+              <label class="pill-toggle">
+                <input type="checkbox">
+                <span>Digest semanal com oportunidades</span>
+              </label>
+            </div>
 
-            .danger-action {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 15px 0;
-                border-bottom: 1px solid #eee;
-            }
+            <div class="settings-group">
+              <h3>Privacidade</h3>
+              <label class="pill-toggle">
+                <input type="checkbox" checked>
+                <span>Exibir perfil somente para membros autenticados</span>
+              </label>
+              <label class="pill-toggle">
+                <input type="checkbox">
+                <span>Permitir convites sem match prévio</span>
+              </label>
+            </div>
 
-            .danger-action:last-child {
-                border-bottom: none;
-            }
-
-            .danger-action p {
-                margin: 0;
-                color: #333;
-            }
-            
-            .danger-action .btn-danger {
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 5px;
-                cursor: pointer;
-                text-decoration: none;
-            }
-            .bio-section {
-                background-color: #f9f9f9; /* Um branco levemente acinzentado */
-                padding: 20px;
-                border-radius: 8px;
-                margin-bottom: 40px;
-            }
-
-            .bio-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 15px;
-            }
-
-            .bio-header h2 {
-                margin: 0;
-                font-size: 1.2em;
-            }
-
-            .bio-text {
-                color: #333;
-                line-height: 1.6;
-                margin: 0;
-            }
-
-            .bio-textarea {
-                width: 100%;
-                padding: 10px;
-                border-radius: 5px;
-                border: 1px solid #ccc;
-                resize: vertical;
-                font-family: inherit;
-                font-size: 1em;
-                box-sizing: border-box; /* Garante que o padding não quebre o layout */
-            }
-
-            .bio-actions {
-                display: flex;
-                justify-content: flex-end;
-                gap: 10px;
-                margin-top: 10px;
-            }
-            
-            /* Classe utilitária para esconder elementos */
-            .hidden {
-                display: none;
-            }
-        </style>
-    </head>
-    <body>
-        <div data-include="./componentes/header.html"></div>
-
-        <main class="config-main">
-            <section class="profile-summary">
-                <img src="./img/placeholder-avatar.png" alt="Foto de perfil do usuário">
-                <div class="profile-info">
-                    <h2 id="userName">Nome do Usuário</h2>
-                    <p><a href="#section-email">usuario@email.com</a></p>
-                    <div class="premium-chip">
-                        <span>Premium</span> &middot; <a href="#section-premium">Cancelar</a>
-                    </div>
+            <div class="settings-group">
+              <h3>Integrações</h3>
+              <div class="grid2">
+                <div class="field">
+                  <label for="calendarioLink">Link do calendário</label>
+                  <input id="calendarioLink" type="url" placeholder="https://calendly.com/seu-usuario" />
                 </div>
-            </section>
-            <section class="bio-section">
-                <div class="bio-header">
-                    <h2>Sobre Mim</h2>
-                    <a href="#" id="editBioButton">Editar</a>
+                <div class="field">
+                  <label for="discordUsuario">Discord</label>
+                  <input id="discordUsuario" type="text" placeholder="usuario#1234" />
                 </div>
+              </div>
+            </div>
 
-                <div id="bioDisplayMode">
-                    <p id="userBioDisplay" class="bio-text">
-                        Aqui entrará a mini bio do usuário, que ele preencheu na página de perfil. Pode ser um texto um pouco longo, descrevendo suas paixões e o que ele busca na plataforma.
-                    </p>
-                </div>
+            <div class="row end">
+              <button class="btn ghost" type="button">Descartar alterações</button>
+              <button class="btn primary" type="submit">Salvar preferências</button>
+            </div>
+          </form>
+        </section>
 
-                <div id="bioEditMode" class="hidden">
-                    <textarea id="userBioEdit" class="bio-textarea" rows="4" placeholder="Conte um pouco sobre você..."></textarea>
-                    <div class="bio-actions">
-                        <button id="cancelBioEdit" class="btn ghost" type="button">Cancelar</button>
-                        <button id="saveBioEdit" class="btn primary" type="submit">Salvar Bio</button>
-                    </div>
-                </div>
-            </section>
-            <section class="main-settings">
-                <h2>Senha e Autenticação</h2>
-                <p>Gerencie suas credenciais e métodos de login.</p>
-                <hr style="margin: 40px 0;">
-            </section>
+        <section class="dashboard-section">
+          <header class="danger-header">
+            <h2>Senha e autenticação</h2>
+            <p>Gerencie suas credenciais e métodos de login.</p>
+          </header>
+          <div class="danger-zone">
+            <h3>Gerenciamento de conta</h3>
 
-            <section class="danger-zone">
-                <h3>Gerenciamento de Conta</h3>
+            <div id="section-email" class="danger-action">
+              <div>
+                <h4>Alterar e-mail</h4>
+                <p>Seu e-mail de login atual é <strong>usuario@email.com</strong>.</p>
+              </div>
+              <button class="btn-danger" type="button">Alterar e-mail</button>
+            </div>
 
-                <div id="section-email" class="danger-action">
-                    <div>
-                        <h4>Alterar E-mail</h4>
-                        <p>Seu e-mail de login atual é <strong>usuario@email.com</strong>.</p>
-                    </div>
-                    <button class="btn-danger">Alterar E-mail</button>
-                </div>
+            <div id="section-password" class="danger-action">
+              <div>
+                <h4>Alterar senha</h4>
+                <p>Recomendamos usar uma senha forte que você não usa em outro lugar.</p>
+              </div>
+              <button class="btn-danger" type="button">Alterar senha</button>
+            </div>
 
-                <div id="section-password" class="danger-action">
-                    <div>
-                        <h4>Alterar Senha</h4>
-                        <p>Recomendamos usar uma senha forte que você não usa em outro lugar.</p>
-                    </div>
-                    <button class="btn-danger">Alterar Senha</button>
-                </div>
+            <div id="section-premium" class="danger-action">
+              <div>
+                <h4>Cancelar assinatura Premium</h4>
+                <p>Você perderá acesso aos benefícios exclusivos ao final do ciclo de cobrança.</p>
+              </div>
+              <button class="btn-danger" type="button">Cancelar Premium</button>
+            </div>
 
-                <div id="section-premium" class="danger-action">
-                    <div>
-                        <h4>Cancelar Assinatura Premium</h4>
-                        <p>Você perderá acesso aos benefícios exclusivos ao final do ciclo de cobrança.</p>
-                    </div>
-                    <button class="btn-danger">Cancelar Premium</button>
-                </div>
+            <div id="section-delete" class="danger-action">
+              <div>
+                <h4>Excluir conta</h4>
+                <p>Esta ação é permanente e não pode ser desfeita.</p>
+              </div>
+              <button class="btn-danger" type="button">Excluir conta</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
 
-                <div id="section-delete" class="danger-action">
-                    <div>
-                        <h4>Excluir Conta</h4>
-                        <p>Esta ação é permanente e não pode ser desfeita.</p>
-                    </div>
-                    <button class="btn-danger">Excluir Conta</button>
-                </div>
-            </section>
-        </main>
+  <div data-include="./componentes/footer.html"></div>
 
-        <div data-include="./componentes/footer.html"></div>
-        <script src="./js/main.js" defer></script>
-    </body>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/main.js" defer></script>
+</body>
 </html>

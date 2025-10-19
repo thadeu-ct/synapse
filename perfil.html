@@ -8,11 +8,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css"/>
 </head>
-<body>
-  <div data-include="./componentes/header.html"></div>
-
-  <main class="nx-main profile-main">
-    <section class="profile-layout">
+<body class="page-dashboard page-perfil" data-page="perfil">
+  <main class="nx-main dashboard-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="profile-main dashboard-main">
+        <section class="profile-layout">
       <aside class="profile-aside">
         <span class="badge">Passo 2</span>
         <h1>Finalize seu perfil</h1>
@@ -141,6 +142,8 @@
           </div>
         </form>
       </div>
+    </section>
+      </section>
     </section>
   </main>
 

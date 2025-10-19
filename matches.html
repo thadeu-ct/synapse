@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Synapse — Seus matches</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css"/>
+</head>
+<body class="page-dashboard page-matches" data-page="matches">
+  <main class="nx-main dashboard-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="dashboard-main">
+        <section class="dashboard-section">
+          <header>
+            <h1>Matches inteligentes</h1>
+            <p>Selecione uma conexão para conversar, combinar formatos e avançar para a troca de conhecimento.</p>
+          </header>
+
+          <div class="tile-grid">
+            <article class="tile-card">
+              <header>
+                <div class="avatar">AR</div>
+                <div>
+                  <strong>Ana Ribeiro</strong>
+                  <span>Ensina: Inglês conversação</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Quer aprender:</strong> HTML/CSS iniciante</li>
+                <li><strong>Disponibilidade:</strong> Segundas & Quartas à noite</li>
+              </ul>
+              <footer>
+                <span class="tag">Novo match</span>
+                <span class="tag">Online</span>
+              </footer>
+              <button class="btn primary full" type="button">Abrir conversa</button>
+            </article>
+
+            <article class="tile-card">
+              <header>
+                <div class="avatar">DM</div>
+                <div>
+                  <strong>Diego Martins</strong>
+                  <span>Ensina: JavaScript prático</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Quer aprender:</strong> Violão popular</li>
+                <li><strong>Disponibilidade:</strong> Terças às 19h, Sábados manhã</li>
+              </ul>
+              <footer>
+                <span class="tag">Em andamento</span>
+                <span class="tag">Híbrido</span>
+              </footer>
+              <button class="btn ghost full" type="button">Ver histórico</button>
+            </article>
+
+            <article class="tile-card">
+              <header>
+                <div class="avatar">ML</div>
+                <div>
+                  <strong>Marina Lopes</strong>
+                  <span>Ensina: Ilustração digital</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Quer aprender:</strong> Marketing digital</li>
+                <li><strong>Disponibilidade:</strong> Quintas à tarde</li>
+              </ul>
+              <footer>
+                <span class="tag">Sugestão</span>
+                <span class="tag">Online</span>
+              </footer>
+              <button class="btn primary full" type="button">Enviar convite</button>
+            </article>
+
+            <article class="tile-card">
+              <header>
+                <div class="avatar">GP</div>
+                <div>
+                  <strong>Gabriel Pereira</strong>
+                  <span>Ensina: Python para dados</span>
+                </div>
+              </header>
+              <ul>
+                <li><strong>Quer aprender:</strong> UX Research</li>
+                <li><strong>Disponibilidade:</strong> Domingos à tarde</li>
+              </ul>
+              <footer>
+                <span class="tag">Disponível</span>
+                <span class="tag">Presencial</span>
+              </footer>
+              <button class="btn ghost full" type="button">Guardar para depois</button>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <header>
+            <h2>Preferências atualizadas</h2>
+            <p>Revise suas habilidades e interesses para receber matches cada vez mais precisos.</p>
+          </header>
+          <div class="row between">
+            <a class="btn ghost" href="./perfil.html">Editar perfil</a>
+            <a class="btn link" href="./cursos.html">Ver cursos sugeridos</a>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/main.js" defer></script>
+</body>
+</html>

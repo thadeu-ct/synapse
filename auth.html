@@ -38,7 +38,7 @@
               <label class="chk">
                 <input type="checkbox" id="lembrar"/> <span>Lembrar de mim</span>
               </label>
-              <a href="#" class="link-muted">Esqueci minha senha</a>
+              <button type="button" class="link-muted" id="linkEsqueci">Esqueci minha senha</button>
             </div>
             <small class="error"></small>
           </div>
@@ -96,10 +96,27 @@
           <button class="btn primary full" type="submit">Criar conta</button>
         </form>
       </div>
-
-      <p class="auth-note">Protótipo acadêmico — dados ficam apenas no seu navegador (localStorage).</p>
     </section>
   </main>
+
+  <div id="modalRecuperar" class="modal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalRecuperarTitulo">
+      <h2 id="modalRecuperarTitulo">Recuperar senha</h2>
+      <p>Informe o e-mail cadastrado e enviaremos instruções para redefinir sua senha.</p>
+      <div id="forgotStatus" class="form-alert" role="status" hidden></div>
+      <form id="formRecuperar" class="modal-form" novalidate>
+        <div class="field">
+          <label for="forgotEmail">E-mail</label>
+          <input id="forgotEmail" type="email" inputmode="email" autocomplete="email" required placeholder="voce@exemplo.com"/>
+          <small class="error"></small>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn ghost" id="btnCancelarRecuperar">Cancelar</button>
+          <button type="submit" class="btn primary" id="btnEnviarRecuperar">Enviar link</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <div data-include="./componentes/footer.html"></div>
 
