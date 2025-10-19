@@ -381,18 +381,8 @@ body {
 .step h3{ margin:0; color:#fff; font-size:1.1rem; }
 .step p{ margin:0; }
 .step-detail{
-  display:flex;
-  align-items:flex-start;
-  gap:8px;
   color:rgba(206,213,245,.82);
-}
-.step-detail span{ display:block; font-size:0.98rem; line-height:1.6; }
-.step-detail > svg{
-  color:#9de6ff;
-  width:20px;
-  height:20px;
-  stroke-width:1.8;
-  flex-shrink:0;
+  line-height:1.6;
 }
 .step-icon{
   width:54px; height:54px; border-radius:18px; display:grid; place-items:center;
@@ -463,8 +453,8 @@ body {
   gap:12px;
 }
 .faq-list summary::-webkit-details-marker{ display:none; }
-.faq-list summary::after{
-  content:"";
+.faq-label{ flex:1; }
+.faq-arrow{
   width:12px;
   height:12px;
   border-right:2px solid rgba(157,207,255,.95);
@@ -473,7 +463,7 @@ body {
   transition:transform .25s ease, border-color .25s ease;
   flex-shrink:0;
 }
-.faq-list details[open] summary::after{
+.faq-list details[open] .faq-arrow{
   transform:rotate(-135deg);
   border-color:rgba(88,182,255,1);
 }
