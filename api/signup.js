@@ -36,12 +36,12 @@ export default async function handler(req, res) {
     if (!authData || !authData.user) {
       throw new Error("Falha ao criar usuário no sistema de autenticação (authData nulo).");
     }
-    newUserId = authData.user.id;
+    novoUsuarioId = authData.user.id;
 
     // Insere o novo usuário na tabela "usuarios"
     const { error: insereUsuaioError } = await supabaseAdmin
       .from("usuarios")
-      .insert([{ id: newUserId, nome: nome, sobrenome: sobrenome, email: email }])
+      .insert([{ id: novoUsuarioId, nome: nome, sobrenome: sobrenome, email: email }])
     
     if (insereUsuaioError) {
       throw insereUsuaioError; // manda erro para o catch
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
 
     const { error: inserePreferenciaError } = await supabaseAdmin
       .from("preferencias")
-      .insert({id_usuario: newUserId})
+      .insert({id_usuario: novoUsuarioId})
 
     if (inserePreferenciaError) {
       throw inserePreferenciaError; // manda erro para o catch
@@ -71,19 +71,19 @@ export default async function handler(req, res) {
     }
     
     // Se um usuário chegou a ser criado no auth, tenta deletá-lo
-    if (newUserId) {
-      console.error(`ERRO durante signup após criar auth user ${newUserId}. Iniciando rollback... Causa: ${err.message}`);
+    if (novoUsuarioId) {
+      console.error(`ERRO durante signup após criar auth user ${novoUsuarioId}. Iniciando rollback... Causa: ${err.message}`);
       try {
         // Usamos await aqui para garantir que a deleção seja tentada antes de responder
-        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(newUserId);
+        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(novoUsuarioId);
         if (deleteError) {
-            console.error(`ERRO CRÍTICO DURANTE ROLLBACK do usuário ${newUserId}: ${deleteError.message}`);
+            console.error(`ERRO CRÍTICO DURANTE ROLLBACK do usuário ${novoUsuarioId}: ${deleteError.message}`);
         } else {
-            console.log(`Rollback: Usuário ${newUserId} deletado do auth.`);
+            console.log(`Rollback: Usuário ${novoUsuarioId} deletado do auth.`);
             // Cascade delete deve cuidar do resto
         }
       } catch (rollbackError) {
-        console.error(`EXCEÇÃO CRÍTICA DURANTE ROLLBACK do usuário ${newUserId}: ${rollbackError.message}`);
+        console.error(`EXCEÇÃO CRÍTICA DURANTE ROLLBACK do usuário ${novoUsuarioId}: ${rollbackError.message}`);
       }
     }
 
