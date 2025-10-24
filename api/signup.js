@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs"; // Biblioteca para hashing de senhas
 import { supabase, supabaseAdmin } from "../lib/database.js"; // Importa o cliente Supabase configurado
 
 export default async function handler(req, res) { 
@@ -25,46 +24,69 @@ export default async function handler(req, res) {
   let novoUsuarioId = null;
 
   try { // Verifica se o e-mail já está cadastrado
-    // sistema para criptografia de senha
-    const fatorSecreto = 15;
-    const senhaHash = await bcrypt.hash(senha, fatorSecreto);
+    const { data: authData, error: signUpError } = await supabase.auth.signUp({
+      email: email,
+      password: senha
+    })
+
+    if (signUpError) {
+      throw signUpError; // manda erro para o catch
+    }
+
+    if (!authData || !authData.user) {
+      throw new Error("Falha ao criar usuário no sistema de autenticação (authData nulo).");
+    }
+    newUserId = authData.user.id;
 
     // Insere o novo usuário na tabela "usuarios"
-    const { data: novoUsuario, error: insereUsuaioError } = await supabase 
+    const { error: insereUsuaioError } = await supabaseAdmin
       .from("usuarios")
-      .insert([{ nome, sobrenome, email, senha_hash: senhaHash }])
-      .select("id, nome, sobrenome, email, created_at")
-      .single();
+      .insert([{ id: newUserId, nome: nome, sobrenome: sobrenome, email: email }])
     
     if (insereUsuaioError) {
       throw insereUsuaioError; // manda erro para o catch
     }
 
-    novoUsuarioId = novoUsuario.id;
-
     const { error: inserePreferenciaError } = await supabaseAdmin
       .from("preferencias")
-      .insert({id_usuario: novoUsuarioId})
+      .insert({id_usuario: newUserId})
 
     if (inserePreferenciaError) {
       throw inserePreferenciaError; // manda erro para o catch
     }
 
     // pop-up de sucesso
-    res.status(201).json({ message: "Conta criada com sucesso!", usuario: novoUsuario }); 
+    res.status(201).json({ message: "Conta criada com sucesso!", usuario: authData.user }); 
 
     // pop-up de erro
   } catch (err) {
-    if (err.code === '23505') {
-        return res.status(400).json({ error: "Este e-mail já está cadastrado." });
+    // --- Tratamento de Erros e Rollback ---
+    let errorMessage = err.message || "Erro desconhecido no servidor.";
+    let errorStatus = err.status || 500;
+
+    // Trata erro de e-mail duplicado vindo do signUp
+    if (err.message && err.message.toLowerCase().includes("user already registered")) {
+      errorMessage = "Este e-mail já está cadastrado.";
+      errorStatus = 400;
     }
     
-    if (novoUsuarioId) {
-      console.error(`Erro ao concluir a conta para ${novoUsuarioId}. Iniciando rollback...`);
-      await supabaseAdmin.auth.admin.deleteUser(novoUsuarioId);
-      console.log(`Rollback concluído: Usuário ${novoUsuarioId} deletado.`);
+    // Se um usuário chegou a ser criado no auth, tenta deletá-lo
+    if (newUserId) {
+      console.error(`ERRO durante signup após criar auth user ${newUserId}. Iniciando rollback... Causa: ${err.message}`);
+      try {
+        // Usamos await aqui para garantir que a deleção seja tentada antes de responder
+        const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(newUserId);
+        if (deleteError) {
+            console.error(`ERRO CRÍTICO DURANTE ROLLBACK do usuário ${newUserId}: ${deleteError.message}`);
+        } else {
+            console.log(`Rollback: Usuário ${newUserId} deletado do auth.`);
+            // Cascade delete deve cuidar do resto
+        }
+      } catch (rollbackError) {
+        console.error(`EXCEÇÃO CRÍTICA DURANTE ROLLBACK do usuário ${newUserId}: ${rollbackError.message}`);
+      }
     }
 
-    res.status(500).json({ error: `Erro no servidor: ${err.message}` });
+    res.status(errorStatus).json({ error: errorMessage });
   }
 }
