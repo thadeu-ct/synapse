@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synapse · Área de Match</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./css/match-area.css">
+</head>
+<body class="page-dashboard page-match-area match-app" data-page="area-de-match">
+  <main class="nx-main dashboard-shell match-area-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="dashboard-main match-area">
+        <section class="dashboard-section match-area__hero">
+          <header class="match-area__hero-header">
+            <div>
+              <p class="match-area__eyebrow">Área de match</p>
+              <h1>Descubra perfis e combine trocas em poucos gestos</h1>
+              <p>Visual inspirado em stories para navegar com calma, com estatísticas em tempo real e um caminho claro para avançar.</p>
+            </div>
+            <a class="pill-btn outline" href="./match.html">Ir para mensagens</a>
+          </header>
+          <div class="match-area__hero-meta">
+            <div class="match-area__hero-card">
+              <span>Perfis curados</span>
+              <strong data-counter="total">0</strong>
+              <small>Atualizado agora</small>
+            </div>
+            <div class="match-area__hero-card">
+              <span>Novos por aqui</span>
+              <strong data-counter="fresh">0</strong>
+              <small>Modo “novo match”</small>
+            </div>
+            <div class="match-area__hero-card">
+              <span>Disponíveis</span>
+              <strong data-counter="live">0</strong>
+              <small>Respondem em minutos</small>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-section match-area__controls" aria-label="Filtros e destaques">
+          <div class="match-area__toolbar">
+            <div>
+              <p class="match-area__eyebrow">Filtro rápido</p>
+              <div class="match-area__filters" role="tablist" data-filters>
+                <button class="filter-chip is-active" type="button" data-filter="all">Todos</button>
+                <button class="filter-chip" type="button" data-filter="fresh">Novos</button>
+                <button class="filter-chip" type="button" data-filter="live">Disponíveis</button>
+                <button class="filter-chip" type="button" data-filter="highlight">Em alta</button>
+              </div>
+              <span class="match-area__filter-label" data-filter-label>Mostrando: Todos</span>
+            </div>
+            <button class="pill-btn ghost" type="button" data-clear-filter>Resetar filtro</button>
+          </div>
+          <div class="match-area__stories-header">
+            <strong>Vibes recentes</strong>
+            <span>Toque para abrir o perfil completo</span>
+          </div>
+          <div class="match-area__stories" data-story-rail aria-label="Perfis em destaque"></div>
+        </section>
+
+        <section class="match-area__layout">
+          <article class="dashboard-section match-area__deck-panel">
+            <header class="match-area__panel-header">
+              <div>
+                <p class="match-area__eyebrow">Deck interativo</p>
+                <h2>Próximos perfis</h2>
+              </div>
+              <p class="match-area__panel-hint">← Passar · ↑ Perfil · → Match</p>
+            </header>
+
+            <div class="deck-wrapper">
+              <div class="deck" data-stack aria-live="polite"></div>
+              <p class="deck-hint" role="status">Arraste lateralmente ou use as setas do teclado.</p>
+              <div class="empty-state hidden" data-empty>
+                <h3>Acabou por aqui</h3>
+                <p>Volte mais tarde para novos perfis ou conheça o plano premium e libere curadoria contínua.</p>
+                <button class="pill-btn primary" type="button">Conhecer planos premium</button>
+              </div>
+              <div class="empty-state hidden" data-filter-empty>
+                <h3>Nenhum perfil neste filtro</h3>
+                <p>Selecione “Todos” ou ajuste suas preferências para ampliar a curadoria.</p>
+                <button class="pill-btn ghost" type="button" data-clear-filter>Ver todos</button>
+              </div>
+            </div>
+
+            <div class="action-row" aria-label="Ações rápidas">
+              <button class="action-btn action-btn--pass" data-action="pass">
+                <span aria-hidden="true">✕</span>
+                <small>Não</small>
+              </button>
+              <button class="action-btn action-btn--profile" data-action="profile">
+                <span aria-hidden="true">⋮</span>
+                <small>Perfil</small>
+              </button>
+              <button class="action-btn action-btn--like" data-action="like">
+                <span aria-hidden="true">❤</span>
+                <small>Match</small>
+              </button>
+            </div>
+          </article>
+
+          <aside class="match-area__insights">
+            <article class="dashboard-section match-area__stats-card">
+              <header>
+                <p class="match-area__eyebrow">Visão rápida</p>
+                <h3>Sinais da fila</h3>
+              </header>
+              <ul class="match-area__stat-grid">
+                <li>
+                  <span class="label">Perfis ativos</span>
+                  <strong data-counter="total">0</strong>
+                  <small>Curadoria atual</small>
+                </li>
+                <li>
+                  <span class="label">Novos contatos</span>
+                  <strong data-counter="fresh">0</strong>
+                  <small>Chegaram hoje</small>
+                </li>
+                <li>
+                  <span class="label">Disponíveis agora</span>
+                  <strong data-counter="live">0</strong>
+                  <small>Respondem em minutos</small>
+                </li>
+              </ul>
+            </article>
+
+            <article class="dashboard-section match-area__queue-card">
+              <header>
+                <p class="match-area__eyebrow">Fila</p>
+                <h3>Próximos perfis</h3>
+              </header>
+              <ul class="match-area__queue-list" data-queue-list></ul>
+            </article>
+          </aside>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <section class="profile-modal hidden" data-modal tabindex="-1">
+    <div class="profile-modal__scrim" data-modal-close></div>
+    <article class="profile-modal__sheet" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <header class="profile-modal__header">
+        <div>
+          <p class="chip">Perfil completo</p>
+          <h2 id="profileModalTitle"></h2>
+          <span class="subtitle" data-modal-role></span>
+        </div>
+        <button class="pill-btn ghost" data-modal-close>Fechar</button>
+      </header>
+      <div class="profile-modal__content" data-modal-content></div>
+    </article>
+  </section>
+
+  <script src="./js/main.js" defer></script>
+  <script type="module" src="./js/match-area.js"></script>
+</body>
+</html>

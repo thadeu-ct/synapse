@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synapse · Mensagens</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./css/match-chat.css">
+</head>
+<body class="page-dashboard page-chat" data-page="match">
+  <main class="nx-main dashboard-shell chat-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="dashboard-main chat-area">
+        <section class="dashboard-section chat-hero">
+          <div class="chat-hero__content">
+            <div>
+              <p class="chat-eyebrow">Mensagens</p>
+              <h1>Continue as trocas que já começaram</h1>
+              <p>Responda seus matches, compartilhe materiais e marque a próxima conversa.</p>
+            </div>
+            <a class="btn ghost" href="./area-de-match.html">Voltar para a Área de Match</a>
+          </div>
+          <div class="chat-hero__stats">
+            <article>
+              <span>Conversas ativas</span>
+              <strong data-stat="conversations">0</strong>
+            </article>
+            <article>
+              <span>Não lidas</span>
+              <strong data-stat="unread">0</strong>
+            </article>
+            <article>
+              <span>Último contato</span>
+              <strong data-stat="last">—</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="chat-area__layout" data-chat-layout data-view="list">
+          <article class="dashboard-section chat-panel">
+            <header class="chat-panel__header">
+              <div>
+                <p class="chat-eyebrow">Inbox</p>
+                <h2>Matches ativos</h2>
+              </div>
+              <div class="chat-panel__actions">
+                <label class="chat-search">
+                  <i data-lucide="search"></i>
+                  <input type="search" placeholder="Buscar por nome" data-search aria-label="Buscar conversa" />
+                </label>
+                <button class="chat-panel__filter" type="button">
+                  <i data-lucide="sliders-horizontal"></i>
+                  <span>Filtros</span>
+                </button>
+              </div>
+            </header>
+            <ul class="conversation-list" data-conversations></ul>
+            <div class="conversation-empty" data-empty-list hidden>
+              <p>Nenhum match por aqui ainda. Volte para a Área de Match e comece novas conexões!</p>
+              <a class="btn ghost" href="./area-de-match.html">Descobrir perfis</a>
+            </div>
+          </article>
+
+          <article class="dashboard-section chat-thread" aria-live="polite" data-thread>
+            <header class="thread-header">
+              <button class="chat-back" data-back aria-label="Voltar para lista">
+                <i data-lucide="arrow-left"></i>
+              </button>
+              <div class="thread-meta">
+                <strong data-thread-name>Selecione uma conversa</strong>
+                <span data-thread-status>As respostas aparecem aqui.</span>
+              </div>
+              <div class="thread-actions">
+                <button class="chat-icon-btn" data-open-profile aria-label="Ver perfil completo">
+                  <i data-lucide="user-round"></i>
+                </button>
+                <button class="chat-icon-btn" type="button" aria-label="Mais ações">
+                  <i data-lucide="more-horizontal"></i>
+                </button>
+              </div>
+            </header>
+            <div class="messages" data-messages>
+              <div class="chat-thread__placeholder">
+                <p>Escolha uma conversa para ver o histórico.</p>
+                <a class="btn ghost" href="./area-de-match.html">Voltar para a Área de Match</a>
+              </div>
+            </div>
+            <form class="composer" data-composer>
+              <button class="chat-icon-btn" type="button" aria-label="Abrir emojis">
+                <i data-lucide="smile"></i>
+              </button>
+              <button class="chat-icon-btn" type="button" aria-label="Anexar arquivo">
+                <i data-lucide="paperclip"></i>
+              </button>
+              <textarea rows="1" placeholder="Digite uma mensagem" data-input></textarea>
+              <button class="send-btn" type="submit" aria-label="Enviar mensagem">
+                <i data-lucide="send"></i>
+              </button>
+            </form>
+          </article>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <section class="chat-sheet" data-sheet hidden>
+    <div class="chat-sheet__panel">
+      <header>
+        <div>
+          <h3 data-sheet-name></h3>
+          <p data-sheet-subtitle></p>
+        </div>
+        <button class="chat-icon-btn" type="button" data-sheet-close aria-label="Fechar">
+          <i data-lucide="x"></i>
+        </button>
+      </header>
+      <div class="chat-sheet__body" data-sheet-body></div>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="./js/main.js" defer></script>
+  <script type="module" src="./js/match.js"></script>
+</body>
+</html>
