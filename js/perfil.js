@@ -158,8 +158,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const successMessage = response?.message || "Perfil sincronizado com sucesso!";
       setStatus(successMessage);
       persistSessionIdentity(data);
-      alert(successMessage);
-      location.href = "./index.html";
+      alert(`${successMessage}\nAbrindo a área de matches personalizada.`);
+      location.href = "./area-de-match.html";
     } catch (err) {
       setSyncState("Erro ao sincronizar", "error");
       setStatus(err.message || "Não foi possível salvar no servidor.", "error");

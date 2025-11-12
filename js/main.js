@@ -1,5 +1,6 @@
 // ---------- Boot: inclui parciais e inicia a UI ----------
 (async function boot() {
+  applyThemePreference();   // aplica tema antes do carregamento
   await includePartials();  // carrega header/footer
   initUI();                 // prepara cartões e listeners
 })();
@@ -57,6 +58,49 @@ async function includePartials() {
   applyHeaderSessionState();
   setupNavigationHighlight();
   setupDashboardNav();
+}
+
+function applyThemePreference() {
+  const root = document.documentElement;
+  const storedTheme = readThemePreference();
+  const mediaQuery = window.matchMedia ? window.matchMedia("(prefers-color-scheme: light)") : null;
+  const resolved = storedTheme || (mediaQuery?.matches ? "light" : "dark");
+
+  setTheme(resolved);
+
+  if (!storedTheme && mediaQuery) {
+    const handler = (event) => setTheme(event.matches ? "light" : "dark");
+    if (mediaQuery.addEventListener) mediaQuery.addEventListener("change", handler);
+    else if (mediaQuery.addListener) mediaQuery.addListener(handler);
+  }
+
+  window.__setSynapseTheme = (nextTheme = "dark") => {
+    const normalized = nextTheme === "light" ? "light" : "dark";
+    setTheme(normalized);
+    storeThemePreference(normalized);
+  };
+
+  function setTheme(theme) {
+    root.setAttribute("data-theme", theme);
+  }
+}
+
+function readThemePreference() {
+  try {
+    const stored = localStorage.getItem("nexos_theme");
+    if (stored === "light" || stored === "dark") return stored;
+  } catch (err) {
+    console.warn("Não foi possível ler preferência de tema.", err);
+  }
+  return null;
+}
+
+function storeThemePreference(theme) {
+  try {
+    localStorage.setItem("nexos_theme", theme);
+  } catch (err) {
+    console.warn("Não foi possível salvar preferência de tema.", err);
+  }
 }
 
 function applyHeaderSessionState() {
