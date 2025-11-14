@@ -19,6 +19,7 @@ const composerInput = document.querySelector('[data-input]');
 const backButton = document.querySelector('[data-back]');
 const threadNameEl = document.querySelector('[data-thread-name]');
 const threadStatusEl = document.querySelector('[data-thread-status]');
+const startCallButton = document.querySelector('[data-start-call]');
 const profileSheet = document.querySelector('[data-sheet]');
 const sheetNameEl = document.querySelector('[data-sheet-name]');
 const sheetSubtitleEl = document.querySelector('[data-sheet-subtitle]');
@@ -51,6 +52,7 @@ backButton?.addEventListener('click', () => {
   activeConversationId = null;
   layout?.setAttribute('data-view', 'list');
   location.hash = '';
+  updateCallButtonState();
 });
 
 composerForm?.addEventListener('submit', (event) => {
@@ -77,6 +79,7 @@ composerInput?.addEventListener('keydown', (event) => {
 });
 composerInput?.addEventListener('input', autoSizeComposer);
 autoSizeComposer();
+updateCallButtonState();
 
 threadEl?.querySelector('[data-open-profile]')?.addEventListener('click', () => {
   if (!activeConversationId) return;
@@ -86,6 +89,11 @@ threadEl?.querySelector('[data-open-profile]')?.addEventListener('click', () => 
 document.querySelector('[data-sheet-close]')?.addEventListener('click', closeProfileSheet);
 profileSheet?.addEventListener('click', (event) => {
   if (event.target === profileSheet) closeProfileSheet();
+});
+
+startCallButton?.addEventListener('click', () => {
+  if (!activeConversationId) return;
+  openVideoCall(activeConversationId);
 });
 
 window.addEventListener('hashchange', syncFromHash);
@@ -190,6 +198,7 @@ function openConversation(profileId) {
   renderMessages(profileId);
   markAsRead(profileId);
   renderConversationList(searchInput?.value || '');
+  updateCallButtonState();
 }
 
 function renderMessages(profileId) {
@@ -238,6 +247,24 @@ function markAsRead(profileId) {
   matches = matches.map((match) => (match.profileId === profileId ? { ...match, unread: 0 } : match));
   safeWrite(STORAGE_KEYS.matches, matches);
   updateChatStats();
+}
+
+function openVideoCall(profileId) {
+  window.location.href = `./video-chamada.html#call/${profileId}`;
+}
+
+function updateCallButtonState() {
+  if (!startCallButton) return;
+  if (activeConversationId) {
+    startCallButton.removeAttribute('disabled');
+    const activeProfile = profileMap.get(activeConversationId);
+    if (activeProfile) {
+      startCallButton.setAttribute('aria-label', `Iniciar videochamada com ${activeProfile.name}`);
+    }
+  } else {
+    startCallButton.setAttribute('disabled', '');
+    startCallButton.setAttribute('aria-label', 'Selecione um match para iniciar videochamada');
+  }
 }
 
 function openProfileSheet(profileId) {

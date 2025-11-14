@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synapse · Videochamada</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./css/video-call.css">
+</head>
+<body class="page-dashboard page-video" data-page="video">
+  <main class="nx-main dashboard-shell video-call-shell">
+    <div data-include="./componentes/dashboard-nav.html"></div>
+    <section class="dashboard-content">
+      <section class="dashboard-main video-call">
+        <section class="dashboard-section video-call__hero">
+          <div class="video-call__hero-text">
+            <span class="video-call__badge">
+              <i data-lucide="shield-check"></i>
+              Videochamada segura
+            </span>
+            <p class="video-call__eyebrow">Sessão combinada via chat</p>
+            <h1>Inicie a videochamada quando todos estiverem prontos</h1>
+            <p>Use esta área para conectar com o match, compartilhar a tela e registrar insights da sessão.</p>
+            <ul class="video-call__hero-meta">
+              <li>
+                <span>Match ativo</span>
+                <strong data-hero-name>Participante</strong>
+                <small data-hero-area>—</small>
+              </li>
+              <li>
+                <span>Próximo horário</span>
+                <strong>Hoje</strong>
+                <small data-hero-slot>Combine pelo chat</small>
+              </li>
+            </ul>
+          </div>
+          <div class="video-call__status-panel">
+            <div class="status-line">
+              <span>Status</span>
+              <strong data-call-status>aguardando participante</strong>
+            </div>
+            <div class="status-line">
+              <span>Duração</span>
+              <strong data-call-timer>00:00</strong>
+            </div>
+            <div class="status-line">
+              <span>Qualidade</span>
+              <strong>HD • 60 fps</strong>
+            </div>
+          </div>
+        </section>
+
+        <section class="video-call__layout">
+          <article class="dashboard-section video-call__stage">
+            <div class="call-banner" data-call-banner>
+              <strong>Conexão pronta</strong>
+              <p>Avise seu match no chat e clique em "Entrar na chamada" para conectar.</p>
+            </div>
+            <header class="stage-header">
+              <div class="stage-profile">
+                <div class="stage-avatar" data-stage-avatar>PR</div>
+                <div>
+                  <strong data-stage-name>Participante</strong>
+                  <span data-stage-role>Especialidade</span>
+                </div>
+              </div>
+              <div class="stage-status">
+                <span class="call-pill" data-call-pill>Em preparação</span>
+                <div class="stage-signal" data-signal-meter aria-label="Qualidade da conexão">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <button class="pill-btn ghost" type="button" data-action="share-link">
+                  <i data-lucide="link-2"></i>
+                  Compartilhar link
+                </button>
+              </div>
+            </header>
+            <div class="video-grid">
+              <div class="video-feed is-remote" data-remote-feed>
+                <div class="feed-overlay" data-call-overlay>
+                  <span class="feed-pill" data-feed-pill>Aguardando participante</span>
+                  <p data-feed-caption>Esta visualização será liberada quando a pessoa conectar.</p>
+                </div>
+                <div class="recording-indicator" data-recording-indicator>
+                  <span></span>
+                  Gravando
+                </div>
+                <div class="video-feed__meta">
+                  <strong data-remote-name>Participante</strong>
+                  <span data-remote-role></span>
+                </div>
+              </div>
+              <div class="video-feed is-self" data-self-feed>
+                <div class="video-feed__meta">
+                  <strong>Você</strong>
+                  <span>Mentor(a)</span>
+                </div>
+              </div>
+            </div>
+            <div class="call-controls">
+              <button class="call-btn" type="button" data-toggle="mic" aria-pressed="false">
+                <i data-lucide="mic"></i>
+                <span>Microfone</span>
+              </button>
+              <button class="call-btn" type="button" data-toggle="camera" aria-pressed="false">
+                <i data-lucide="video"></i>
+                <span>Câmera</span>
+              </button>
+              <button class="call-btn" type="button" data-action="share-screen">
+                <i data-lucide="tv"></i>
+                <span>Compartilhar</span>
+              </button>
+              <button class="call-btn" type="button" data-action="notes">
+                <i data-lucide="notebook-text"></i>
+                <span>Anotações</span>
+              </button>
+              <button class="call-btn primary" type="button" data-action="toggle-call">
+                <i data-lucide="phone"></i>
+                <span>Entrar na chamada</span>
+              </button>
+              <button class="call-btn danger" type="button" data-action="end-call" disabled>
+                <i data-lucide="phone-off"></i>
+                <span>Encerrar</span>
+              </button>
+            </div>
+          </article>
+
+          <aside class="dashboard-section video-call__sidebar">
+            <header>
+              <p class="video-call__eyebrow">Match ativo</p>
+              <h2 data-participant-name>Participante</h2>
+              <p data-participant-role></p>
+            </header>
+            <dl class="video-call__details">
+              <div>
+                <dt>Objetivo</dt>
+                <dd data-participant-goal>—</dd>
+              </div>
+              <div>
+                <dt>Disponibilidade combinada</dt>
+                <dd data-participant-availability>—</dd>
+              </div>
+            </dl>
+
+            <section class="video-call__checklist">
+              <h3>Checklist pré-chamada</h3>
+              <ul>
+                <li data-check="agenda">Rever agenda compartilhada</li>
+                <li data-check="materiais">Separar materiais mencionados no chat</li>
+                <li data-check="feedback">Definir próximo passo antes de encerrar</li>
+              </ul>
+            </section>
+
+            <section class="video-call__topics">
+              <h3>Tópicos previstos</h3>
+              <ul data-topics></ul>
+            </section>
+
+            <section class="video-call__notes">
+              <h3>Notas rápidas</h3>
+              <textarea rows="4" placeholder="Registre aprendizados combinados" data-notes></textarea>
+              <button class="btn ghost" type="button" data-action="save-notes">
+                <i data-lucide="check"></i>
+                Salvar rascunho local
+              </button>
+            </section>
+
+            <section class="video-call__recording">
+              <div>
+                <h3>Aula gravada</h3>
+                <p>Envie este link assim que encerrar. O acesso fica disponível automaticamente.</p>
+              </div>
+              <div class="recording-link">
+                <code data-recording-link>https://synapse.app/replay/</code>
+                <button class="pill-btn primary" type="button" data-action="recording-copy">
+                  <i data-lucide="copy"></i>
+                  Copiar link
+                </button>
+              </div>
+              <p class="recording-meta" data-recording-availability>Disponível por 7 dias.</p>
+              <button class="btn ghost" type="button" data-open-premium>
+                <i data-lucide="sparkles"></i>
+                Como assistir por 1 mês?
+              </button>
+            </section>
+
+          </aside>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+
+  <section class="premium-modal" data-premium-modal hidden>
+    <div class="premium-modal__panel">
+      <button class="chat-icon-btn" type="button" data-premium-close aria-label="Fechar aviso premium">
+        <i data-lucide="x"></i>
+      </button>
+      <span class="premium-modal__badge">Plano Premium</span>
+      <h3>Assista à gravação por até 1 mês</h3>
+      <p>Matches com assinatura premium mantêm o replay disponível por 30 dias, com espaço para notas compartilhadas e transcrição automática.</p>
+      <ul>
+        <li><strong>Plano atual:</strong> 7 dias de acesso.</li>
+        <li><strong>Premium:</strong> 30 dias + download do conteúdo.</li>
+      </ul>
+      <a class="btn primary" href="./cursos.html" target="_self">Conhecer planos premium</a>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+  <script src="./js/main.js" defer></script>
+  <script type="module" src="./js/video-call.js"></script>
+</body>
+</html>
