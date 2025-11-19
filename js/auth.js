@@ -145,6 +145,25 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       });
 
+      const token = response.session?.access_token;
+      
+      if (token) {
+          // 3. Salva a sessão completa (Token + Dados)
+          const sessionPayload = {
+              email: email.value.trim().toLowerCase(),
+              nome: nome.value.trim(),
+              sobrenome: sobrenome.value.trim(),
+              token: token // <--- O PASSAPORTE
+          };
+          localStorage.setItem("nexos_session", JSON.stringify(sessionPayload));
+          
+          alert("Conta criada! Entrando...");
+      } else {
+          alert("Conta criada! Faça login para continuar.");
+      }
+
+      location.href = "./perfil.html";
+
       alert("Conta criada! Vamos completar seu perfil.");
       const firstName = nome.value.trim();
       const lastName = sobrenome.value.trim();
@@ -233,6 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setLoading(formLogin, false);
     }
   });
+
 
   // --- Recuperação de senha ---
   const modalForgot = document.getElementById("modalRecuperar");

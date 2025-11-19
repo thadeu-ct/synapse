@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     }
 
     // pop-up de sucesso
-    res.status(201).json({ message: "Conta criada com sucesso!", usuario: authData.user }); 
+    res.status(201).json({ message: "Conta criada com sucesso!", usuario: authData.user, session: authData.session }); 
 
     // pop-up de erro
   } catch (err) {

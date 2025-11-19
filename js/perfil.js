@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fullName) next.nomeCompleto = fullName;
     store.setItem("nexos_session", JSON.stringify(next));
   }
-
+localStorage.getItem("nexos_session")
   async function saveProfileRemote(payload) {
     const token = resolveAuthToken();
     if (!token) {
