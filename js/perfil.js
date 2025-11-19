@@ -218,23 +218,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function fillForm(p) {
-    byId("pfNome").value = p.nome || "";
-    byId("pfSobrenome").value = p.sobrenome || "";
-    byId("pfEmail").value = p.email || "";
-    byId("pfTelefone").value = p.telefone || "";
-    byId("pfCidade").value = p.cidade || "";
-    byId("pfUF").value = p.uf || "";
-    byId("pfOnline").checked = !!p.online;
-    byId("pfPresencial").checked = !!p.presencial;
-    hydrateTags("pfEnsina", p.ensina || []);
-    hydrateTags("pfAprende", p.aprende || []);
-    hydrateTags("pfDisponibilidade", p.disponibilidade || []);
-    byId("pfBio").value = p.bio || "";
-    byId("pfSite").value = p.site || "";
-    byId("pfLinkedin").value = p.linkedin || "";
-    const fotoField = byId("pfFotoUrl");
-    if (fotoField) fotoField.value = p.fotoUrl || "";
-  }
+    const setVal = (id, v) => { const el = byId(id); if(el) el.value = v || ""; };
+    const setCheck = (id, v) => { const el = byId(id); if(el) el.checked = !!v; };
+
+    // AQUI A MÁGICA ACONTECE: Escreve nos inputs da tela
+    setVal("pfNome", p.nome);          // Preenche Nome
+    setVal("pfSobrenome", p.sobrenome); // Preenche Sobrenome
+    setVal("pfEmail", p.email);        // Preenche Email
+
+    // ... resto dos campos ...
+    setVal("pfTelefone", p.telefone);
+    setVal("pfCidade", p.cidade);
+    setVal("pfUF", p.uf);
+    setVal("pfBio", p.bio);
+    setVal("pfSite", p.site);
+    setVal("pfLinkedin", p.linkedin);
+    
+    setCheck("pfOnline", p.online);
+    setCheck("pfPresencial", p.presencial);
+    
+    hydrateTags("pfEnsina", p.ensina);
+    hydrateTags("pfAprende", p.aprende);
+    hydrateTags("pfDisponibilidade", p.disponibilidade);
+}
 
   function saveProfileLocal(email, obj) {
     if (!email) return;
