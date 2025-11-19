@@ -32,9 +32,13 @@ export default async function handler(req, res) {
         data: perfil,
         error: fetchError
       } = await supabase
-        .from('usuarios').select('*').eq('id', user.id).single();
+        .from('usuarios').select('*').eq('id', user.id).maybeSingle();;
       
       if(fetchError) { throw fetchError; }
+
+      if (!perfil) {
+          return res.status(404).json({ error: "Perfil não encontrado." });
+      }
       return res.status(200).json({perfil});
     }
 
