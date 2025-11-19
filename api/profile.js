@@ -3,7 +3,7 @@ import { supabase } from "../lib/database.js"; // Importa o cliente Supabase con
 export default async function handler(req, res) { 
   // Configura os cabeçalhos CORS para permitir requisições do frontend
   res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
@@ -30,34 +30,43 @@ export default async function handler(req, res) {
       throw erro;
     }
     
-    // Pega os dados de atualização passado pelo frontend
-    const { 
-      foto, bio, telefone, cidade, estado, formato_aula, 
-      tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin 
-    } = req.body;
-
-    // Executa UPDATE dos dados na tabela "usuarios"
-    const { error: updateError } = await supabase
-      .from('usuarios')
-      .update({
-        foto, bio, telefone, cidade, estado, formato_aula, 
-        tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin,
-        perfil_completo: true 
-      })
-      .eq('id', user.id);
-    
-    // Erro na atualização
-    if (updateError) {
-      const erro = new Error(`Erro ao atualizar perfil: ${updateError.message}`);
-      erro.status = 500;
-      throw erro;
+    if(req.method === 'GET'){
+      const {
+        data: perfil,
+        error: fetchError
+      } = await supabase
+        .from('usuarios').select('*').eq('id', user.id).single();
+      
+      if(fetchError) { throw fetchError; }
+      return res.status(200).json({perfil});
     }
 
-    // Retornar uma mensagem de sucesso.
-    res.status(200).json({ message: "Perfil atualizado com sucesso!" });
-    
-    // Retorna mensagem de erro 
-  } catch (error) {
+    if(req.method === 'POST'){
+      const { 
+        foto, bio, telefone, cidade, estado, formato_aula, 
+        tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin 
+      } = req.body;
+
+      const { error: updateError } = await supabase
+        .from('usuarios')
+        .update({
+          foto, bio, telefone, cidade, estado, formato_aula, 
+          tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin,
+          perfil_completo: true 
+        })
+        .eq('id', user.id);
+      
+      if (updateError) {
+        const erro = new Error(`Erro ao atualizar perfil: ${updateError.message}`);
+        erro.status = 500;
+        throw erro;
+      }
+
+      return res.status(200).json({ message: "Perfil atualizado com sucesso!" });
+    }
+    return res.status(405).json({ error: `Método ${req.method} não permitido` });
+  } 
+  catch (error) {
     res.status(error.status || 500).json({ error: error.message || "Erro no servidor ao atualizar perfil." });
   }
 }

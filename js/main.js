@@ -492,3 +492,73 @@ function initUI() {
   // Render inicial
   renderStack();
 }
+
+// Executa assim que a página carrega
+document.addEventListener("DOMContentLoaded", async () => {
+    await carregarDadosDoUsuario();
+});
+
+async function carregarDadosDoUsuario() {
+    // 1. Pega o token
+    const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
+    if (!sessionRaw) return; 
+    const session = JSON.parse(sessionRaw);
+    const token = session.token || session.access_token;
+    if (!token) return;
+
+    try {
+        // 2. Bate no banco de dados (GET)
+        const res = await fetch("https://synapse-seven-mu.vercel.app/api/profile", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            const u = data.perfil; // Dados vindos do banco
+
+            // 3. SIDEBAR
+            const sidebarName = document.getElementById("sidebarUserName");
+            if (sidebarName && u.nome) {
+                sidebarName.textContent = `${u.nome} ${u.sobrenome}`;
+            }
+
+            // 4. FORMULÁRIO DE PERFIL (Preenche tudo que encontrar)
+            const setVal = (id, val) => { 
+                const el = document.getElementById(id); 
+                if (el) el.value = val || ""; 
+            };
+
+            setVal("pfNome", u.nome);
+            setVal("pfSobrenome", u.sobrenome);
+            setVal("pfEmail", u.email);
+            setVal("pfTelefone", u.telefone);
+            setVal("pfCidade", u.cidade);
+            setVal("pfUF", u.estado); // Atenção: no banco é 'estado', no form é 'pfUF'
+            setVal("pfBio", u.bio);
+            setVal("pfSite", u.site_portfolio);
+            setVal("pfLinkedin", u.linkedin);
+
+            // Checkboxes (Online/Presencial)
+            // 0=Online, 1=Presencial, 2=Ambos
+            const chkOnline = document.getElementById("pfOnline");
+            const chkPresencial = document.getElementById("pfPresencial");
+            if (chkOnline) chkOnline.checked = (u.formato_aula === 0 || u.formato_aula === 2);
+            if (chkPresencial) chkPresencial.checked = (u.formato_aula === 1 || u.formato_aula === 2);
+
+            // Tags (Essa parte depende da biblioteca de tags do Mauricio, mas podemos tentar hidratar os inputs ocultos)
+            setVal("pfEnsina", (u.tag_ensinar || []).join(","));
+            setVal("pfAprende", (u.tag_aprender || []).join(","));
+            setVal("pfDisponibilidade", (u.disponibilidade || []).join(","));
+            
+            // Se a biblioteca de tags do perfil.js tiver uma função pública para recarregar, seria ideal chamá-la aqui.
+            // Mas preencher o input oculto já ajuda.
+        }
+
+    } catch (err) {
+        console.error("Erro ao carregar dados do usuário:", err);
+    }
+}
