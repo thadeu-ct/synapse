@@ -2,27 +2,24 @@ import { supabase } from "../lib/database.js"; // Importa o cliente Supabase con
 
 export default async function handler(req, res) { 
   // Configura os cabeçalhos CORS para permitir requisições do frontend
+  console.log(`[DEBUG] Recebi requisição em /api/profile. Método: ${req.method}`);
   res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
     return res.status(204).end();
-  } // backend respode as regras
-  if (req.method !== "POST") {
-    return res.status(405).end(`Método ${req.method} não permitido`);
-  } // backend só aceita dados
+  } 
 
   try {
-    // Obter o token de autorização
     const { authorization } = req.headers;
     if (!authorization) {
       const erro = new Error('Não autorizado: token não fornecido.');
       erro.status = 401;
       throw erro;
     }
+
     const token = authorization.split(' ')[1];
 
-    // Procurar o usuário pelo token
     const { data: { user }, error } = await supabase.auth.getUser(token);
     if (error || !user) {
       const erro = new Error('Não autorizado: token inválido ou expirado.');
@@ -43,14 +40,14 @@ export default async function handler(req, res) {
 
     if(req.method === 'POST'){
       const { 
-        foto, bio, telefone, cidade, estado, formato_aula, 
+        nome, sobrenome, foto, bio, telefone, cidade, estado, formato_aula, 
         tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin 
       } = req.body;
 
       const { error: updateError } = await supabase
         .from('usuarios')
         .update({
-          foto, bio, telefone, cidade, estado, formato_aula, 
+          nome, sobrenome, foto, bio, telefone, cidade, estado, formato_aula, 
           tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin,
           perfil_completo: true 
         })
