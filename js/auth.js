@@ -174,12 +174,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const senha = document.getElementById("loginSenha");
     const remember = lembrar?.checked;
     let ok = true;
+    
     if (!emailOk(email.value)) { setError(email, "E-mail inválido."); ok=false; }
     if (senha.value.length < 6) { setError(senha, "Senha inválida."); ok=false; }
     if (!ok) return;
 
     try {
       setLoading(formLogin, true, "Entrando…");
+      
+      // 1. Faz a requisição
       const data = await request("/login", {
         method: "POST",
         body: JSON.stringify({
@@ -188,36 +191,44 @@ document.addEventListener("DOMContentLoaded", () => {
         })
       });
 
-      alert(`Bem-vindo, ${data.usuario?.nome || "usuário"}!`);
-      const normalizedEmail = email.value.trim().toLowerCase();
-      const userData = data.usuario || {};
-      const sessionPayload = { email: normalizedEmail };
-      const firstName = [userData.nome, userData.first_name, userData.firstName].find((value) => typeof value === "string" && value.trim());
-      const lastName = [userData.sobrenome, userData.last_name, userData.lastName].find((value) => typeof value === "string" && value.trim());
-      const fullNameCandidate = [userData.nomeCompleto, userData.nome_completo, userData.full_name, userData.fullName]
-        .find((value) => typeof value === "string" && value.trim());
-      if (firstName) sessionPayload.nome = firstName.trim();
-      if (lastName) sessionPayload.sobrenome = lastName.trim();
-      const composedName = fullNameCandidate?.trim() || [firstName, lastName].filter(Boolean).map((value) => value.trim()).join(" ");
-      if (composedName) sessionPayload.nomeCompleto = composedName;
-      const token = data.session?.access_token || data.token || data.access_token;
-      const refreshToken = data.session?.refresh_token || data.refresh_token;
-      if (token) sessionPayload.token = token;
-      if (refreshToken) sessionPayload.refreshToken = refreshToken;
+      // 2. Pega os dados DIRETO da resposta do nosso backend
+      const token = data.token; // O backend manda 'token'
+      const usuario = data.usuario || {}; // O backend manda 'usuario'
+
+      if (!token) {
+          throw new Error("Erro: Servidor não retornou token de acesso.");
+      }
+
+      alert(`Bem-vindo, ${usuario.nome || "usuário"}!`);
+
+      // 3. Monta a sessão
+      const sessionPayload = {
+        email: usuario.email,
+        nome: usuario.nome,
+        sobrenome: usuario.sobrenome,
+        token: token
+      };
+
       const serializedSession = JSON.stringify(sessionPayload);
+
+      // 4. Salva a sessão (Prioridade para localStorage se 'Lembrar' estiver marcado)
       if (remember) {
         localStorage.setItem("nexos_session", serializedSession);
         sessionStorage.removeItem("nexos_session");
+        persistRemembered(email.value);
       } else {
         sessionStorage.setItem("nexos_session", serializedSession);
-        localStorage.removeItem("nexos_session");
+        localStorage.removeItem("nexos_session"); // Limpa se existir antigo
+        persistRemembered("");
       }
-      if (remember) persistRemembered(email.value);
-      else persistRemembered("");
+      
+      // 5. Redireciona
       location.href = "./perfil.html";
+
     } catch (err) {
+      console.error("Erro no login:", err);
       setError(senha, err.message || "E-mail e/ou senha incorretos.");
-      alert(err.message || "Erro de conexão com o servidor.");
+      // alert removido para não irritar o usuário, a mensagem no input é melhor
     } finally {
       setLoading(formLogin, false);
     }
