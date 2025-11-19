@@ -77,16 +77,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   async function bootstrap() {
-    const email = byId("pfEmail")?.value.trim().toLowerCase() || session?.email;
-    if (!email) {
-      setStatus("Informe um e-mail e salve para sincronizar com o servidor.");
-      setSyncState("Em edição");
+    const token = resolveAuthToken();
+    
+    if (!token) {
+      setStatus("Faça login para editar seu perfil.");
       return;
     }
 
     setStatus("Carregando dados salvos…");
     try {
-      const remote = await fetchProfileRemote(email);
+      const remote = await fetchProfileRemote();
       if (remote) {
         fillForm(remote);
         setStatus("Perfil carregado do servidor.");
@@ -96,14 +96,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     } catch (err) {
       setStatus(err.message || "Não foi possível buscar o perfil no servidor.", "error");
-    }
-
-    const local = loadProfileLocal(email);
-    if (local) {
-      fillForm(local);
-      setStatus("Perfil carregado do armazenamento local.");
-    } else {
-      setStatus("Complete os dados para ter mais matches.");
     }
     setSyncState("Em edição");
   }
@@ -143,16 +135,20 @@ document.addEventListener("DOMContentLoaded", () => {
     setStatus();
 
     const data = getFormData();
-    if (!validate(data)) return;
+    if (!validate(data)) {
+      const firstError = document.querySelector(".is-invalid");
+      if (firstError) {
+        firstError.scrollIntoView({ behavior: "smooth", block: "center" });
+        firstError.focus();
+      }
+      return;
+    }
 
     try {
       toggleSaving(true);
-      data.updatedAt = new Date().toISOString();
       setStatus("Sincronizando com o servidor…");
       setSyncState("Sincronizando…");
       const response = await saveProfileRemote(data);
-      saveProfileLocal(data.email, data);
-      updateLocalUsers(data);
       isDirty = false;
       setSyncState("Sincronizado", "synced");
       const successMessage = response?.message || "Perfil sincronizado com sucesso!";
@@ -264,13 +260,42 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem(KEY, JSON.stringify(list));
   }
 
-  async function fetchProfileRemote(email) {
-    if (!email) return null;
-    const res = await fetch(`${API_BASE}/api/perfil/${encodeURIComponent(email)}`);
+  async function fetchProfileRemote() {
+    const token = resolveAuthToken();
+    if (!token) return null;
+    const res = await fetch(PROFILE_ENDPOINT, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    });
+
     if (res.status === 404) return null;
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
-    return data.perfil || null;
+    
+    // Mapeia snake_case (banco) para camelCase (formulário)
+    const p = data.perfil;
+    if (!p) return null;
+
+    return {
+        nome: p.nome,
+        sobrenome: p.sobrenome,
+        email: p.email,
+        telefone: p.telefone,
+        cidade: p.cidade,
+        uf: p.estado, // Banco usa 'estado'
+        online: p.formato_aula === 0 || p.formato_aula === 2,
+        presencial: p.formato_aula === 1 || p.formato_aula === 2,
+        ensina: p.tag_ensinar || [],
+        aprende: p.tag_aprender || [],
+        disponibilidade: p.disponibilidade || [],
+        bio: p.bio,
+        site: p.site_portfolio,
+        linkedin: p.linkedin,
+        fotoUrl: p.foto
+    };
   }
 
   function resolveAuthToken() {
