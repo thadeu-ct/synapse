@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
           throw new Error("Erro: Servidor não retornou token de acesso.");
       }
 
-      alert(`Bem-vindo, ${usuario.nome || "usuário"}!`);
+      alert(`Bem-vindo de volta, ${usuario.nome}!`);
 
       // 3. Monta a sessão
       const sessionPayload = {
