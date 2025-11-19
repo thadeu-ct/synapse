@@ -272,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const res = await fetch(PROFILE_ENDPOINT, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`
       }
     });
