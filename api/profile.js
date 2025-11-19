@@ -1,4 +1,4 @@
-import { supabase } from "../lib/database.js"; // Importa o cliente Supabase configurado
+import { supabase, supabaseAdmin } from "../lib/database.js"; // Importa o cliente Supabase configurado
 
 export default async function handler(req, res) { 
   // Configura os cabeçalhos CORS para permitir requisições do frontend
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
       const {
         data: perfil,
         error: fetchError
-      } = await supabase
+      } = await supabaseAdmin
         .from('usuarios').select('*').eq('id', user.id).maybeSingle();;
       
       if(fetchError) { throw fetchError; }
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
         tag_ensinar, tag_aprender, disponibilidade, site_portfolio, linkedin 
       } = req.body;
 
-      const { error: updateError } = await supabase
+      const { error: updateError } = await supabaseAdmin
         .from('usuarios')
         .update({
           nome, sobrenome, foto, bio, telefone, cidade, estado, formato_aula, 
