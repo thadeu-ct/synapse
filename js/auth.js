@@ -130,7 +130,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!emailOk(email.value)) { setError(email, "E-mail inválido."); ok=false; }
     if (senha.value.length < 6) { setError(senha, "Mínimo 6 caracteres."); ok=false; }
     if (senha.value !== confirma.value) { setError(confirma, "As senhas não conferem."); ok=false; }
-    if (!aceito.checked) { setError(aceito, "Você precisa aceitar os termos."); ok=false; }
+    if (!aceito.checked) { 
+        alert("Para criar sua conta, você precisa ler e aceitar os Termos e Condições e a Política de Privacidade.");
+        ok=false; 
+    }
+
     if (!ok) return;
 
     try {
@@ -177,7 +181,14 @@ document.addEventListener("DOMContentLoaded", () => {
       location.href = "./perfil.html";
     } catch (err) {
       setError(email, err.message || "Erro ao criar conta.");
-      alert(err.message || "Erro de conexão com o servidor.");
+      if (msg.includes("cadastrado") || msg.includes("registered")) {
+          if(confirm("Este e-mail já possui uma conta no Synapse.\n\nDeseja ir para a tela de Login?")) {
+             if(loginEmail) loginEmail.value = email.value; // Copia o email para o login
+             activate("login"); // Muda a aba
+             return;
+          }
+      }
+      // alert(err.message || "Erro de conexão com o servidor.");
     } finally {
       setLoading(formSignup, false);
     }
