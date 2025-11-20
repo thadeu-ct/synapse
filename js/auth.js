@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       setLoading(formSignup, true, "Criando conta…");
-      await request("/signup", {
+      const response = await request("/signup", {
         method: "POST",
         body: JSON.stringify({
           nome: nome.value.trim(),

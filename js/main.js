@@ -502,7 +502,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // --- 2. Lógica do Modal Premium (Global) ---
   const modal = document.getElementById("modalPlans");
   const btnClose = document.getElementById("btnClosePlans");
-  const btnAssinar = document.getElementById("btnAssinarPremium");
 
   // Função para abrir o modal (exposta globalmente para outros scripts usarem se precisar)
   window.openPremiumModal = function() {
@@ -518,10 +517,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   // Captura cliques em botões de upgrade espalhados pelo site (Delegação de eventos)
-  // Lógica de Assinar (Usando Delegação para funcionar com o footer injetado)
   document.body.addEventListener("click", async (e) => {
     // Verifica se o clique foi no botão de assinar (ou num ícone dentro dele)
     if (e.target.id === "btnAssinarPremium" || e.target.closest("#btnAssinarPremium")) {
+      e.preventDefault();
+
       const btnAssinar = document.getElementById("btnAssinarPremium");
       
       // 1. Verificação de Auth
@@ -532,13 +532,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
       
+      const originalText = btnAssinar.innerHTML;
+      if (btnAssinar) {
+        btnAssinar.textContent = "Processando...";
+        btnAssinar.disabled = true;
+      }
+      
       const session = JSON.parse(sessionRaw);
       const token = session.token || session.access_token;
 
       // 2. Feedback Visual
-      const originalText = btnAssinar.innerHTML; // Guarda o texto/ícone original
-      btnAssinar.textContent = "Processando...";
-      btnAssinar.disabled = true;
+       // Guarda o texto/ícone original
 
       try {
         // 3. Chamada à API
