@@ -180,15 +180,23 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("nexos_session", JSON.stringify(sessionPayload));
       location.href = "./perfil.html";
     } catch (err) {
-      setError(email, err.message || "Erro ao criar conta.");
+      // 1. Definimos a mensagem primeiro
+      const msg = (err.message || "").toLowerCase(); 
+      
+      // 2. Verificamos se é erro de duplicidade
       if (msg.includes("cadastrado") || msg.includes("registered")) {
           if(confirm("Este e-mail já possui uma conta no Synapse.\n\nDeseja ir para a tela de Login?")) {
-             if(loginEmail) loginEmail.value = email.value; // Copia o email para o login
+             // Copia o email para o campo de login para facilitar
+             const loginInput = document.getElementById("loginEmail");
+             if(loginInput) loginInput.value = email.value; 
+             
              activate("login"); // Muda a aba
              return;
           }
       }
-      // alert(err.message || "Erro de conexão com o servidor.");
+      
+      // 3. Se não for duplicado (ou se a pessoa cancelou o popup), mostra o erro no input
+      setError(email, err.message || "Erro ao criar conta.");
     } finally {
       setLoading(formSignup, false);
     }
