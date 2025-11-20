@@ -44,7 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
             
             if (res.ok) {
                 alert("Pagamento aprovado! " + data.message);
-                window.location.href = "./configuracoes.html"; // Manda pro perfil dourado
+                
+                const currentSession = JSON.parse(localStorage.getItem("nexos_session") || "{}");
+                currentSession.isPremium = true; 
+                localStorage.setItem("nexos_session", JSON.stringify(currentSession));
+
+                window.location.href = "./configuracoes.html"; 
             } else {
                 throw new Error(data.error);
             }
