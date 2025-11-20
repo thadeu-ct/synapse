@@ -1163,6 +1163,38 @@ body:not(.page-dashboard){
 }
 .btn.full{ width:100%; }
 
+/* Estilo para campos trancados (readonly) */
+.is-locked {
+    background-color: #f5f5f5; /* Fundo cinza claro */
+    color: #666; /* Texto cinza escuro */
+    cursor: not-allowed; /* Cursor de 'proibido' ou padrão */
+    border-color: #e0e0e0;
+}
+
+/* Ajuste para o link "Alterar nas configurações" */
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.link-small {
+    font-size: 0.75rem;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.link-small:hover {
+    text-decoration: underline;
+}
+
+/* Ajuste para Dark Mode (se tiver) */
+:root[data-theme="dark"] .is-locked {
+    background-color: #2a2a2a;
+    color: #aaa;
+    border-color: #444;
+}
+
 /* Adicione ao style.css se precisar */
 .modal-body-scroll {
   max-height: 60vh; /* Altura máxima de 60% da tela */
