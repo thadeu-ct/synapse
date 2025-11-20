@@ -35,4 +35,45 @@
       <small>© <span id="anoAtual"></span> Synapse Project — PUC-Rio</small>
     </div>
   </div>
+  <div id="modalPlans" class="modal-overlay" aria-hidden="true">
+  <div class="modal-container">
+    <button class="modal-close" id="btnClosePlans" aria-label="Fechar">×</button>
+    
+    <div class="plans-header">
+      <h2>Evolua sua conexão</h2>
+      <p>Desbloqueie o potencial máximo da Synapse.</p>
+    </div>
+
+    <div class="plans-grid">
+      <div class="plan-card plan-free">
+        <div class="plan-badge">Atual</div>
+        <h3>Free</h3>
+        <div class="plan-price">R$ 0<span>/mês</span></div>
+        <ul class="plan-features">
+          <li><i data-lucide="check"></i> Acesso à comunidade</li>
+          <li><i data-lucide="check"></i> Criação de perfil</li>
+          <li class="limited"><i data-lucide="minus"></i> 5 Matches por dia</li>
+          <li class="disabled"><i data-lucide="x"></i> Sem videochamada</li>
+          <li class="disabled"><i data-lucide="x"></i> Sem destaque</li>
+        </ul>
+        <button class="btn ghost full" disabled>Seu plano atual</button>
+      </div>
+
+      <div class="plan-card plan-premium">
+        <div class="plan-badge-premium">Recomendado</div>
+        <h3>Synapse Premium</h3>
+        <div class="plan-price">R$ 19,90<span>/mês</span></div>
+        <ul class="plan-features">
+          <li><i data-lucide="check"></i> <strong>Tudo do Free</strong></li>
+          <li><i data-lucide="check"></i> <strong>Matches ILIMITADOS</strong></li>
+          <li><i data-lucide="video"></i> Videochamada integrada</li>
+          <li><i data-lucide="zap"></i> Perfil em destaque (Ouro)</li>
+          <li><i data-lucide="star"></i> Acesso prioritário a cursos</li>
+        </ul>
+        <button id="btnAssinarPremium" class="btn primary full shine-button">
+          Virar Premium 💎
+        </button>
+      </div>
+    </div>
+  </div>
 </footer>

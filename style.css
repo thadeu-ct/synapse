@@ -1256,3 +1256,135 @@ body:not(.page-dashboard){
     text-decoration: underline;
     color: #93c5fd;
 }
+
+/* --- Modal de Planos (Overlay) --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.85); /* Fundo escuro bem denso */
+  backdrop-filter: blur(8px); /* Desfoque no fundo */
+  z-index: 9999; /* Acima de tudo */
+  display: none; /* Escondido por padrão */
+  place-items: center;
+  padding: 20px;
+}
+
+.modal-overlay[aria-hidden="false"] {
+  display: grid;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-container {
+  position: relative;
+  width: min(900px, 100%);
+  background: transparent; /* Transparente pois os cards darão a cor */
+  border-radius: 24px;
+  padding: 20px;
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  background: transparent;
+  border: 0;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.plans-header { margin-bottom: 40px; color: #fff; }
+.plans-header h2 { font-size: 2rem; margin-bottom: 8px; }
+.plans-header p { color: var(--muted); }
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr; /* Premium um pouco maior */
+  gap: 30px;
+  align-items: center;
+}
+
+/* --- CARD FREE (FOSCO) --- */
+.plan-free {
+  background: rgba(15, 23, 42, 0.6); /* Azul escuro fosco */
+  border: 1px solid rgba(148, 163, 184, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  color: var(--muted);
+  position: relative;
+}
+
+.plan-free h3 { color: #fff; font-size: 1.5rem; margin-bottom: 10px; }
+.plan-free .plan-price { font-size: 2rem; color: #fff; font-weight: 700; margin-bottom: 24px; }
+.plan-free .plan-badge {
+  position: absolute; top: 20px; right: 20px;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+  background: rgba(255, 255, 255, 0.1); padding: 4px 10px; border-radius: 10px;
+}
+
+/* --- CARD PREMIUM (BRILHANTE/JOIA) --- */
+.plan-premium {
+  background: linear-gradient(160deg, rgba(20, 15, 40, 0.9), rgba(10, 5, 20, 0.95));
+  border-radius: 24px;
+  padding: 40px; /* Maior destaque */
+  position: relative;
+  color: #fff;
+  /* A Borda Brilhante */
+  border: 2px solid transparent;
+  background-clip: padding-box; 
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.2); /* Glow Roxo */
+}
+
+/* Truque para borda gradiente brilhante */
+.plan-premium::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); /* Gradiente Joia */
+  z-index: -1;
+}
+
+.plan-premium h3 {
+  font-size: 1.8rem; margin-bottom: 10px;
+  background: linear-gradient(to right, #fff, #e9d5ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.plan-premium .plan-price {
+  font-size: 2.5rem; font-weight: 800; margin-bottom: 24px;
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+}
+
+.plan-badge-premium {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: linear-gradient(90deg, #ec4899, #8b5cf6);
+  padding: 6px 16px; border-radius: 20px;
+  font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+}
+
+/* Listas */
+.plan-features { list-style: none; text-align: left; margin-bottom: 30px; display: flex; flex-direction: column; gap: 12px; }
+.plan-features li { display: flex; align-items: center; gap: 10px; }
+.plan-features li svg { width: 18px; height: 18px; }
+.plan-free .limited { opacity: 0.6; }
+.plan-free .disabled { opacity: 0.4; text-decoration: line-through; }
+.plan-premium li svg { color: #a855f7; } /* Check roxo */
+
+/* Botão Brilhante */
+.shine-button {
+  background: linear-gradient(90deg, #6366f1, #ec4899);
+  border: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .plans-grid { grid-template-columns: 1fr; }
+  .plan-premium { order: -1; /* Premium vem primeiro no mobile */ }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

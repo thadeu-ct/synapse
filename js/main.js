@@ -495,9 +495,78 @@ function initUI() {
 
 // Executa assim que a página carrega
 document.addEventListener("DOMContentLoaded", async () => {
+    
+    // --- 1. Carregar Dados do Usuário (Prioridade) ---
     await carregarDadosDoUsuario();
+
+
+    // --- 2. Lógica do Modal Premium (Global) ---
+    const modal = document.getElementById("modalPlans");
+    const btnClose = document.getElementById("btnClosePlans");
+    const btnAssinar = document.getElementById("btnAssinarPremium");
+
+    // Função para abrir o modal (exposta globalmente para outros scripts usarem se precisar)
+    window.openPremiumModal = function() {
+        if(modal) modal.setAttribute("aria-hidden", "false");
+    };
+
+    // Fechar Modal
+    btnClose?.addEventListener("click", () => modal.setAttribute("aria-hidden", "true"));
+    
+    // Fechar clicando fora
+    modal?.addEventListener("click", (e) => {
+        if(e.target === modal) modal.setAttribute("aria-hidden", "true");
+    });
+
+    // Captura cliques em botões de upgrade espalhados pelo site (Delegação de eventos)
+    document.body.addEventListener("click", (e) => {
+        // Verifica se clicou num botão com ID 'btnUpgrade' ou dentro dele
+        if (e.target.id === "btnUpgrade" || e.target.closest("#btnUpgrade")) {
+            e.preventDefault();
+            window.openPremiumModal();
+        }
+    });
+
+    // Lógica de Assinar (Botão dentro do Modal)
+    btnAssinar?.addEventListener("click", async () => {
+        const sessionRaw = localStorage.getItem("nexos_session");
+        if (!sessionRaw) {
+            alert("Faça login primeiro!");
+            location.href = "./auth.html#login";
+            return;
+        }
+        const token = JSON.parse(sessionRaw).token;
+
+        btnAssinar.textContent = "Processando...";
+        btnAssinar.disabled = true;
+
+        try {
+            const res = await fetch("https://synapse-seven-mu.vercel.app/api/settings", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ acao: "assinar_premium" })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.message); // "Parabéns! Você agora é Premium! 💎"
+                location.reload(); // Recarrega para mostrar o status dourado!
+            } else {
+                throw new Error(data.error);
+            }
+        } catch (err) {
+            alert("Erro ao assinar: " + err.message);
+            btnAssinar.textContent = "Tentar Novamente";
+            btnAssinar.disabled = false;
+        }
+    });
+
 });
 
+// --- Função Auxiliar (fora do DOMContentLoaded para ficar limpo) ---
 async function carregarDadosDoUsuario() {
     // 1. Pega o token
     const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
@@ -511,7 +580,6 @@ async function carregarDadosDoUsuario() {
         const res = await fetch("https://synapse-seven-mu.vercel.app/api/profile", {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             }
         });

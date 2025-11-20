@@ -95,7 +95,14 @@ export default async function handler(req, res) {
                 message: `Erro ao deletar conta: ${deleteError.message}` 
             }}
         return res.status(200).json({ message: "Conta deletada com sucesso!" });
-        
+
+      case 'assinar_premium':
+        const { error: signError } = await supabase
+          .from('usuarios')
+          .update({ eh_premium: true }) // Vira True!
+          .eq('id', user.id);
+        if (signError) { throw signError; }
+        return res.status(200).json({ message: "Parabéns! Você agora é Premium! 💎" });
 
       default: // ação não cadastrada
         res.status(400).json({ error: `Ação desconhecida: ${action}` });
