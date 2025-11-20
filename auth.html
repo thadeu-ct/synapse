@@ -90,7 +90,7 @@
           <div class="row">
             <label class="chk">
               <input id="aceito" type="checkbox" required />
-              <span>Concordo com os <a href="#" class="link-muted">Termos</a> e a <a href="#" class="link-muted">Privacidade</a>.</span>
+              <span>Concordo com os <a href="#" class="link-muted" id="linkTermos">Termos</a> e a <a href="#" class="link-muted" id="linkPrivacidade">Privacidade</a>.</span>
             </label>
           </div>
 
@@ -116,6 +116,30 @@
           <button type="submit" class="btn primary" id="btnEnviarRecuperar">Enviar link</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <div id="modalTermos" class="modal" aria-hidden="true">
+    <div class="modal-content modal-large" role="dialog" aria-modal="true" aria-labelledby="modalTermosTitulo">
+      <h2 id="modalTermosTitulo">Termos de Uso e Privacidade</h2>
+      
+      <div class="modal-body-scroll">
+        <h3>1. Sobre o Projeto</h3>
+        <p>O Synapse é um projeto acadêmico desenvolvido na PUC-Rio. O objetivo é conectar estudantes para troca de conhecimentos. Esta plataforma é um MVP (Produto Mínimo Viável) e está em fase de testes.</p>
+
+        <h3>2. Coleta de Dados</h3>
+        <p>Coletamos apenas os dados necessários para o funcionamento da plataforma: Nome, E-mail e as preferências de aprendizado inseridas no perfil. Utilizamos o Supabase para armazenamento seguro.</p>
+
+        <h3>3. Privacidade</h3>
+        <p>Seus dados não serão vendidos ou compartilhados com terceiros para fins comerciais. Eles são utilizados exclusivamente para permitir o funcionamento do sistema de "Match" e comunicação entre usuários.</p>
+
+        <h3>4. Responsabilidade</h3>
+        <p>Como um projeto acadêmico, não garantimos disponibilidade de 100% do serviço. O uso da plataforma deve ser pautado no respeito mútuo entre os participantes.</p>
+      </div>
+
+      <div class="modal-actions right">
+        <button type="button" class="btn primary" id="btnFecharTermos">Li e Entendi</button>
+      </div>
     </div>
   </div>
 

@@ -372,4 +372,38 @@ document.addEventListener("DOMContentLoaded", () => {
       setLoading(formRecuperar, false);
     }
   });
+  // ... (código anterior do auth.js) ...
+
+  // --- Modal de Termos e Condições ---
+  const modalTermos = document.getElementById("modalTermos");
+  const btnFecharTermos = document.getElementById("btnFecharTermos");
+  const linkTermos = document.getElementById("linkTermos");
+  const linkPrivacidade = document.getElementById("linkPrivacidade");
+
+  function openTermos(e) {
+    if (e) e.preventDefault();
+    if (!modalTermos) return;
+    modalTermos.setAttribute("aria-hidden", "false");
+    document.body?.classList.add("modal-open");
+  }
+
+  function closeTermos() {
+    if (!modalTermos) return;
+    modalTermos.setAttribute("aria-hidden", "true");
+    document.body?.classList.remove("modal-open");
+    // Opcional: Marcar o checkbox automaticamente ao fechar
+    const chkAceito = document.getElementById("aceito");
+    if (chkAceito) chkAceito.checked = true;
+  }
+
+  // Event Listeners
+  linkTermos?.addEventListener("click", openTermos);
+  linkPrivacidade?.addEventListener("click", openTermos);
+  
+  btnFecharTermos?.addEventListener("click", closeTermos);
+  
+  // Fechar clicando fora (no fundo escuro)
+  modalTermos?.addEventListener("click", (evt) => {
+    if (evt.target === modalTermos) closeTermos();
+  });
 });

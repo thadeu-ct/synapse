@@ -1162,3 +1162,26 @@ body:not(.page-dashboard){
   background:transparent; border:0; cursor:pointer; font-size:16px; color:#cbd5e1;
 }
 .btn.full{ width:100%; }
+
+/* Adicione ao style.css se precisar */
+.modal-body-scroll {
+  max-height: 60vh; /* Altura máxima de 60% da tela */
+  overflow-y: auto; /* Barra de rolagem se o texto for longo */
+  margin-bottom: 20px;
+  padding-right: 10px;
+  text-align: left;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.modal-body-scroll h3 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+/* Ajuste para modais maiores se precisar */
+.modal-content.modal-large {
+  max-width: 600px;
+  width: 90%;
+}
