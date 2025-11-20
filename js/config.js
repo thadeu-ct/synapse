@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const API_BASE = "https://synapse-seven-mu.vercel.app/api";
     
+    const SUPABASE_URL = "SUA_URL_DO_SUPABASE_AQUI"; 
+    const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_AQUI";
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
     // --- 1. Verificação de Autenticação ---
     const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
     if (!sessionRaw) {
@@ -103,7 +107,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 3. Lógica da Bio (Visual) ---
+    // --- 3. LÓGICA DE UPLOAD DA FOTO (NOVO!) ---
+    const avatarWrapper = document.querySelector(".avatar-wrapper");
+    const fileInput = document.getElementById("fileAvatar");
+    const hoverLayer = document.getElementById("btnChangeAvatar");
+
+    // Efeito Hover
+    avatarWrapper?.addEventListener("mouseenter", () => hoverLayer.style.opacity = "1");
+    avatarWrapper?.addEventListener("mouseleave", () => hoverLayer.style.opacity = "0");
+
+    // Clique na imagem abre o seletor de arquivo
+    avatarWrapper?.addEventListener("click", () => fileInput.click());
+
+    // Quando selecionar um arquivo...
+    fileInput?.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!supabase) {
+            alert("Erro de configuração: Supabase Client não iniciado.");
+            return;
+        }
+
+        try {
+            // Feedback visual
+            hoverLayer.style.opacity = "1";
+            hoverLayer.innerHTML = '<span style="font-size:0.8rem; color:white;">Enviando...</span>';
+
+            // 1. Nome único para o arquivo (evita colisão)
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}.${fileExt}`;
+            const filePath = `${fileName}`;
+
+            // 2. Upload para o Storage do Supabase
+            const { data, error } = await supabase.storage
+                .from('avatares')
+                .upload(filePath, file);
+
+            if (error) throw error;
+
+            // 3. Pegar a URL Pública
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatares')
+                .getPublicUrl(filePath);
+
+            // 4. Salvar URL no Banco (Backend)
+            await sendAction("edicao_foto", { foto_url: publicUrl });
+
+            // 5. Atualizar na tela na hora
+            const imgPerfil = document.getElementById("imgAvatarDisplay");
+            imgPerfil.src = publicUrl;
+            
+            alert("Foto atualizada com sucesso!");
+
+        } catch (error) {
+            alert("Erro ao enviar foto: " + error.message);
+        } finally {
+            // Restaura o hover
+            hoverLayer.innerHTML = '<span style="font-size: 1.5rem;">📷</span>';
+            hoverLayer.style.opacity = "0";
+        }
+    });
+
+    // --- 4. Lógica da Bio (Visual) ---
     const btnEditBio = document.getElementById("editBioButton");
     const divDisplay = document.getElementById("bioDisplayMode");
     const divEdit = document.getElementById("bioEditMode");
@@ -120,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         divEdit.classList.add("hidden");
     });
 
-    // --- 4. Ações (Chamando a API settings.js) ---
+    // --- 5. Ações (Chamando a API settings.js) ---
 
     // Salvar Bio
     document.getElementById("saveBioEdit")?.addEventListener("click", async () => {

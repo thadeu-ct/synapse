@@ -14,18 +14,25 @@
     <section class="dashboard-content">
       <section class="dashboard-main">
         <section class="dashboard-section">
-          <div class="profile-summary">
-            <img src="./img/placeholder-avatar.png" alt="Foto de perfil do usuário">
-            <div class="profile-info">
-              <h1 id="userName">Nome do Usuário</h1>
-              <p><a href="#section-email">usuario@email.com</a></p>
-              <div class="premium-chip">
-                <span>Premium</span> &middot; <a href="#section-premium">Cancelar</a>
-              </div>
+        <section class="profile-summary">
+            <div class="avatar-wrapper" style="position: relative; cursor: pointer;">
+                <img src="./img/placeholder-avatar.png" alt="Foto de perfil" id="imgAvatarDisplay">
+                
+                <div id="btnChangeAvatar" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s;">
+                    <span style="font-size: 1.5rem;">📷</span>
+                </div>
+                
+                <input type="file" id="fileAvatar" accept="image/*" style="display: none;">
             </div>
-          </div>
-        </section>
 
+            <div class="profile-info">
+                <h1 id="userName">Nome do Usuário</h1>
+                <p><a href="#section-email">usuario@email.com</a></p>
+                <div class="premium-chip">
+                    <span>Premium</span> &middot; <a href="#section-premium">Cancelar</a>
+                </div>
+            </div>
+        </section>
         <section class="dashboard-section">
           <div class="bio-section">
             <div class="bio-header">
