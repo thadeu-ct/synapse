@@ -1,8 +1,14 @@
 // ---------- Boot: inclui parciais e inicia a UI ----------
 (async function boot() {
-  applyThemePreference();   // aplica tema antes do carregamento
-  await includePartials();  // carrega header/footer
-  initUI();                 // prepara cartões e listeners
+    applyThemePreference();   
+    await includePartials();  // Carrega Header e Footer (Onde está o Modal!)
+    
+    setupDashboardNav();      // Arruma a barra lateral
+    await carregarDadosDoUsuario(); // Tira o "Visitante"
+    setupPremiumLogic();      // <--- LIGA OS BOTÕES DO PREMIUM
+    
+    if (document.querySelector("#cardStack")) initUI(); 
+    if (window.lucide) lucide.createIcons();
 })();
 
 // ---------- Include de componentes (header/footer) ----------
@@ -493,149 +499,89 @@ function initUI() {
   renderStack();
 }
 
-// Executa assim que a página carrega
-document.addEventListener("DOMContentLoaded", async () => {
-  // --- 1. Carregar Dados do Usuário (Prioridade) ---
-  await carregarDadosDoUsuario();
+// 2. LÓGICA DO PREMIUM (ABRIR MODAL + IR PRO PAGAMENTO)
+function setupPremiumLogic() {
+    const modal = document.getElementById("modalPlans");
 
-
-  // --- 2. Lógica do Modal Premium (Global) ---
-  const modal = document.getElementById("modalPlans");
-  const btnClose = document.getElementById("btnClosePlans");
-
-  // Função para abrir o modal (exposta globalmente para outros scripts usarem se precisar)
-  window.openPremiumModal = function() {
-      if(modal) modal.setAttribute("aria-hidden", "false");
-  };
-
-  // Fechar Modal
-  btnClose?.addEventListener("click", () => modal.setAttribute("aria-hidden", "true"));
-  
-  // Fechar clicando fora
-  modal?.addEventListener("click", (e) => {
-      if(e.target === modal) modal.setAttribute("aria-hidden", "true");
-  });
-
-  // Captura cliques em botões de upgrade espalhados pelo site (Delegação de eventos)
-  document.body.addEventListener("click", async (e) => {
-    // Verifica se o clique foi no botão de assinar (ou num ícone dentro dele)
-    if (e.target.id === "btnAssinarPremium" || e.target.closest("#btnAssinarPremium")) {
-      e.preventDefault();
-
-      const btnAssinar = document.getElementById("btnAssinarPremium");
-      
-      // 1. Verificação de Auth
-      const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
-      if (!sessionRaw) {
-        alert("Faça login primeiro!");
-        location.href = "./auth.html#login";
-        return;
-      }
-      
-      const originalText = btnAssinar.innerHTML;
-      if (btnAssinar) {
-        btnAssinar.textContent = "Processando...";
-        btnAssinar.disabled = true;
-      }
-      
-      const session = JSON.parse(sessionRaw);
-      const token = session.token || session.access_token;
-
-      // 2. Feedback Visual
-       // Guarda o texto/ícone original
-
-      try {
-        // 3. Chamada à API
-        const res = await fetch("https://synapse-seven-mu.vercel.app/api/settings", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify({ acao: "assinar_premium" })
-        });
-
-        const data = await res.json();
+    // A. ABRIR O MODAL (Qualquer botão com id="btnUpgrade")
+    document.body.addEventListener("click", (e) => {
+        // Usa closest para funcionar mesmo clicando no ícone dentro do botão
+        const trigger = e.target.closest("#btnUpgrade");
         
-        if (res.ok) {
-          // 4. Sucesso
-          alert(data.message || "Parabéns! Você agora é Premium! 💎");
-          location.reload(); // Recarrega a página para atualizar o status
-        } else {
-          throw new Error(data.error || "Erro desconhecido");
+        if (trigger) {
+            e.preventDefault();
+            if (modal) {
+                modal.setAttribute("aria-hidden", "false"); // Mostra o modal
+            } else {
+                console.error("Erro: Modal de planos não encontrado no HTML.");
+            }
         }
-      } catch (err) {
-        console.error(err);
-        alert("Erro ao assinar: " + err.message);
-        // Restaura o botão
-        btnAssinar.innerHTML = originalText;
-        btnAssinar.disabled = false;
-      }
-    }
-  });
-});
+    });
 
-// --- Função Auxiliar (fora do DOMContentLoaded para ficar limpo) ---
+    // B. FECHAR O MODAL (Botão X ou clicar fora)
+    document.body.addEventListener("click", (e) => {
+        if (e.target.id === "btnClosePlans" || e.target === modal) {
+            if (modal) modal.setAttribute("aria-hidden", "true");
+        }
+    });
+
+    // C. BOTÃO "VIRAR PREMIUM" DENTRO DO MODAL -> VAI PARA PAGAMENTO
+    document.body.addEventListener("click", (e) => {
+        const btnPagar = e.target.closest("#btnAssinarPremium");
+        
+        if (btnPagar) {
+            e.preventDefault();
+
+            // Verifica se está logado
+            const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
+            if (!sessionRaw) {
+                alert("Faça login primeiro!");
+                location.href = "./auth.html#login";
+                return;
+            }
+
+            // Fecha o modal e redireciona
+            if (modal) modal.setAttribute("aria-hidden", "true");
+            window.location.href = "./pagamento.html";
+        }
+    });
+}
+
+// 3. DADOS DO USUÁRIO (TIRAR O "VISITANTE")
 async function carregarDadosDoUsuario() {
-    // 1. Pega o token
     const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
     if (!sessionRaw) return; 
+
     const session = JSON.parse(sessionRaw);
     const token = session.token || session.access_token;
     if (!token) return;
 
     try {
-        // 2. Bate no banco de dados (GET)
         const res = await fetch("https://synapse-seven-mu.vercel.app/api/profile", {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            headers: { "Authorization": `Bearer ${token}` }
         });
 
         if (res.ok) {
             const data = await res.json();
-            const u = data.perfil; // Dados vindos do banco
+            const u = data.perfil;
 
-            // 3. SIDEBAR
+            // Preenche Sidebar
             const sidebarName = document.getElementById("sidebarUserName");
             if (sidebarName && u.nome) {
                 sidebarName.textContent = `${u.nome} ${u.sobrenome}`;
+                if (u.eh_premium) sidebarName.classList.add("text-gold");
             }
 
-            // 4. FORMULÁRIO DE PERFIL (Preenche tudo que encontrar)
-            const setVal = (id, val) => { 
-                const el = document.getElementById(id); 
-                if (el) el.value = val || ""; 
-            };
-
-            setVal("pfNome", u.nome);
-            setVal("pfSobrenome", u.sobrenome);
-            setVal("pfEmail", u.email);
-            setVal("pfTelefone", u.telefone);
-            setVal("pfCidade", u.cidade);
-            setVal("pfUF", u.estado); // Atenção: no banco é 'estado', no form é 'pfUF'
-            setVal("pfBio", u.bio);
-            setVal("pfSite", u.site_portfolio);
-            setVal("pfLinkedin", u.linkedin);
-
-            // Checkboxes (Online/Presencial)
-            // 0=Online, 1=Presencial, 2=Ambos
-            const chkOnline = document.getElementById("pfOnline");
-            const chkPresencial = document.getElementById("pfPresencial");
-            if (chkOnline) chkOnline.checked = (u.formato_aula === 0 || u.formato_aula === 2);
-            if (chkPresencial) chkPresencial.checked = (u.formato_aula === 1 || u.formato_aula === 2);
-
-            // Tags (Essa parte depende da biblioteca de tags do Mauricio, mas podemos tentar hidratar os inputs ocultos)
-            setVal("pfEnsina", (u.tag_ensinar || []).join(","));
-            setVal("pfAprende", (u.tag_aprender || []).join(","));
-            setVal("pfDisponibilidade", (u.disponibilidade || []).join(","));
-            
-            // Se a biblioteca de tags do perfil.js tiver uma função pública para recarregar, seria ideal chamá-la aqui.
-            // Mas preencher o input oculto já ajuda.
+            // Preenche Autofill se estiver na página de perfil
+            if (document.getElementById("pfNome")) {
+                document.getElementById("pfNome").value = u.nome || "";
+                document.getElementById("pfSobrenome").value = u.sobrenome || "";
+                document.getElementById("pfEmail").value = u.email || "";
+                document.getElementById("pfBio").value = u.bio || "";
+            }
         }
-
     } catch (err) {
-        console.error("Erro ao carregar dados do usuário:", err);
+        console.error("Erro ao carregar dados:", err);
     }
 }

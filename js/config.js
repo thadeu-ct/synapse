@@ -91,7 +91,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         }, 0);
                     }
                 }
-                // teste
                 // 5. Foto de Perfil (Placeholder por enquanto)
                 // Se o banco tiver URL, a gente usa. Se não, mantém o placeholder do HTML.
                 const imgPerfil = document.querySelector(".profile-summary img");
