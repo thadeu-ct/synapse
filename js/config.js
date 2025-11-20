@@ -87,7 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         setTimeout(() => {
                             document.getElementById("btnUpgrade")?.addEventListener("click", (e) => {
                                 e.preventDefault();
-                                alert("Em breve: Página de planos e benefícios Premium!");
                             });
                         }, 0);
                     }
