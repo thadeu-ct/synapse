@@ -495,75 +495,80 @@ function initUI() {
 
 // Executa assim que a página carrega
 document.addEventListener("DOMContentLoaded", async () => {
-    
-    // --- 1. Carregar Dados do Usuário (Prioridade) ---
-    await carregarDadosDoUsuario();
+  // --- 1. Carregar Dados do Usuário (Prioridade) ---
+  await carregarDadosDoUsuario();
 
 
-    // --- 2. Lógica do Modal Premium (Global) ---
-    const modal = document.getElementById("modalPlans");
-    const btnClose = document.getElementById("btnClosePlans");
-    const btnAssinar = document.getElementById("btnAssinarPremium");
+  // --- 2. Lógica do Modal Premium (Global) ---
+  const modal = document.getElementById("modalPlans");
+  const btnClose = document.getElementById("btnClosePlans");
+  const btnAssinar = document.getElementById("btnAssinarPremium");
 
-    // Função para abrir o modal (exposta globalmente para outros scripts usarem se precisar)
-    window.openPremiumModal = function() {
-        if(modal) modal.setAttribute("aria-hidden", "false");
-    };
+  // Função para abrir o modal (exposta globalmente para outros scripts usarem se precisar)
+  window.openPremiumModal = function() {
+      if(modal) modal.setAttribute("aria-hidden", "false");
+  };
 
-    // Fechar Modal
-    btnClose?.addEventListener("click", () => modal.setAttribute("aria-hidden", "true"));
-    
-    // Fechar clicando fora
-    modal?.addEventListener("click", (e) => {
-        if(e.target === modal) modal.setAttribute("aria-hidden", "true");
-    });
+  // Fechar Modal
+  btnClose?.addEventListener("click", () => modal.setAttribute("aria-hidden", "true"));
+  
+  // Fechar clicando fora
+  modal?.addEventListener("click", (e) => {
+      if(e.target === modal) modal.setAttribute("aria-hidden", "true");
+  });
 
-    // Captura cliques em botões de upgrade espalhados pelo site (Delegação de eventos)
-    document.body.addEventListener("click", (e) => {
-        // Verifica se clicou num botão com ID 'btnUpgrade' ou dentro dele
-        if (e.target.id === "btnUpgrade" || e.target.closest("#btnUpgrade")) {
-            e.preventDefault();
-            window.openPremiumModal();
+  // Captura cliques em botões de upgrade espalhados pelo site (Delegação de eventos)
+  // Lógica de Assinar (Usando Delegação para funcionar com o footer injetado)
+  document.body.addEventListener("click", async (e) => {
+    // Verifica se o clique foi no botão de assinar (ou num ícone dentro dele)
+    if (e.target.id === "btnAssinarPremium" || e.target.closest("#btnAssinarPremium")) {
+      const btnAssinar = document.getElementById("btnAssinarPremium");
+      
+      // 1. Verificação de Auth
+      const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
+      if (!sessionRaw) {
+        alert("Faça login primeiro!");
+        location.href = "./auth.html#login";
+        return;
+      }
+      
+      const session = JSON.parse(sessionRaw);
+      const token = session.token || session.access_token;
+
+      // 2. Feedback Visual
+      const originalText = btnAssinar.innerHTML; // Guarda o texto/ícone original
+      btnAssinar.textContent = "Processando...";
+      btnAssinar.disabled = true;
+
+      try {
+        // 3. Chamada à API
+        const res = await fetch("https://synapse-seven-mu.vercel.app/api/settings", {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ acao: "assinar_premium" })
+        });
+
+        const data = await res.json();
+        
+        if (res.ok) {
+          // 4. Sucesso
+          alert(data.message || "Parabéns! Você agora é Premium! 💎");
+          location.reload(); // Recarrega a página para atualizar o status
+        } else {
+          throw new Error(data.error || "Erro desconhecido");
         }
-    });
-
-    // Lógica de Assinar (Botão dentro do Modal)
-    btnAssinar?.addEventListener("click", async () => {
-        const sessionRaw = localStorage.getItem("nexos_session");
-        if (!sessionRaw) {
-            alert("Faça login primeiro!");
-            location.href = "./auth.html#login";
-            return;
-        }
-        const token = JSON.parse(sessionRaw).token;
-
-        btnAssinar.textContent = "Processando...";
-        btnAssinar.disabled = true;
-
-        try {
-            const res = await fetch("https://synapse-seven-mu.vercel.app/api/settings", {
-                method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ acao: "assinar_premium" })
-            });
-
-            const data = await res.json();
-            if (res.ok) {
-                alert(data.message); // "Parabéns! Você agora é Premium! 💎"
-                location.reload(); // Recarrega para mostrar o status dourado!
-            } else {
-                throw new Error(data.error);
-            }
-        } catch (err) {
-            alert("Erro ao assinar: " + err.message);
-            btnAssinar.textContent = "Tentar Novamente";
-            btnAssinar.disabled = false;
-        }
-    });
-
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao assinar: " + err.message);
+        // Restaura o botão
+        btnAssinar.innerHTML = originalText;
+        btnAssinar.disabled = false;
+      }
+    }
+  });
 });
 
 // --- Função Auxiliar (fora do DOMContentLoaded para ficar limpo) ---
