@@ -1179,7 +1179,7 @@ body:not(.page-dashboard){
 }
 
 .link-small {
-    font-size: 0.75rem;
+    font-size: 0.5rem;
     color: #007bff;
     text-decoration: none;
 }
