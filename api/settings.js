@@ -64,6 +64,16 @@ export default async function handler(req, res) {
                 message: `Erro ao atualizar e-mail: ${emailError.message}` 
             }}
         return res.status(200).json({ message: "Email atualizado com sucesso!" });
+        
+      case 'edicao_bio':
+        const { bio } = dados;
+        // Fazemos um update normal na tabela 'usuarios'
+        const { error: updateBioError } = await supabase
+            .from('usuarios')
+            .update({ bio: bio })
+            .eq('id', user.id);
+        if (updateBioError) { throw updateBioError; }
+        return res.status(200).json({ message: "Bio atualizada com sucesso!" });
 
       case 'cancelar_premium':
         const { error: cancelError } = await supabase
