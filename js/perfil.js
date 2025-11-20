@@ -242,30 +242,6 @@ document.addEventListener("DOMContentLoaded", () => {
     hydrateTags("pfDisponibilidade", p.disponibilidade);
 }
 
-  function saveProfileLocal(email, obj) {
-    if (!email) return;
-    const KEY = "nexos_profiles";
-    const db = readJSON(KEY, {}) || {};
-    db[email] = obj;
-    localStorage.setItem(KEY, JSON.stringify(db));
-  }
-
-  function loadProfileLocal(email) {
-    if (!email) return null;
-    const db = readJSON("nexos_profiles", {});
-    return db ? db[email] || null : null;
-  }
-
-  function updateLocalUsers(data) {
-    const KEY = "nexos_users";
-    const list = readJSON(KEY, []);
-    const payload = { email: data.email, nome: data.nome, sobrenome: data.sobrenome };
-    const idx = list.findIndex((u) => u.email === data.email);
-    if (idx >= 0) list[idx] = { ...list[idx], ...payload };
-    else list.push(payload);
-    localStorage.setItem(KEY, JSON.stringify(list));
-  }
-
   async function fetchProfileRemote() {
     const token = resolveAuthToken();
     if (!token) return null;

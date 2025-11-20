@@ -333,41 +333,98 @@ function resolveLocalUserByEmail(email) {
   }
 }
 
-// ---------- Dados fake (pode vir de API depois) ----------
-const perfis = [
-  {
-    nome: "Ana Ribeiro", idade: 24,
-    ensina: ["Inglês básico", "Conversação"],
-    aprende: ["HTML/CSS"],
-    foto: "./img/placeholder-avatar.png",
-    bio: "Formada em Letras. Curto ensinar com foco em conversação leve."
-  },
-  {
-    nome: "Diego Martins", idade: 28,
-    ensina: ["JavaScript", "Git/GitHub"],
-    aprende: ["Violão iniciante"],
-    foto: "./img/placeholder-avatar.png",
-    bio: "Dev front-end. Quero trocar JS por violão 👀"
-  },
-  {
-    nome: "Marina Lopes", idade: 31,
-    ensina: ["Ilustração", "Procreate"],
-    aprende: ["Marketing digital"],
-    foto: "./img/placeholder-avatar.png",
-    bio: "Ilustradora freelancer. Bora trocar desenho por growth!"
-  }
-];
-
 // ---------- UI: Stack de cartões + swipe ----------
 function initUI() {
   const stack = document.getElementById("cardStack");
-  const modalMatch = document.getElementById("modalMatch");
-  const matchText = document.getElementById("matchText");
-
   if (!stack) {
     console.warn("Elemento #cardStack não encontrado.");
     return;
   }
+  const modalMatch = document.getElementById("modalMatch");
+  const matchText = document.getElementById("matchText");
+
+  const isPremium = session.eh_premium === true;
+  const todosPerfis = [
+    { nome: "Ana Ribeiro", idade: 24, ensina: ["Inglês", "Conversação"], aprende: ["HTML/CSS"], foto: "./img/placeholder-avatar.png", bio: "Letras. Foco em conversação." },
+    { nome: "Diego Martins", idade: 28, ensina: ["JS", "React"], aprende: ["Violão"], foto: "./img/placeholder-avatar.png", bio: "Dev Front-end. Troco código por música." },
+    { nome: "Marina Lopes", idade: 31, ensina: ["Ilustração"], aprende: ["Marketing"], foto: "./img/placeholder-avatar.png", bio: "Ilustradora freelancer." },
+    // --- A partir daqui, só Premium vê (se for free, corta antes) ---
+    { nome: "Carlos Eduardo", idade: 22, ensina: ["Matemática"], aprende: ["Python"], foto: "./img/placeholder-avatar.png", bio: "Estudante de Estatística." },
+    { nome: "Fernanda Lima", idade: 29, ensina: ["Photoshop"], aprende: ["UX Design"], foto: "./img/placeholder-avatar.png", bio: "Designer Gráfica." },
+    { nome: "Roberto CTO", idade: 45, ensina: ["Liderança"], aprende: ["Piano"], foto: "./img/placeholder-avatar.png", bio: "Mentoria de carreira tech." },
+    { nome: "Juliana Tech", idade: 35, ensina: ["AWS Cloud"], aprende: ["Espanhol"], foto: "./img/placeholder-avatar.png", bio: "Arquiteta de Soluções." },
+    { nome: "Pedro Henrique", idade: 26, ensina: ["Edição Vídeo"], aprende: ["SEO"], foto: "./img/placeholder-avatar.png", bio: "Editor Premiere/After." },
+    { nome: "Larissa M.", idade: 30, ensina: ["Finanças"], aprende: ["Excel VBA"], foto: "./img/placeholder-avatar.png", bio: "Contadora querendo automatizar." },
+    { nome: "João V.", idade: 21, ensina: ["História"], aprende: ["Francês"], foto: "./img/placeholder-avatar.png", bio: "Licenciatura em História." }
+  ];
+
+  const perfisExibidos = isPremium ? todosPerfis : todosPerfis.slice(0, 3);
+
+  stack.innerHTML = "";
+
+  if (!isPremium) {
+      const promoCard = document.createElement("article");
+      promoCard.className = "swipe-card promo-card";
+      // Estilo inline rápido para destacar o bloqueio
+      promoCard.innerHTML = `
+        <div class="photo" style="background:linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:30px;">
+            <div style="font-size:4rem; margin-bottom:20px;">🔒</div>
+            <h2 style="color:#fff; margin-bottom:10px;">Limite Diário Atingido</h2>
+            <p style="color:#94a3b8; font-size:1.1rem; max-width:280px; margin-bottom:30px;">
+                Você visualizou seus 3 perfis gratuitos de hoje. Vire Premium para desbloquear matches ilimitados.
+            </p>
+            <button id="btnUpgradeStack" class="btn primary shine-button" style="transform: scale(1.2);">
+                Desbloquear Agora 💎
+            </button>
+        </div>
+      `;
+      
+      // Adiciona o evento ao botão do cartão
+      // Usamos setTimeout para garantir que o elemento foi renderizado
+      setTimeout(() => {
+          const btn = promoCard.querySelector("#btnUpgradeStack");
+          if(btn) btn.addEventListener("click", (e) => {
+              e.stopPropagation(); // Evita conflito com drag
+              window.openPremiumModal(); // Abre o modal que já configuramos
+          });
+      }, 0);
+
+      stack.appendChild(promoCard);
+  }
+
+  [...perfisExibidos].reverse().forEach((p) => {
+    const el = document.createElement("article");
+    el.className = "swipe-card";
+    el.innerHTML = `
+      <div class="photo" style="background-image:url('${p.foto}');"></div>
+      <div class="meta">
+        <div class="name">${p.nome}, ${p.idade}</div>
+        <small>${p.bio}</small>
+        <div class="tags">
+            ${p.ensina.map(t => `<span class="tag">Ensina: ${t}</span>`).join("")}
+        </div>
+      </div>`;
+    
+    // Lógica de arraste (Swipe)
+    let startX = 0;
+    el.addEventListener("mousedown", e => { startX = e.clientX; });
+    el.addEventListener("mouseup", e => {
+        const diff = e.clientX - startX;
+        if (diff > 100) { el.remove(); alert(`Match com ${p.nome}! ❤`); } // Direita (Like)
+        else if (diff < -100) { el.remove(); } // Esquerda (Pass)
+    });
+
+    // Suporte básico a toque
+    el.addEventListener("touchstart", e => { startX = e.touches[0].clientX; }, {passive: true});
+    el.addEventListener("touchend", e => {
+        const diff = e.changedTouches[0].clientX - startX;
+        if (diff > 100) { el.remove(); alert(`Match com ${p.nome}! ❤`); }
+        else if (diff < -100) { el.remove(); }
+    });
+    
+    stack.appendChild(el);
+  });
+
 
   function criarCard(p, idx) {
     const el = document.createElement("article");
