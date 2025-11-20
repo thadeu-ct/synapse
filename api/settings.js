@@ -1,115 +1,93 @@
-import { supabase } from "../lib/database.js"; // Importa o cliente Supabase configurado
+// IMPORTANTE: Importamos supabaseAdmin também
+import { supabase, supabaseAdmin } from "../lib/database.js"; 
 
 export default async function handler(req, res) { 
-  // Configura os cabeçalhos CORS para permitir requisições do frontend
+  // --- CORS ---
   res.setHeader('Access-Control-Allow-Origin', 'https://thadeu-ct.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS'); 
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (req.method === 'OPTIONS') {
-    return res.status(204).end();
-  } // backend responde as regras
-  if (req.method !== "POST") {
-    return res.status(405).end(`Método ${req.method} não permitido`);
-  } // backend só aceita dados
+  if (req.method === 'OPTIONS') { return res.status(204).end(); }
+  if (req.method !== "POST") { return res.status(405).end(`Método ${req.method} não permitido`); }
 
-
-  try { // Obter o token de autorização
+  try { 
+    // --- Autenticação ---
     const { authorization } = req.headers;
-    if (!authorization) { 
-        throw { 
-            status: 401, 
-            message: 'Não autorizado: token não fornecido.' 
-        }}
-    // Extrai o token do cabeçalho
+    if (!authorization) { throw { status: 401, message: 'Não autorizado: token não fornecido.' }}
     const token = authorization.split(' ')[1];
 
-    // Verifica quem é o usuário no Supabase usando o token
+    // Validamos o usuário
     const { data: { user }, error: userError } = await supabase.auth.getUser(token);
-    if (userError || !user) { 
-        throw { 
-            status: 401, 
-            message: 'Não autorizado: token inválido ou expirado.' 
-        }}
+    if (userError || !user) { throw { status: 401, message: 'Não autorizado: token inválido.' }}
 
-    // Processa a ação solicitada
     const { acao, ...dados } = req.body;
 
     switch (acao) {
+      // --- Ações de Auth (Usam supabase normal ou auth.admin) ---
+      
       case 'edicao_senha':
         const { nova_senha } = dados;
-        if (!nova_senha || nova_senha.length < 6) {
-            return res.status(400).json({ error: "A nova senha deve ter no mínimo 6 caracteres" });
-        }
-        const { error: updateError } = await supabase.auth.updateUser({
-            password: nova_senha
-        });
-        if (updateError) {
-            throw { 
-                status: 500, 
-                message: `Erro ao atualizar senha: ${updateError.message}` 
-            }}
+        if (!nova_senha || nova_senha.length < 6) return res.status(400).json({ error: "Senha muito curta." });
+        
+        const { error: pwdError } = await supabase.auth.updateUser({ password: nova_senha });
+        if (pwdError) throw { status: 500, message: pwdError.message };
+        
         return res.status(200).json({ message: "Senha atualizada com sucesso!" });
 
       case 'edicao_email': 
         const { novo_email } = dados;
-        if (!novo_email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(novo_email)) {
-            return res.status(400).json({ error: "Informe um e-mail válido" });
-        }
-        const { error: emailError } = await supabase.auth.updateUser({
-            email: novo_email
-        });
-        if (emailError) {
-            throw { 
-                status: 500, 
-                message: `Erro ao atualizar e-mail: ${emailError.message}` 
-            }}
-        return res.status(200).json({ message: "Email atualizado com sucesso!" });
+        if (!novo_email) return res.status(400).json({ error: "E-mail inválido." });
         
+        const { error: emailError } = await supabase.auth.updateUser({ email: novo_email });
+        if (emailError) throw { status: 500, message: emailError.message };
+        
+        return res.status(200).json({ message: "Link de confirmação enviado para o novo e-mail!" });
+
+      case 'deletar_conta':
+        // Usa ADMIN para deletar do sistema de Auth
+        const { error: delError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
+        if (delError) throw { status: 500, message: delError.message };
+        
+        return res.status(200).json({ message: "Conta deletada." });
+
+
+      // --- Ações de Banco de Dados (Usam supabaseAdmin para garantir a escrita) ---
+
       case 'edicao_bio':
         const { bio } = dados;
-        // Fazemos um update normal na tabela 'usuarios'
-        const { error: updateBioError } = await supabase
+        // MUDANÇA: Usamos supabaseAdmin
+        const { error: bioError } = await supabaseAdmin
             .from('usuarios')
             .update({ bio: bio })
             .eq('id', user.id);
-        if (updateBioError) { throw updateBioError; }
-        return res.status(200).json({ message: "Bio atualizada com sucesso!" });
+            
+        if (bioError) throw { status: 500, message: bioError.message };
+        return res.status(200).json({ message: "Bio atualizada!" });
 
       case 'cancelar_premium':
-        const { error: cancelError } = await supabase
+        // MUDANÇA: Usamos supabaseAdmin
+        const { error: cancelError } = await supabaseAdmin
           .from('usuarios')
           .update({ eh_premium: false })
-          .eq('id', user.id)
-        if (cancelError) {
-            throw { 
-                status: 500, 
-                message: `Erro ao cancelar assinatura: ${cancelError.message}` 
-            }}
-        return res.status(200).json({ message: "Assinatura cancelada com sucesso!" });
-      
-      case 'deletar_conta':
-        const { error: deleteError } = await supabase.auth.admin.deleteUser(user.id);
-        if (deleteError) {
-            throw { 
-                status: 500, 
-                message: `Erro ao deletar conta: ${deleteError.message}` 
-            }}
-        return res.status(200).json({ message: "Conta deletada com sucesso!" });
+          .eq('id', user.id);
+          
+        if (cancelError) throw { status: 500, message: cancelError.message };
+        return res.status(200).json({ message: "Premium cancelado." });
 
       case 'assinar_premium':
-        const { error: signError } = await supabase
+        // MUDANÇA: Usamos supabaseAdmin
+        const { error: signError } = await supabaseAdmin
           .from('usuarios')
-          .update({ eh_premium: true }) // Vira True!
+          .update({ eh_premium: true })
           .eq('id', user.id);
-        if (signError) { throw signError; }
+          
+        if (signError) throw { status: 500, message: signError.message };
         return res.status(200).json({ message: "Parabéns! Você agora é Premium! 💎" });
 
-      default: // ação não cadastrada
-        res.status(400).json({ error: `Ação desconhecida: ${action}` });
+      default: 
+        return res.status(400).json({ error: `Ação desconhecida: ${acao}` });
     }
-
-    // Retorna mensagem de erro
   } catch (error) {
-    res.status(error.status || 500).json({ error: error.message || "Erro no servidor ao processar a configuração." });
+    console.error("Erro Settings:", error);
+    res.status(error.status || 500).json({ error: error.message || "Erro no servidor." });
   }
 }
