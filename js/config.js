@@ -57,9 +57,40 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
 
                 // 4. Chip Premium
+                // 4. Chip Premium e Nome Dourado
                 const chip = document.querySelector(".premium-chip");
+                const nameElement = document.getElementById("userName");
+
                 if (chip) {
-                    chip.style.display = u.eh_premium ? "inline-block" : "none";
+                    // Garante que o chip está visível
+                    chip.style.display = "inline-flex"; 
+
+                    if (u.eh_premium) {
+                        // --- CASO PREMIUM ---
+                        // Estilo Dourado no Chip
+                        chip.className = "premium-chip is-premium";
+                        chip.innerHTML = `<span>Premium</span> &middot; <a href="#section-premium">Cancelar</a>`;
+                        
+                        // Nome Dourado
+                        if (nameElement) nameElement.classList.add("text-gold");
+
+                    } else {
+                        // --- CASO GRATUITO ---
+                        // Estilo Azul no Chip (CTA)
+                        chip.className = "premium-chip is-free";
+                        chip.innerHTML = `<span>Plano Gratuito</span> &middot; <a href="#" id="btnUpgrade">Seja Premium</a>`;
+                        
+                        // Remove Dourado do Nome
+                        if (nameElement) nameElement.classList.remove("text-gold");
+
+                        // Adiciona ação ao botão de upgrade (Mágico de Oz)
+                        setTimeout(() => {
+                            document.getElementById("btnUpgrade")?.addEventListener("click", (e) => {
+                                e.preventDefault();
+                                alert("Em breve: Página de planos e benefícios Premium!");
+                            });
+                        }, 0);
+                    }
                 }
                 
                 // 5. Foto de Perfil (Placeholder por enquanto)

@@ -1217,3 +1217,42 @@ body:not(.page-dashboard){
   max-width: 600px;
   width: 90%;
 }
+
+/* --- Estilos de Status da Conta --- */
+
+/* Nome Dourado para Premium */
+.text-gold {
+    background: linear-gradient(to right, #fde68a, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(217, 119, 6, 0.4);
+    font-weight: 800 !important;
+}
+
+/* Chip Premium (O que já existia, reforçando) */
+.premium-chip.is-premium {
+    background: linear-gradient(135deg, rgba(234,179,8,.2), rgba(250,204,21,.35));
+    color: #fef08a;
+    border: 1px solid rgba(234, 179, 8, 0.3);
+}
+.premium-chip.is-premium a { color: #fefce8; }
+
+/* Chip Gratuito (Novo: Convite para upgrade) */
+.premium-chip.is-free {
+    background: rgba(59, 130, 246, 0.15); /* Azul suave */
+    color: #bfdbfe;
+    border: 1px solid rgba(59, 130, 246, 0.3);
+}
+.premium-chip.is-free span {
+    opacity: 0.8;
+}
+.premium-chip.is-free a {
+    color: #60a5fa; /* Azul mais forte */
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 4px;
+}
+.premium-chip.is-free a:hover {
+    text-decoration: underline;
+    color: #93c5fd;
+}
