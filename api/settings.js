@@ -83,6 +83,16 @@ export default async function handler(req, res) {
         if (signError) throw { status: 500, message: signError.message };
         return res.status(200).json({ message: "Parabéns! Você agora é Premium! 💎" });
 
+      case 'edicao_foto':
+        const { foto_url } = dados;
+        // Atualiza a coluna 'foto' na tabela usuarios
+        const { error: fotoError } = await supabaseAdmin
+            .from('usuarios')
+            .update({ foto: foto_url })
+            .eq('id', user.id);
+        if (fotoError) throw { status: 500, message: fotoError.message };
+        return res.status(200).json({ message: "Foto atualizada!" });
+
       default: 
         return res.status(400).json({ error: `Ação desconhecida: ${acao}` });
     }

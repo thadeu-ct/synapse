@@ -1,10 +1,24 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const API_BASE = "https://synapse-seven-mu.vercel.app/api";
-    
-    const SUPABASE_URL = "SUA_URL_DO_SUPABASE_AQUI"; 
-    const SUPABASE_ANON_KEY = "SUA_CHAVE_ANON_AQUI";
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+    let supabase = null;
 
+    try {
+        // Chama nossa nova API para pegar as chaves do .env do servidor
+        const keysRes = await fetch(`${API_BASE}/get-keys`);
+        if (!keysRes.ok) throw new Error("Falha ao obter configuração");
+        
+        const keys = await keysRes.json();
+        
+        // Inicializa o Supabase com as chaves que vieram do servidor
+        if (window.supabase) {
+            supabase = window.supabase.createClient(keys.url, keys.anonKey);
+        }
+    } catch (err) {
+        console.error("Erro crítico: Não foi possível iniciar o Supabase.", err);
+        alert("Erro de conexão com o sistema de arquivos. Tente recarregar.");
+        return; // Para tudo se não tiver chaves
+    }
+    
     // --- 1. Verificação de Autenticação ---
     const sessionRaw = localStorage.getItem("nexos_session") || sessionStorage.getItem("nexos_session");
     if (!sessionRaw) {
