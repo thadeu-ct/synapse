@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Synapse — Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    /* CSS Específico do Checkout */
+    .checkout-main {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 40px 20px;
+      padding-top: 120px; /* Espaço pro header */
+    }
+    
+    .checkout-container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+      width: min(1000px, 100%);
+    }
+
+    .checkout-form-card {
+      background: rgba(13, 23, 48, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .checkout-summary {
+      background: linear-gradient(160deg, rgba(20, 15, 40, 0.9), rgba(10, 5, 20, 0.95));
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      border-radius: 24px;
+      padding: 32px;
+      height: fit-content;
+      position: sticky;
+      top: 120px;
+      box-shadow: 0 0 30px rgba(124, 58, 237, 0.15);
+    }
+
+    h1 { font-size: 1.5rem; color: #fff; margin-bottom: 24px; }
+    h2 { font-size: 1.2rem; color: #fff; margin-bottom: 16px; }
+
+    .summary-row { display: flex; justify-content: space-between; color: #cbd5e1; margin-bottom: 12px; }
+    .summary-total { display: flex; justify-content: space-between; color: #fff; font-weight: 700; font-size: 1.2rem; margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    
+    .features-list { list-style: none; margin-bottom: 24px; }
+    .features-list li { color: #94a3b8; font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .features-list li::before { content: "✓"; color: #a855f7; font-weight: bold; }
+
+    /* Inputs do Cartão */
+    .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .full-width { grid-column: span 2; }
+    
+    .field-label { display: block; color: #94a3b8; font-size: 0.85rem; margin-bottom: 6px; }
+    .fake-input {
+      width: 100%; background: #0b1126; border: 1px solid #2d3748;
+      color: #fff; padding: 12px; border-radius: 8px; font-family: monospace;
+    }
+    .fake-input:focus { outline: 2px solid #6366f1; border-color: transparent; }
+
+    @media (max-width: 800px) {
+      .checkout-container { grid-template-columns: 1fr; }
+      .checkout-summary { order: -1; position: static; }
+    }
+  </style>
+</head>
+<body>
+  <div data-include="./componentes/header.html"></div>
+
+  <main class="checkout-main">
+    <div class="checkout-container">
+      
+      <div class="checkout-form-card">
+        <h1>Dados de Pagamento</h1>
+        <form id="formPagamento" onsubmit="return false;">
+          <div class="card-grid">
+            <div class="full-width">
+              <label class="field-label">Número do Cartão</label>
+              <input type="text" class="fake-input" placeholder="0000 0000 0000 0000" required maxlength="19">
+            </div>
+            <div class="full-width">
+              <label class="field-label">Nome no Cartão</label>
+              <input type="text" class="fake-input" placeholder="Como impresso no cartão" required>
+            </div>
+            <div>
+              <label class="field-label">Validade</label>
+              <input type="text" class="fake-input" placeholder="MM/AA" required maxlength="5">
+            </div>
+            <div>
+              <label class="field-label">CVV</label>
+              <input type="text" class="fake-input" placeholder="123" required maxlength="4">
+            </div>
+            <div class="full-width">
+              <label class="field-label">CPF</label>
+              <input type="text" class="fake-input" placeholder="000.000.000-00" required>
+            </div>
+          </div>
+          <br>
+          <p style="font-size: 0.8rem; color: #64748b;">
+            <i data-lucide="lock"></i> Pagamento seguro (Simulação acadêmica - nada será cobrado).
+          </p>
+        </form>
+      </div>
+
+      <aside class="checkout-summary">
+        <h2>Resumo do Pedido</h2>
+        <ul class="features-list">
+          <li>Plano Synapse Premium</li>
+          <li>Matches Ilimitados</li>
+          <li>Perfil em Destaque</li>
+        </ul>
+        
+        <div class="summary-row">
+          <span>Assinatura Mensal</span>
+          <span>R$ 19,90</span>
+        </div>
+        <div class="summary-total">
+          <span>Total hoje</span>
+          <span>R$ 19,90</span>
+        </div>
+
+        <button id="btnFinalizar" class="btn primary full shine-button" style="margin-top: 24px; font-size: 1.1rem;">
+          Confirmar Pagamento
+        </button>
+      </aside>
+
+    </div>
+  </main>
+
+  <div data-include="./componentes/footer.html"></div>
+  <script src="./js/main.js" defer></script>
+  <script src="./js/pagamento.js" defer></script>
+</body>
+</html>
