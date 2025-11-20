@@ -603,6 +603,22 @@ body.page-video {
   }
 }
 
+@media (max-width: 820px) {
+  .video-call__hero {
+    flex-direction: column;
+  }
+
+  .stage-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .call-banner {
+    text-align: left;
+  }
+}
+
 @media (max-width: 640px) {
   .video-call__hero {
     flex-direction: column;

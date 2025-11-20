@@ -314,17 +314,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const formato = profile.online && profile.presencial ? 2 : profile.online ? 0 : 1;
     const ensureArray = (value) => Array.isArray(value) ? value : [];
     return {
-      foto_url: profile.fotoUrl || "",
+      nome: profile.nome || "",
+      sobrenome: profile.sobrenome || "",
+      email: profile.email || "",
+      foto: profile.fotoUrl || "",
+      bio: profile.bio || "",
       telefone: profile.telefone || "",
       cidade: profile.cidade || "",
       estado: profile.uf || "",
-      formato_preferencial: formato,
-      tags_ensinar: ensureArray(profile.ensina),
-      tags_aprender: ensureArray(profile.aprende),
-      bio: profile.bio || "",
+      formato_aula: formato,
+      tag_ensinar: ensureArray(profile.ensina),
+      tag_aprender: ensureArray(profile.aprende),
       disponibilidade: ensureArray(profile.disponibilidade),
-      site_url: profile.site || "",
-      linkedin_url: profile.linkedin || ""
+      site_portfolio: profile.site || "",
+      linkedin: profile.linkedin || ""
     };
   }
 

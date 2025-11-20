@@ -18,11 +18,15 @@
         <section class="dashboard-section chat-hero">
           <div class="chat-hero__content">
             <div>
+              <span class="chat-badge">Inbox curada</span>
               <p class="chat-eyebrow">Mensagens</p>
               <h1>Continue as trocas que já começaram</h1>
               <p>Responda seus matches, compartilhe materiais e marque a próxima conversa.</p>
             </div>
-            <a class="btn ghost" href="./area-de-match.html">Voltar para a Área de Match</a>
+            <div class="chat-cta">
+              <a class="pill-btn primary" href="./area-de-match.html">Voltar para a Área de Match</a>
+              <a class="pill-btn ghost" href="./video-chamada.html">Abrir sala rápida</a>
+            </div>
           </div>
           <div class="chat-hero__stats">
             <article>
@@ -37,6 +41,18 @@
               <span>Último contato</span>
               <strong data-stat="last">—</strong>
             </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section chat-filter-strip">
+          <div class="chat-filter-group" role="group" aria-label="Filtros rápidos">
+            <button class="chat-filter is-active" type="button">Todos</button>
+            <button class="chat-filter" type="button">Não lidas</button>
+            <button class="chat-filter" type="button">Novos matches</button>
+            <button class="chat-filter" type="button">Favoritos</button>
+          </div>
+          <div class="chat-filter-meta">
+            <span class="dot live"></span> Online agora &middot; <span class="dot new"></span> Novos hoje
           </div>
         </section>
 

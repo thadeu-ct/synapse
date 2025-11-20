@@ -12,78 +12,140 @@
   <main class="nx-main dashboard-shell">
     <div data-include="./componentes/dashboard-nav.html"></div>
     <section class="dashboard-content">
-      <section class="dashboard-main">
-        <section class="dashboard-section">
-          <header>
-            <h1>Trilhas recomendadas</h1>
-            <p>Combine estudos estruturados com trocas 1:1 para acelerar a evolução das suas habilidades.</p>
-          </header>
-
-          <div class="tile-grid">
-            <article class="tile-card">
-              <header>
-                <div class="avatar">FE</div>
-                <div>
-                  <strong>Front-end em 6 semanas</strong>
-                  <span>Sequência prática com HTML, CSS e JS</span>
-                </div>
-              </header>
-              <ul>
-                <li><strong>Formato:</strong> Autoinstrucional + mentoria semanal</li>
-                <li><strong>Nivelamento:</strong> Iniciante</li>
-              </ul>
-              <footer>
-                <span class="tag">6 módulos</span>
-                <span class="tag">Projetos guiados</span>
-              </footer>
-              <button class="btn primary full" type="button">Ver cronograma</button>
-            </article>
-
-            <article class="tile-card">
-              <header>
-                <div class="avatar">UX</div>
-                <div>
-                  <strong>UX Research colaborativo</strong>
-                  <span>Experimentos rápidos para validar ideias</span>
-                </div>
-              </header>
-              <ul>
-                <li><strong>Formato:</strong> Estudos de caso + encontros quinzenais</li>
-                <li><strong>Nivelamento:</strong> Intermediário</li>
-              </ul>
-              <footer>
-                <span class="tag">Mentoria</span>
-                <span class="tag">Comunidade</span>
-              </footer>
-              <button class="btn ghost full" type="button">Adicionar à fila</button>
-            </article>
-
-            <article class="tile-card">
-              <header>
-                <div class="avatar">DS</div>
-                <div>
-                  <strong>Introdução a dados com Python</strong>
-                  <span>Da análise exploratória à visualização</span>
-                </div>
-              </header>
-              <ul>
-                <li><strong>Formato:</strong> Aulas gravadas + encontros síncronos</li>
-                <li><strong>Nivelamento:</strong> Básico ao intermediário</li>
-              </ul>
-              <footer>
-                <span class="tag">12h</span>
-                <span class="tag">Datas flexíveis</span>
-              </footer>
-              <button class="btn primary full" type="button">Quero participar</button>
-            </article>
+      <section class="dashboard-main cursos-wrapper">
+        <section class="cursos-hero dashboard-section">
+          <div>
+            <p class="cursos-eyebrow">Vitrine de cursos</p>
+            <h1>Exponha seu curso e alcance alunos prontos para comprar</h1>
+            <p class="cursos-lead">Cards ricos em imagem, pouca leitura e CTA claro. Depois de ativar o plano, seu curso entra nesta prateleira curada.</p>
+            <div class="cursos-cta">
+              <button class="btn primary" type="button">Quero expor meu curso</button>
+              <button class="btn ghost" type="button">Ver planos</button>
+            </div>
+            <div class="cursos-stats">
+              <div>
+                <strong>+120</strong>
+                <span>Matrículas nos últimos 30 dias</span>
+              </div>
+              <div>
+                <strong>94%</strong>
+                <span>Concluem a compra após o card</span>
+              </div>
+              <div>
+                <strong>48h</strong>
+                <span>Tempo médio para ir ao ar</span>
+              </div>
+            </div>
+          </div>
+          <div class="cursos-hero-card">
+            <span class="pill">Destaque da semana</span>
+            <h3>Formação Front-end Essencial</h3>
+            <p>Landing page, dashboard responsivo e mini SPA conectada a API.</p>
+            <ul>
+              <li><strong>Stack:</strong> HTML, CSS, JS</li>
+              <li><strong>Formato:</strong> Videoaulas + mentorias</li>
+            </ul>
+            <button class="btn primary full" type="button">Ver programa completo</button>
           </div>
         </section>
 
-        <section class="dashboard-section">
-          <header>
+        <section class="cursos-gallery">
+          <article class="course-card-visual" style="--card-img:url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1200&q=80');">
+            <div class="course-top">
+              <span class="badge">Front-end</span>
+              <span class="pill-ghost">Iniciante</span>
+            </div>
+            <div class="course-body">
+              <h3>HTML, CSS & JS na prática</h3>
+              <p>Construa 3 projetos guiados e publique em 7 dias.</p>
+            </div>
+            <div class="course-bottom">
+              <span>10h · 3 projetos</span>
+              <button class="btn primary" type="button">Ver detalhes</button>
+            </div>
+          </article>
+
+          <article class="course-card-visual" style="--card-img:url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80');">
+            <div class="course-top">
+              <span class="badge">UX & Produto</span>
+              <span class="pill-ghost">Intermediário</span>
+            </div>
+            <div class="course-body">
+              <h3>Pesquisa rápida e testes</h3>
+              <p>Roteiro, protótipo e entrevistas em 10 dias.</p>
+            </div>
+            <div class="course-bottom">
+              <span>8h · estudos de caso</span>
+              <button class="btn ghost" type="button">Comprar</button>
+            </div>
+          </article>
+
+          <article class="course-card-visual" style="--card-img:url('https://images.unsplash.com/photo-1520607162513-77705c0f0d4a?auto=format&fit=crop&w=1200&q=80');">
+            <div class="course-top">
+              <span class="badge">Dados & IA</span>
+              <span class="pill-ghost">Iniciante</span>
+            </div>
+            <div class="course-body">
+              <h3>Python para dados</h3>
+              <p>Pandas, limpeza e dashboards com datasets reais.</p>
+            </div>
+            <div class="course-bottom">
+              <span>12h · projeto final</span>
+              <button class="btn primary" type="button">Quero aprender</button>
+            </div>
+          </article>
+
+          <article class="course-card-visual" style="--card-img:url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=1200&q=80');">
+            <div class="course-top">
+              <span class="badge">Carreira</span>
+              <span class="pill-ghost">Intermediário</span>
+            </div>
+            <div class="course-body">
+              <h3>Portfólio e storytelling</h3>
+              <p>Monte cases enxutos e refine seu pitch.</p>
+            </div>
+              <div class="course-bottom">
+                <span>6h · oficinas ao vivo</span>
+                <button class="btn ghost" type="button">Agendar mentoria</button>
+              </div>
+          </article>
+
+          <article class="course-card-visual" style="--card-img:url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1200&q=80');">
+            <div class="course-top">
+              <span class="badge">Front-end</span>
+              <span class="pill-ghost">Intermediário</span>
+            </div>
+            <div class="course-body">
+              <h3>Componentes React enxutos</h3>
+              <p>Hooks, estado leve e integração com API.</p>
+            </div>
+            <div class="course-bottom">
+              <span>9h · mini SPA</span>
+              <button class="btn primary" type="button">Entrar na turma</button>
+            </div>
+          </article>
+
+          <article class="course-card-visual" style="--card-img:url('https://images.unsplash.com/photo-1522529599103-0c1df022bdd7?auto=format&fit=crop&w=1200&q=80');">
+            <div class="course-top">
+              <span class="badge">UX & Produto</span>
+              <span class="pill-ghost">Avançado</span>
+            </div>
+            <div class="course-body">
+              <h3>Design Systems e tokens</h3>
+              <p>Fundamentos, governança e acessibilidade.</p>
+            </div>
+            <div class="course-bottom">
+              <span>10h · guia de rollout</span>
+              <button class="btn ghost" type="button">Explorar trilha</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="dashboard-section cursos-form">
+          <div>
             <h2>Integre seus materiais</h2>
             <p>Adicione links de aulas, playlists e podcasts para compartilhar com a comunidade.</p>
-          </header>
+          </div>
           <form class="grid2">
             <div class="field">
               <label for="cursoTitulo">Título</label>
