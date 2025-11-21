@@ -334,244 +334,96 @@ function resolveLocalUserByEmail(email) {
 }
 
 // ---------- UI: Stack de cartões + swipe ----------
-function initUI() {
+async function initUI() {
   const stack = document.getElementById("cardStack");
-  if (!stack) {
-    console.warn("Elemento #cardStack não encontrado.");
-    return;
-  }
+  if (!stack) return;
+
+  // Token para chamar a API
   const sessionRaw = localStorage.getItem("nexos_session");
-  const session = sessionRaw ? JSON.parse(sessionRaw) : {};
-  const isPremium = !!session.eh_premium; // Converte para booleano real
+  if (!sessionRaw) return;
+  const token = JSON.parse(sessionRaw).token;
 
-  const todosPerfis = [
-    { nome: "Ana Ribeiro", idade: 24, ensina: ["Inglês", "Conversação"], aprende: ["HTML/CSS"], foto: "./img/placeholder-avatar.png", bio: "Letras. Foco em conversação." },
-    { nome: "Diego Martins", idade: 28, ensina: ["JS", "React"], aprende: ["Violão"], foto: "./img/placeholder-avatar.png", bio: "Dev Front-end. Troco código por música." },
-    { nome: "Marina Lopes", idade: 31, ensina: ["Ilustração"], aprende: ["Marketing"], foto: "./img/placeholder-avatar.png", bio: "Ilustradora freelancer." },
-    // --- A partir daqui, só Premium vê (se for free, corta antes) ---
-    { nome: "Carlos Eduardo", idade: 22, ensina: ["Matemática"], aprende: ["Python"], foto: "./img/placeholder-avatar.png", bio: "Estudante de Estatística." },
-    { nome: "Fernanda Lima", idade: 29, ensina: ["Photoshop"], aprende: ["UX Design"], foto: "./img/placeholder-avatar.png", bio: "Designer Gráfica." },
-    { nome: "Roberto CTO", idade: 45, ensina: ["Liderança"], aprende: ["Piano"], foto: "./img/placeholder-avatar.png", bio: "Mentoria de carreira tech." },
-    { nome: "Juliana Tech", idade: 35, ensina: ["AWS Cloud"], aprende: ["Espanhol"], foto: "./img/placeholder-avatar.png", bio: "Arquiteta de Soluções." },
-    { nome: "Pedro Henrique", idade: 26, ensina: ["Edição Vídeo"], aprende: ["SEO"], foto: "./img/placeholder-avatar.png", bio: "Editor Premiere/After." },
-    { nome: "Larissa M.", idade: 30, ensina: ["Finanças"], aprende: ["Excel VBA"], foto: "./img/placeholder-avatar.png", bio: "Contadora querendo automatizar." },
-    { nome: "João V.", idade: 21, ensina: ["História"], aprende: ["Francês"], foto: "./img/placeholder-avatar.png", bio: "Licenciatura em História." }
-  ];
-
-  const perfisExibidos = isPremium ? todosPerfis : todosPerfis.slice(0, 3);
-
-  stack.innerHTML = "";
-
-  if (!isPremium) {
-      const promoCard = document.createElement("article");
-      promoCard.className = "swipe-card promo-card";
-      // Estilo inline rápido para destacar o bloqueio
-      promoCard.innerHTML = `
-        <div class="photo" style="background:linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:30px;">
-            <div style="font-size:4rem; margin-bottom:20px;">🔒</div>
-            <h2 style="color:#fff; margin-bottom:10px;">Limite Diário Atingido</h2>
-            <p style="color:#94a3b8; font-size:1.1rem; max-width:280px; margin-bottom:30px;">
-                Você visualizou seus 3 perfis gratuitos de hoje. Vire Premium para desbloquear matches ilimitados.
-            </p>
-            <button id="btnUpgradeStack" class="btn primary shine-button" style="transform: scale(1.2);">
-                Desbloquear Agora 💎
-            </button>
-        </div>
-      `;
+  try {
+      // 1. Busca Matches Reais do Backend
+      const res = await fetch("https://synapse-seven-mu.vercel.app/api/matches", {
+          headers: { "Authorization": `Bearer ${token}` }
+      });
       
-      // Adiciona o evento ao botão do cartão
-      // Usamos setTimeout para garantir que o elemento foi renderizado
-      setTimeout(() => {
-        const btn = promoCard.querySelector("#btnUpgradeStack");
-        if(btn) {
-          btn.addEventListener("click", (e) => {
-            e.stopPropagation(); // Evita conflito com drag
-            window.openPremiumModal(); // Abre o modal que já configuramos
-          });
-          btn.addEventListener("mousedown", (e) => e.stopPropagation());
-          btn.addEventListener("touchstart", (e) => e.stopPropagation());
-        }
-      }, 100);
+      if (!res.ok) throw new Error("Erro ao buscar matches");
+      const data = await res.json();
+      
+      const perfis = data.matches || [];
+      const isPremium = data.isPremium;
+      const limitReached = data.limitReached; // Backend diz se cortou a lista
 
-      stack.appendChild(promoCard);
+      stack.innerHTML = "";
+
+      // 2. Se atingiu o limite (Free), coloca o cartão de bloqueio no fundo
+      if (limitReached) {
+          const promoCard = document.createElement("article");
+          promoCard.className = "swipe-card promo-card";
+          promoCard.innerHTML = `
+            <div class="photo" style="background:linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%); display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center; padding:30px;">
+                <div style="font-size:4rem; margin-bottom:20px;">🔒</div>
+                <h2 style="color:#fff; margin-bottom:10px;">Limite Diário</h2>
+                <p style="color:#94a3b8; font-size:1.1rem; margin-bottom:30px;">Vire Premium para ver ilimitado.</p>
+                <button id="btnUpgradeStack" class="btn primary shine-button" style="transform: scale(1.2); pointer-events: auto;">
+                    Desbloquear Agora 💎
+                </button>
+            </div>
+          `;
+          setTimeout(() => {
+              const btn = promoCard.querySelector("#btnUpgradeStack");
+              if(btn) btn.addEventListener("click", (e) => {
+                  e.stopPropagation();
+                  window.openPremiumModal(); 
+              });
+          }, 100);
+          stack.appendChild(promoCard);
+      }
+
+      // 3. Renderiza os perfis do banco
+      // Se não tiver ninguém no banco (além de você), avisa
+      if (perfis.length === 0 && !limitReached) {
+           stack.innerHTML = `<div style="color:#fff; text-align:center; padding:40px;">Sem novos perfis por enquanto.</div>`;
+           return;
+      }
+
+      [...perfis].reverse().forEach((p) => {
+        const el = document.createElement("article");
+        el.className = "swipe-card";
+        // Foto ou Placeholder se null
+        const bg = p.foto || "./img/placeholder-avatar.png";
+        // Tags (se existirem)
+        const tagsHtml = (p.tag_ensinar || []).map(t => `<span class="tag">Ensina: ${t}</span>`).join("");
+
+        el.innerHTML = `
+          <div class="photo" style="background-image:url('${bg}');"></div>
+          <div class="meta">
+            <div class="name">${p.nome || "Usuário"}</div>
+            <small>${p.bio || ""}</small>
+            <div class="tags">${tagsHtml}</div>
+          </div>`;
+        
+        // Lógica de Swipe (Mantida)
+        let startX = 0;
+        el.addEventListener("mousedown", e => { startX = e.clientX; });
+        el.addEventListener("mouseup", e => {
+            if (e.clientX - startX > 100) { el.remove(); } 
+            else if (e.clientX - startX < -100) { el.remove(); }
+        });
+        el.addEventListener("touchstart", e => { startX = e.touches[0].clientX; }, {passive: true});
+        el.addEventListener("touchend", e => {
+            if (e.changedTouches[0].clientX - startX > 100) { el.remove(); }
+            else if (e.changedTouches[0].clientX - startX < -100) { el.remove(); }
+        });
+        
+        stack.appendChild(el);
+      });
+
+  } catch (err) {
+      console.error(err);
   }
-
-  [...perfisExibidos].reverse().forEach((p) => {
-    const el = document.createElement("article");
-    el.className = "swipe-card";
-
-    const badge = p.premium ? `
-      <span 
-        style="background:linear-gradient(135deg, #fde68a, #d97706); 
-          color:#000; 
-          font-size:0.7rem; 
-          padding:2px 8px; 
-          border-radius:10px; 
-          font-weight:bold; 
-          margin-left:8px; 
-          vertical-align:middle;">
-        PREMIUM
-      </span>` : "";
-
-    el.innerHTML = `
-      <div class="photo" style="background-image:url('${p.foto}');"></div>
-      <div class="meta">
-        <div class="name">${p.nome}, ${p.idade} ${badge}</div>
-        <small>${p.bio}</small>
-        <div class="tags">
-            ${p.ensina.map(t => `<span class="tag">Ensina: ${t}</span>`).join("")}
-        </div>
-      </div>`;
-    
-    // Lógica de arraste (Swipe)
-    let startX = 0;
-    el.addEventListener("mousedown", e => { startX = e.clientX; });
-    el.addEventListener("mouseup", e => {
-        const diff = e.clientX - startX; // só pra nn escrever demais
-        if (diff > 100) { el.remove(); alert(`Match com ${p.nome}! ❤`); } // Direita (Like)
-        else if (diff < -100) { el.remove(); } // Esquerda (Pass)
-    });
-
-    // Suporte básico a toque
-    el.addEventListener("touchstart", e => { startX = e.touches[0].clientX; }, {passive: true});
-    el.addEventListener("touchend", e => {
-        const diff = e.changedTouches[0].clientX - startX;
-        if (diff > 100) { el.remove(); alert(`Match com ${p.nome}! ❤`); }
-        else if (diff < -100) { el.remove(); }
-    });
-    
-    stack.appendChild(el);
-  });
-
-
-  function criarCard(p, idx) {
-    const el = document.createElement("article");
-    el.className = "swipe-card";
-    el.dataset.index = String(idx);
-    el.innerHTML = `
-      <div class="photo" style="background-image:url('${p.foto}');"></div>
-      <div class="meta">
-        <div>
-          <div class="name">${p.nome}, ${p.idade}</div>
-          <small>${p.bio}</small>
-        </div>
-        <div class="tags">
-          ${p.ensina.slice(0,1).map(t => `<span class="tag">Ensina: ${t}</span>`).join("")}
-          ${p.aprende.slice(0,1).map(t => `<span class="tag">Quer: ${t}</span>`).join("")}
-        </div>
-      </div>
-    `;
-    // Drag (mouse + touch)
-    let offset = { x: 0, y: 0 }, start = null;
-    const getXY = (e) => ({
-      x: e.clientX ?? e.touches?.[0]?.clientX,
-      y: e.clientY ?? e.touches?.[0]?.clientY
-    });
-
-    const onDown = (e) => { start = getXY(e); el.setPointerCapture?.(e.pointerId); };
-    const onMove = (e) => {
-      if (!start) return;
-      const now = getXY(e);
-      offset = { x: now.x - start.x, y: now.y - start.y };
-      el.style.transform = `translate(${offset.x}px, ${offset.y}px) rotate(${offset.x/18}deg)`;
-      el.style.transition = "none";
-    };
-    const onUp = () => {
-      const threshold = 120;
-      if (offset.x > threshold) like(el);
-      else if (offset.x < -threshold) nope(el);
-      else reset(el);
-      start = null; offset = { x: 0, y: 0 };
-    };
-
-    el.addEventListener("mousedown", onDown);
-    el.addEventListener("mousemove", onMove);
-    el.addEventListener("mouseup", onUp);
-    el.addEventListener("touchstart", onDown, { passive: true });
-    el.addEventListener("touchmove", onMove, { passive: true });
-    el.addEventListener("touchend", onUp);
-
-    return el;
-  }
-
-  function renderStack() {
-    stack.innerHTML = "";
-    // o último inserido fica no fundo; iteramos invertido
-    [...perfis].reverse().forEach((p, i) => {
-      const card = criarCard(p, perfis.length - 1 - i);
-      stack.appendChild(card);
-    });
-    if (window.lucide) lucide.createIcons();
-  }
-
-  function animateOut(el, dir = 1) {
-    el.style.transition = "transform .28s ease-out, opacity .28s ease-out";
-    el.style.transform = `translate(${dir*600}px, -40px) rotate(${dir*25}deg)`;
-    el.style.opacity = "0";
-    setTimeout(() => el.remove(), 260);
-  }
-
-  function reset(el) {
-    el.style.transition = "transform .22s ease";
-    el.style.transform = "translate(0,0) rotate(0)";
-  }
-
-  function like(el) {
-    const idx = Number(el.dataset.index);
-    const perfil = perfis[idx];
-    animateOut(el, +1);
-
-    // regra simples de match
-    const voceQuer = ["JS","JavaScript","Inglês","HTML/CSS","Violão"];
-    const match = perfil.ensina.some(s =>
-      voceQuer.some(v => s.toLowerCase().includes(v.toLowerCase()))
-    );
-    if (match) {
-      if (matchText) matchText.textContent = `Você e ${perfil.nome} têm interesses complementares!`;
-      modalMatch?.setAttribute("aria-hidden", "false");
-    }
-  }
-
-  function nope(el) { animateOut(el, -1); }
-
-  // Botões
-  document.getElementById("btnLike")?.addEventListener("click", () => {
-    const top = stack.querySelector(".swipe-card:last-child");
-    if (top) like(top);
-  });
-  document.getElementById("btnNope")?.addEventListener("click", () => {
-    const top = stack.querySelector(".swipe-card:last-child");
-    if (top) nope(top);
-  });
-  document.getElementById("btnInfo")?.addEventListener("click", () => {
-    const top = stack.querySelector(".swipe-card:last-child");
-    if (!top) return;
-    const idx = Number(top.dataset.index);
-    const perfil = perfis[idx];
-    top.querySelector(".tags")?.insertAdjacentHTML(
-      "beforeend",
-      `<span class="tag">Ensina: ${perfil.ensina.join(", ")}</span>
-       <span class="tag">Quer: ${perfil.aprende.join(", ")}</span>`
-    );
-  });
-
-  // Modal
-  document.getElementById("btnFecharMatch")?.addEventListener("click", () =>
-    modalMatch?.setAttribute("aria-hidden", "true")
-  );
-  document.getElementById("btnContato")?.addEventListener("click", () => {
-    modalMatch?.setAttribute("aria-hidden", "true");
-    alert("Exemplo: aqui você pode abrir um chat, copiar e-mail ou disparar WhatsApp.");
-  });
-
-  // CTA
-  document.getElementById("btnComecar")?.addEventListener("click", (event) => {
-    event.preventDefault();
-    location.href = "./auth.html#signup";
-  });
-
-  // Render inicial
-  renderStack();
 }
 
 // 2. LÓGICA DO PREMIUM (ABRIR MODAL + IR PRO PAGAMENTO)
