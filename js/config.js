@@ -261,7 +261,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 throw new Error(data.error || "Erro ao processar.");
             }
             if(acao !== "edicao_foto") 
-                alert(acao.message || "Sucesso!");
+                alert(data.message || "Sucesso!");
 
         } catch (err) {
             alert(err.message);
