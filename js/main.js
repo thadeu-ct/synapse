@@ -340,10 +340,10 @@ function initUI() {
     console.warn("Elemento #cardStack não encontrado.");
     return;
   }
-  const modalMatch = document.getElementById("modalMatch");
-  const matchText = document.getElementById("matchText");
+  const sessionRaw = localStorage.getItem("nexos_session");
+  const session = sessionRaw ? JSON.parse(sessionRaw) : {};
+  const isPremium = !!session.eh_premium; // Converte para booleano real
 
-  const isPremium = session.eh_premium === true;
   const todosPerfis = [
     { nome: "Ana Ribeiro", idade: 24, ensina: ["Inglês", "Conversação"], aprende: ["HTML/CSS"], foto: "./img/placeholder-avatar.png", bio: "Letras. Foco em conversação." },
     { nome: "Diego Martins", idade: 28, ensina: ["JS", "React"], aprende: ["Violão"], foto: "./img/placeholder-avatar.png", bio: "Dev Front-end. Troco código por música." },
@@ -382,12 +382,16 @@ function initUI() {
       // Adiciona o evento ao botão do cartão
       // Usamos setTimeout para garantir que o elemento foi renderizado
       setTimeout(() => {
-          const btn = promoCard.querySelector("#btnUpgradeStack");
-          if(btn) btn.addEventListener("click", (e) => {
-              e.stopPropagation(); // Evita conflito com drag
-              window.openPremiumModal(); // Abre o modal que já configuramos
+        const btn = promoCard.querySelector("#btnUpgradeStack");
+        if(btn) {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation(); // Evita conflito com drag
+            window.openPremiumModal(); // Abre o modal que já configuramos
           });
-      }, 0);
+          btn.addEventListener("mousedown", (e) => e.stopPropagation());
+          btn.addEventListener("touchstart", (e) => e.stopPropagation());
+        }
+      }, 100);
 
       stack.appendChild(promoCard);
   }
@@ -395,10 +399,24 @@ function initUI() {
   [...perfisExibidos].reverse().forEach((p) => {
     const el = document.createElement("article");
     el.className = "swipe-card";
+
+    const badge = p.premium ? `
+      <span 
+        style="background:linear-gradient(135deg, #fde68a, #d97706); 
+          color:#000; 
+          font-size:0.7rem; 
+          padding:2px 8px; 
+          border-radius:10px; 
+          font-weight:bold; 
+          margin-left:8px; 
+          vertical-align:middle;">
+        PREMIUM
+      </span>` : "";
+
     el.innerHTML = `
       <div class="photo" style="background-image:url('${p.foto}');"></div>
       <div class="meta">
-        <div class="name">${p.nome}, ${p.idade}</div>
+        <div class="name">${p.nome}, ${p.idade} ${badge}</div>
         <small>${p.bio}</small>
         <div class="tags">
             ${p.ensina.map(t => `<span class="tag">Ensina: ${t}</span>`).join("")}
@@ -623,6 +641,9 @@ async function carregarDadosDoUsuario() {
             const data = await res.json();
             const u = data.perfil;
 
+            session.eh_premium = u.eh_premium;
+            localStorage.setItem("nexos_session", JSON.stringify(session));
+
             // Preenche Sidebar
             const sidebarName = document.getElementById("sidebarUserName");
             if (sidebarName && u.nome) {
@@ -636,6 +657,9 @@ async function carregarDadosDoUsuario() {
                 document.getElementById("pfSobrenome").value = u.sobrenome || "";
                 document.getElementById("pfEmail").value = u.email || "";
                 document.getElementById("pfBio").value = u.bio || "";
+
+                const img = document.getElementById("imgAvatarDisplay");
+                if (img && u.foto) img.src = u.foto;
             }
         }
     } catch (err) {
