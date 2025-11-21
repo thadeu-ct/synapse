@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 2. Upload para o Storage do Supabase
             const { error: uploadError } = await supabase.storage
-                .from('Avatares')
+                .from('avatares')
                 .upload(filePath, file, {
                     cacheControl: '3600',
                     upsert: true 
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             // 3. Pegar a URL Pública
             const { data: { publicUrl } } = supabase.storage
-                .from('Avatares')
+                .from('avatares')
                 .getPublicUrl(filePath);
 
             // 4. Salvar URL no Banco (Backend)
