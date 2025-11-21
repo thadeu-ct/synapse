@@ -154,11 +154,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             const filePath = `${fileName}`;
 
             // 2. Upload para o Storage do Supabase
-            const { data, error } = await supabase.storage
+            const { error: uploadError } = await supabase.storage
                 .from('avatares')
-                .upload(filePath, file);
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: true 
+                });
 
-            if (error) throw error;
+            if (uploadError) throw uploadError;
 
             // 3. Pegar a URL Pública
             const { data: { publicUrl } } = supabase.storage
@@ -176,10 +179,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         } catch (error) {
             alert("Erro ao enviar foto: " + error.message);
-        } finally {
-            // Restaura o hover
-            hoverLayer.innerHTML = '<span style="font-size: 1.5rem;">📷</span>';
-            hoverLayer.style.opacity = "0";
         }
     });
 
@@ -206,7 +205,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("saveBioEdit")?.addEventListener("click", async () => {
         const novaBio = document.getElementById("userBioEdit").value;
         await sendAction("edicao_bio", { bio: novaBio });
-        // Recarrega a tela para mostrar a nova bio
         location.reload(); 
     });
 
@@ -237,7 +235,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const confirmacao = prompt("Para confirmar a exclusão, digite DELETAR abaixo:");
         if (confirmacao === "DELETAR") {
             await sendAction("deletar_conta", {});
-            // Limpa sessão e chuta pro login
             localStorage.removeItem("nexos_session");
             alert("Sua conta foi excluída.");
             window.location.href = "./index.html";
@@ -263,13 +260,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!res.ok) {
                 throw new Error(data.error || "Erro ao processar.");
             }
-
-            alert(data.message || "Sucesso!");
-            return true;
+            if(acao !== "edicao_foto") 
+                alert(acao.message || "Sucesso!");
 
         } catch (err) {
             alert(err.message);
-            return false;
         }
     }
 
