@@ -427,7 +427,7 @@ function initUI() {
     let startX = 0;
     el.addEventListener("mousedown", e => { startX = e.clientX; });
     el.addEventListener("mouseup", e => {
-        const diff = e.clientX - startX;
+        const diff = e.clientX - startX; // só pra nn escrever demais
         if (diff > 100) { el.remove(); alert(`Match com ${p.nome}! ❤`); } // Direita (Like)
         else if (diff < -100) { el.remove(); } // Esquerda (Pass)
     });
